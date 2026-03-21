@@ -1,6 +1,10 @@
 @Scorpanion.API_HostAddress = http://localhost:5234
 
 GET {{Scorpanion.API_HostAddress}}/weatherforecast/
-Accept: application/jso
+Accept: application/json
+###
 
+
+POST {{Scorpanion.API_HostAddress}}/boardGame/create/
+Accept: application/json
 ###

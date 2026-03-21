@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Scorpanion.DAL.Context.Entities;
 
 namespace Scorpanion.DAL.Context;
@@ -8,6 +9,11 @@ namespace Scorpanion.DAL.Context;
 /// </summary>
 public class ScorpanionDbContext : DbContext
 {
+    public ScorpanionDbContext(DbContextOptions<ScorpanionDbContext> options) : base(options)
+    {
+        
+    }
+    
     public DbSet<User> Users { get; set; } 
     public DbSet<BoardGame> BoardGames { get; set; }
     public DbSet<Scoreboard> Scoreboards { get; set; }
@@ -15,8 +21,4 @@ public class ScorpanionDbContext : DbContext
     public DbSet<Player> Players { get; set; }
     public DbSet<GameResult> GameResults { get; set; }
     
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseNpgsql("Host=localhost; Port=5432; Database=scorpanion");
-    }
 }

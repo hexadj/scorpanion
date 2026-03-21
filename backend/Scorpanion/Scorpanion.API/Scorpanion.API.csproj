@@ -8,7 +8,13 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.25" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.25" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Scorpanion.DAL\Scorpanion.DAL.csproj" />
     </ItemGroup>
 
 </Project>

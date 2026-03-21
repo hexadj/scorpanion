@@ -56,12 +56,17 @@ namespace Scorpanion.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("ScoreboardId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BoardGameId");
+
+                    b.HasIndex("ScoreboardId");
 
                     b.ToTable("games");
                 });
@@ -176,7 +181,15 @@ namespace Scorpanion.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Scorpanion.DAL.Context.Entities.Scoreboard", "Scoreboard")
+                        .WithMany()
+                        .HasForeignKey("ScoreboardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("BoardGame");
+
+                    b.Navigation("Scoreboard");
                 });
 
             modelBuilder.Entity("Scorpanion.DAL.Context.Entities.GameResult", b =>
