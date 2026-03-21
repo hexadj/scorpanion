@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scorpanion.API", "Scorpanion.API\Scorpanion.API.csproj", "{D585C974-C98B-4691-A7D6-EB7BB15E7001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scorpanion.DAL", "Scorpanion.DAL\Scorpanion.DAL.csproj", "{CC41B0BB-995D-431D-B8CD-F5C04071F95E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D585C974-C98B-4691-A7D6-EB7BB15E7001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D585C974-C98B-4691-A7D6-EB7BB15E7001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D585C974-C98B-4691-A7D6-EB7BB15E7001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D585C974-C98B-4691-A7D6-EB7BB15E7001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC41B0BB-995D-431D-B8CD-F5C04071F95E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC41B0BB-995D-431D-B8CD-F5C04071F95E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC41B0BB-995D-431D-B8CD-F5C04071F95E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC41B0BB-995D-431D-B8CD-F5C04071F95E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
