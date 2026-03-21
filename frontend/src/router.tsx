@@ -1,5 +1,5 @@
 import { RootLayout } from '@/layouts';
-import { HomePage } from '@/pages';
+import { HomePage, LoginPage, RegisterPage } from '@/pages';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const router = createBrowserRouter([
@@ -8,6 +8,8 @@ const router = createBrowserRouter([
         Component: RootLayout,
         children: [
             { index: true, Component: HomePage },
+            { path: 'login', Component: LoginPage },
+            { path: 'register', Component: RegisterPage },
         ],
     },
 ]);
