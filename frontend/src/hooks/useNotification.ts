@@ -1,6 +1,6 @@
 import { addNotification, clearNotification, removeNotification } from '@/store/notificationSlice';
 import { useAppDispatch } from './useStore';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { Notification } from '@/models/types';
 import { NotificationSeverityEnum } from '@/models/enums';
 
@@ -53,13 +53,16 @@ export function useNotification() {
     dispatch(clearNotification());
   }, [dispatch]);
 
-  return {
-    show,
-    showSuccess,
-    showError,
-    showWarning,
-    showInfo,
-    remove,
-    clear,
-  };
+  return useMemo(
+    () => ({
+      show,
+      showSuccess,
+      showError,
+      showWarning,
+      showInfo,
+      remove,
+      clear,
+    }),
+    [show, showSuccess, showError, showWarning, showInfo, remove, clear]
+  );
 }

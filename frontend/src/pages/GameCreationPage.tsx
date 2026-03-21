@@ -16,7 +16,7 @@ export function GameCreationPage() {
         setIsSubmitting(true);
 
         try {
-            const response = await createGame({ playersCount, roundsCount, scoreboardId: null, players: [] });
+            const response = await createGame({ boardGameId: '123', scoreboardId: null, playersCount, roundsCount, players: [] });
 
             if (response.gameId) {
                 navigate(`../play/${response.gameId}`);

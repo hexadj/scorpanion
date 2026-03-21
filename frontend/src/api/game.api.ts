@@ -1,9 +1,10 @@
 import type { Game, Player } from "@/models/types";
 
 export type CreateGamePayload = {
-    playersCount: number;
-    roundsCount: number;
+    boardGameId: string;
     scoreboardId: string | null;
+    playersCount: number;
+    roundsCount: number | null;
     players: Player[];
 };
 
@@ -23,6 +24,40 @@ export type GameResponse = {
 
 export function getGame(_gameId: string): Promise<GameResponse> {
     return new Promise((resolve) => {
-        setTimeout(() => resolve({ game: { id: '123', boardGameId: '123', scoreboardId: '123', players: [], nbRounds: null, currentRound: 0, roundHistory: [] } }), 500);
+        setTimeout(
+            () =>
+                resolve({
+                    game: {
+                        id: '123',
+                        boardGameId: '123',
+                        scoreboardId: '123',
+                        players: [
+                            { id: 'p1', name: 'Alice' },
+                            { id: 'p2', name: 'Bob' },
+                            { id: 'p3', name: 'Charlie' },
+                        ],
+                        nbRounds: null,
+                        currentRound: 4,
+                        roundHistory: [
+                            {
+                                playersScores: [
+                                    { playerName: 'Alice', score: 12 },
+                                    { playerName: 'Bob', score: 9 },
+                                ],
+                            },
+                            {
+                                playersScores: [
+                                    { playerName: 'Alice', score: 8 },
+                                    { playerName: 'Charlie', score: 11 },
+                                ],
+                            },
+                            {
+                                playersScores: [{ playerName: 'Bob', score: 14 }],
+                            },
+                        ],
+                    },
+                }),
+            500,
+        );
     });
 }
