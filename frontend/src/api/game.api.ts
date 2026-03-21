@@ -21,6 +21,7 @@ export type GameResponse = {
     game: Game;
 };
 
+
 export function getGame(_gameId: string): Promise<GameResponse> {
     return new Promise((resolve) => {
         setTimeout(
@@ -28,7 +29,8 @@ export function getGame(_gameId: string): Promise<GameResponse> {
                 resolve({
                     game: {
                         id: '123',
-                        boardGameId: '123',
+                        boardGameId: 'bg-1',
+                        boardGameName: 'Les Aventuriers du Rail',
                         scoreboardId: '123',
                         players: [
                             { id: 'p1', name: 'Alice' },
@@ -58,5 +60,12 @@ export function getGame(_gameId: string): Promise<GameResponse> {
                 }),
             500,
         );
+    });
+}
+
+
+export function endGame(_gameId: string): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(), 400);
     });
 }

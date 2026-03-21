@@ -12,6 +12,7 @@ export interface Round {
 export interface Game {
     id: string;
     boardGameId: string;
+    boardGameName: string;
     scoreboardId: string;
     players: Player[];
     nbRounds: number | null;
