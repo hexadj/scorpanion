@@ -1,5 +1,5 @@
 import { RootLayout } from '@/layouts';
-import { HomePage, LoginPage, RegisterPage } from '@/pages';
+import { GameCreationPage, HomePage, LoginPage, RegisterPage, GamePage } from '@/pages';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const router = createBrowserRouter([
@@ -10,6 +10,13 @@ const router = createBrowserRouter([
             { index: true, Component: HomePage },
             { path: 'login', Component: LoginPage },
             { path: 'register', Component: RegisterPage },
+            {
+                path: 'game/:id',
+                children: [
+                    { path: 'create', Component: GameCreationPage },
+                    { path: 'play/:gameId', Component: GamePage },
+                ],
+            },
         ],
     },
 ]);
