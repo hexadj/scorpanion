@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Scorpanion.API;
+using Scorpanion.DAL.Context;
 using Scorpanion.DAL.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
+app.Services.GetService<ScorpanionDbContext>()?.Database.Migrate();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
