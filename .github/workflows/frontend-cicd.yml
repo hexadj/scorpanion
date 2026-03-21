@@ -7,6 +7,12 @@ on:
       - "frontend/**"
       - ".github/workflows/frontend-cicd.yml"
 
+  pull_request:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend-cicd.yml"
+
 permissions:
   contents: read
   pages: write
