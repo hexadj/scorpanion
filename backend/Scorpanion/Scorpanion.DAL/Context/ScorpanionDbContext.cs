@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using scorpanion_backend.Context.Entities;
+using Scorpanion.DAL.Context.Entities;
 
-namespace scorpanion_backend.Context;
+namespace Scorpanion.DAL.Context;
 
 /// <summary>
 /// Contexte de données de l'application (ORM)

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace scorpanion_backend.Context.Entities;
+namespace Scorpanion.DAL.Context.Entities;
 
 [Table("scoreboards")]
 public class Scoreboard : BaseEntity

@@ -2,18 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using scorpanion_backend.Context;
+using Scorpanion.DAL.Context;
 
 #nullable disable
 
-namespace scorpanion_backend.Migrations
+namespace Scorpanion.DAL.Migrations
 {
     [DbContext(typeof(ScorpanionDbContext))]
-    partial class ScorpanionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260321155616_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace scorpanion_backend.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("scorpanion_backend.Context.Entities.BoardGame", b =>
+            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.BoardGame", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -44,7 +47,7 @@ namespace scorpanion_backend.Migrations
                     b.ToTable("boardgames");
                 });
 
-            modelBuilder.Entity("scorpanion_backend.Context.Entities.Game", b =>
+            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.Game", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,7 +69,7 @@ namespace scorpanion_backend.Migrations
                     b.ToTable("games");
                 });
 
-            modelBuilder.Entity("scorpanion_backend.Context.Entities.GameResult", b =>
+            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.GameResult", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -88,7 +91,7 @@ namespace scorpanion_backend.Migrations
                     b.ToTable("game_results");
                 });
 
-            modelBuilder.Entity("scorpanion_backend.Context.Entities.Player", b =>
+            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.Player", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -124,7 +127,7 @@ namespace scorpanion_backend.Migrations
                     b.ToTable("players");
                 });
 
-            modelBuilder.Entity("scorpanion_backend.Context.Entities.Scoreboard", b =>
+            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.Scoreboard", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -141,7 +144,7 @@ namespace scorpanion_backend.Migrations
                     b.ToTable("scoreboards");
                 });
 
-            modelBuilder.Entity("scorpanion_backend.Context.Entities.User", b =>
+            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -168,9 +171,9 @@ namespace scorpanion_backend.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("scorpanion_backend.Context.Entities.Game", b =>
+            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.Game", b =>
                 {
-                    b.HasOne("scorpanion_backend.Context.Entities.BoardGame", "BoardGame")
+                    b.HasOne("Scorpanion.DAL.Context.Entities.BoardGame", "BoardGame")
                         .WithMany()
                         .HasForeignKey("BoardGameId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -179,9 +182,9 @@ namespace scorpanion_backend.Migrations
                     b.Navigation("BoardGame");
                 });
 
-            modelBuilder.Entity("scorpanion_backend.Context.Entities.GameResult", b =>
+            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.GameResult", b =>
                 {
-                    b.HasOne("scorpanion_backend.Context.Entities.Game", "Game")
+                    b.HasOne("Scorpanion.DAL.Context.Entities.Game", "Game")
                         .WithMany()
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -190,19 +193,19 @@ namespace scorpanion_backend.Migrations
                     b.Navigation("Game");
                 });
 
-            modelBuilder.Entity("scorpanion_backend.Context.Entities.Player", b =>
+            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.Player", b =>
                 {
-                    b.HasOne("scorpanion_backend.Context.Entities.BoardGame", "BoardGame")
+                    b.HasOne("Scorpanion.DAL.Context.Entities.BoardGame", "BoardGame")
                         .WithMany()
                         .HasForeignKey("BoardGameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("scorpanion_backend.Context.Entities.Game", null)
+                    b.HasOne("Scorpanion.DAL.Context.Entities.Game", null)
                         .WithMany("Players")
                         .HasForeignKey("GameId");
 
-                    b.HasOne("scorpanion_backend.Context.Entities.User", "User")
+                    b.HasOne("Scorpanion.DAL.Context.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
@@ -211,7 +214,7 @@ namespace scorpanion_backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("scorpanion_backend.Context.Entities.Game", b =>
+            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.Game", b =>
                 {
                     b.Navigation("Players");
                 });

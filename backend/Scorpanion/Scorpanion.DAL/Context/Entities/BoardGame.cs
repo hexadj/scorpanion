@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace scorpanion_backend.Context.Entities;
+namespace Scorpanion.DAL.Context.Entities;
 
 [Table("boardgames")]
 public class BoardGame : BaseEntity

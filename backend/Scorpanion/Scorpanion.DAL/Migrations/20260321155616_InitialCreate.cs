@@ -3,14 +3,56 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace scorpanion_backend.Migrations
+namespace Scorpanion.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class AddGamesAndPlayers : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "boardgames",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_boardgames", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "scoreboards",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_scoreboards", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Username = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Password = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_users", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "games",
                 columns: table => new
@@ -27,6 +69,26 @@ namespace scorpanion_backend.Migrations
                         name: "FK_games_boardgames_BoardGameId",
                         column: x => x.BoardGameId,
                         principalTable: "boardgames",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "game_results",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    GameId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_game_results", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_game_results_games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -65,6 +127,11 @@ namespace scorpanion_backend.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_game_results_GameId",
+                table: "game_results",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_games_BoardGameId",
                 table: "games",
                 column: "BoardGameId");
@@ -89,10 +156,22 @@ namespace scorpanion_backend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "game_results");
+
+            migrationBuilder.DropTable(
                 name: "players");
 
             migrationBuilder.DropTable(
+                name: "scoreboards");
+
+            migrationBuilder.DropTable(
                 name: "games");
+
+            migrationBuilder.DropTable(
+                name: "users");
+
+            migrationBuilder.DropTable(
+                name: "boardgames");
         }
     }
 }

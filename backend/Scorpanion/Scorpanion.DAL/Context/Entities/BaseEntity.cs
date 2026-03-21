@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace scorpanion_backend.Context.Entities;
+namespace Scorpanion.DAL.Context.Entities;
 
 /// <summary>
 /// Modèle de base pour les entités (metadata classique)
