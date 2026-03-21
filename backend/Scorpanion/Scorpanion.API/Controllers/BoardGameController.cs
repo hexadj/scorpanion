@@ -15,4 +15,11 @@ public class BoardGameController(IBoardGameService boardGameService) : Controlle
         var createdId = boardGameService.CreateBoardGame(model);
         return Created($"boardGame/{createdId}", createdId);
     }
+
+    // GET
+    [HttpGet("prout")]
+    public IActionResult Get(string id)
+    {
+        return Ok("PROUT PROUT");
+    }
 }
