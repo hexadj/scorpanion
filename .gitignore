@@ -1,0 +1,6 @@
+# Editor / IDE workspace config (local or machine-specific)
+.vscode/
+.cursor/
+
+# JetBrains (if used alongside VS Code)
+.idea/
