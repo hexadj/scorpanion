@@ -2,7 +2,15 @@
 
 ## Frontend
 
-- [ ] *(à détailler)*
+- [ ] **Navigation** — routes (scoreboard, historique, statistiques, login, register)
+- [ ] **Écrans** — pages login / register
+- [ ] **Écrans** — pages d'accueil
+- [ ] **Écrans** — Création d'un scoreboard
+- [ ] **Écrans** — Affichage d'un scoreboard
+- [ ] **Scoreboard** — Gestion d'une partie / fin de partie
+- [ ] **Historique** — liste et consultation des parties terminées
+- [ ] **Statistiques** — vue agrégée (parties jouées, scores, victoires)
+- [ ] **Appels API** — clients frontend pour game, gameResult, scoreboard, stats
 
 ## Backend
 
