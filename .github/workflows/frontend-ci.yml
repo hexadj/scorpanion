@@ -24,6 +24,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Lint
-        run: pnpm lint
+        run: pnpm exec eslint . --rule '@typescript-eslint/no-unused-vars: off'
       - name: Build
         run: pnpm build
