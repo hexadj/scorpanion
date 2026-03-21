@@ -75,6 +75,8 @@ export type CreateGameResponse = {
 
 // TODO(back): remplacer par l’appel HTTP réel (création de partie). Supprimer : setTimeout et l’ID mocké.
 export function createGame(_payload: CreateGamePayload): Promise<CreateGameResponse> {
+    // TODO(back): supprimer cette ligne au branchement HTTP.
+    void _payload;
     return new Promise((resolve) => {
         setTimeout(() => resolve({ gameId: '123' }), 500);
     });
@@ -87,6 +89,8 @@ export type GameResponse = {
 
 // TODO(back): remplacer par l’appel HTTP réel (GET partie). Supprimer : setTimeout et cloneGame(currentMockGame).
 export function getGame(_gameId: string): Promise<GameResponse> {
+    // TODO(back): supprimer cette ligne au branchement HTTP.
+    void _gameId;
     return new Promise((resolve) => {
         setTimeout(() => resolve({ game: cloneGame(currentMockGame) }), 500);
     });
@@ -122,6 +126,8 @@ export function updateGame(_gameId: string, payload: UpdateGamePayload): Promise
 
 // TODO(back): remplacer par l’appel HTTP réel (fin de partie). Supprimer : setTimeout.
 export function endGame(_gameId: string): Promise<void> {
+    // TODO(back): supprimer cette ligne au branchement HTTP.
+    void _gameId;
     return new Promise((resolve) => {
         setTimeout(() => resolve(), 400);
     });

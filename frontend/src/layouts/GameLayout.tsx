@@ -7,19 +7,15 @@ import { useNotification } from '@/hooks';
 
 type LoadState = 'loading' | 'ready';
 
+type GameLayoutContentProps = {
+    gameId: string;
+};
+
 /**
- * Barrière de route pour `…/play/:gameId` :
- *
- * - charge la partie une fois l’`gameId` connu ;
- * - redirige vers `/` si l’ID manque dans l’URL ou si l’API échoue ;
- * - affiche un écran de chargement jusqu’à avoir un `game` valide ;
- * - enveloppe ensuite les enfants (`Outlet`) avec `GameProvider` pour que toute la sous-arborescence
- *   lise la même `Game` sans refaire de `getGame`.
- *
- * Un changement de `gameId` (navigation vers une autre partie) remet l’état local à zéro avant un nouveau fetch.
+ * État et chargement pour une `gameId` donnée. Monté avec `key={gameId}` depuis le layout
+ * pour repartir d’un état vierge à chaque changement de partie (pas d’affichage de l’ancienne partie pendant le fetch).
  */
-export function GameLayout() {
-    const { gameId } = useParams();
+function GameLayoutContent({ gameId }: GameLayoutContentProps) {
     const navigate = useNavigate();
     const notification = useNotification();
 
@@ -27,21 +23,11 @@ export function GameLayout() {
     const [loadState, setLoadState] = useState<LoadState>('loading');
 
     useEffect(() => {
-        if (!gameId) {
-            return;
-        }
-
-        const currentGameId = gameId;
-
-        // Nouvelle partie cible : on évite d’afficher brièvement l’ancienne avant la réponse réseau.
-        setLoadState('loading');
-        setGame(null);
-
         let cancelled = false;
 
         async function load() {
             try {
-                const response = await getGame(currentGameId);
+                const response = await getGame(gameId);
                 if (cancelled) {
                     return;
                 }
@@ -63,18 +49,11 @@ export function GameLayout() {
 
         void load();
 
-        // Évite setState après démontage ou si `gameId` change pendant la requête.
         return () => {
             cancelled = true;
         };
     }, [gameId, navigate, notification]);
 
-    // Paramètre de route absent (URL mal formée) : redirection immédiate côté client.
-    if (!gameId) {
-        return <Navigate to="/" replace />;
-    }
-
-    // Tant que la requête n’a pas abouti, pas de provider — les enfants ne montent pas.
     if (loadState === 'loading' || !game) {
         return (
             <main className="mx-auto w-full max-w-3xl px-4 py-10">
@@ -91,4 +70,25 @@ export function GameLayout() {
             <Outlet />
         </GameProvider>
     );
+}
+
+/**
+ * Barrière de route pour `…/play/:gameId` :
+ *
+ * - charge la partie une fois l’`gameId` connu ;
+ * - redirige vers `/` si l’ID manque dans l’URL ou si l’API échoue ;
+ * - affiche un écran de chargement jusqu’à avoir un `game` valide ;
+ * - enveloppe ensuite les enfants (`Outlet`) avec `GameProvider` pour que toute la sous-arborescence
+ *   lise la même `Game` sans refaire de `getGame`.
+ *
+ * Un changement de `gameId` (navigation vers une autre partie) remonte le contenu (`key`) pour repartir d’un état vierge.
+ */
+export function GameLayout() {
+    const { gameId } = useParams();
+
+    if (!gameId) {
+        return <Navigate to="/" replace />;
+    }
+
+    return <GameLayoutContent key={gameId} gameId={gameId} />;
 }
