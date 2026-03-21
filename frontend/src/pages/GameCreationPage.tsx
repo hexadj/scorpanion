@@ -1,11 +1,20 @@
 import { useState } from 'react';
 import type { SyntheticEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { createGame } from '@/api';
 import { useNotification } from '@/hooks';
 
+type GameCreationLocationState = {
+    boardGameName?: string;
+};
+
 export function GameCreationPage() {
+    const { boardGameId } = useParams<{ boardGameId: string }>();
+    const location = useLocation();
     const navigate = useNavigate();
+    const locationState = location.state as GameCreationLocationState | null | undefined;
+    const boardGameName =
+        locationState?.boardGameName ?? boardGameId ?? 'Jeu';
     const notification = useNotification();
     const [playersCount, setPlayersCount] = useState<number>(2);
     const [roundsCount, setRoundsCount] = useState<number>(3);
@@ -16,7 +25,12 @@ export function GameCreationPage() {
         setIsSubmitting(true);
 
         try {
-            const response = await createGame({ boardGameId: '123', scoreboardId: null, playersCount, roundsCount, players: [] });
+            const response = await createGame({
+                boardGameId: boardGameId ?? '',
+                scoreboardId: null,
+                roundsCount,
+                players: [],
+            });
 
             if (response.gameId) {
                 navigate(`../play/${response.gameId}`);
@@ -37,7 +51,8 @@ export function GameCreationPage() {
 
     return (
         <main className="mx-auto w-full max-w-3xl px-4 py-10">
-            <h1 className="text-4xl font-bold tracking-tight text-slate-900">Game Creation</h1>
+            <h1 className="text-4xl font-bold tracking-tight text-slate-900">{boardGameName}</h1>
+            <p className="mt-2 text-slate-600">Création de partie</p>
 
             <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                 <div className="space-y-2">

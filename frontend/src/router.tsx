@@ -11,7 +11,7 @@ const router = createBrowserRouter([
             { path: 'login', Component: LoginPage },
             { path: 'register', Component: RegisterPage },
             {
-                path: 'game/:id',
+                path: 'game/:boardGameId',
                 children: [
                     { path: 'create', Component: GameCreationPage },
                     { path: 'play/:gameId', Component: GamePage },

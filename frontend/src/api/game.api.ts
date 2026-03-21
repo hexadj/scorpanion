@@ -3,7 +3,6 @@ import type { Game, Player } from "@/models/types";
 export type CreateGamePayload = {
     boardGameId: string;
     scoreboardId: string | null;
-    playersCount: number;
     roundsCount: number | null;
     players: Player[];
 };
