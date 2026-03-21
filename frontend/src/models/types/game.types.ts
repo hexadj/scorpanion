@@ -6,6 +6,7 @@ export interface PlayerScore {
 }
 
 export interface Round {
+    roundNumber: number;
     playersScores: PlayerScore[];
 }
 
