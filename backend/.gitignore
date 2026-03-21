@@ -1,0 +1,54 @@
+# Build outputs
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio / MSBuild
+.vs/
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# JetBrains Rider / IntelliJ
+.idea/
+*.sln.iml
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# NuGet
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Test & coverage
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+*.trx
+
+# Publish / local tooling
+PublishProfiles/*.pubxml.user
+*.publishsettings
+orleans.codegen.cs
+
+# Secrets & local config (keep appsettings.json; ignore overrides)
+**/appsettings.*.local.json
+**/secrets.json
+
+# OS
+Thumbs.db
+Desktop.ini
