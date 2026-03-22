@@ -52,6 +52,15 @@ public class UserService : IUserService
         return entity.Id;
     }
 
+    public ICollection<UserModel> GetAllUsers()
+    {
+        return _context.Users.Select(u => new UserModel
+        {
+            Id = u.Id,
+            Username = u.Username,
+        }).ToList();
+    }
+
     public UserModel? Login(UserCredentialsModel model)
     {
         if (string.IsNullOrWhiteSpace(model.Username) || string.IsNullOrWhiteSpace(model.Password))

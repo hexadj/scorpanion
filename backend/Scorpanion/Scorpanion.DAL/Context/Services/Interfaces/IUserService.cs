@@ -6,5 +6,7 @@ public interface IUserService
 {
     Guid CreateUser(UserCredentialsModel model);
 
+    ICollection<UserModel> GetAllUsers();
+
     UserModel? Login(UserCredentialsModel model);
 }

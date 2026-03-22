@@ -9,6 +9,14 @@ namespace Scorpanion.API.Controllers;
 [Route("user/")]
 public class UserController(IUserService userService) : Controller
 {
+    // GET
+    [HttpGet("getAll")]
+    public IActionResult GetAll()
+    {
+        var users = userService.GetAllUsers();
+        return Ok(users);
+    }
+
     // POST
     [HttpPost("create/")]
     public IActionResult Create(UserCredentialsModel model)
