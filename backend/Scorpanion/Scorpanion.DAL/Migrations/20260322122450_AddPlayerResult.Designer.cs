@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Scorpanion.DAL.Context;
@@ -11,9 +12,11 @@ using Scorpanion.DAL.Context;
 namespace Scorpanion.DAL.Migrations
 {
     [DbContext(typeof(ScorpanionDbContext))]
-    partial class ScorpanionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260322122450_AddPlayerResult")]
+    partial class AddPlayerResult
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,70 +47,25 @@ namespace Scorpanion.DAL.Migrations
                     b.ToTable("boardgames");
                 });
 
-            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.BoardGameConfig", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("BoardGameId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsTemporary")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int>("PlayerCount")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("RoundCount")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("WinType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BoardGameId");
-
-                    b.ToTable("board_game_configs");
-                });
-
             modelBuilder.Entity("Scorpanion.DAL.Context.Entities.Game", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("BoardGameConfigId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("BoardGameId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("ScoreboardId")
+                    b.Property<Guid>("ScoreboardId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BoardGameConfigId");
 
                     b.HasIndex("BoardGameId");
 
@@ -282,24 +240,8 @@ namespace Scorpanion.DAL.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.BoardGameConfig", b =>
-                {
-                    b.HasOne("Scorpanion.DAL.Context.Entities.BoardGame", "BoardGame")
-                        .WithMany("BoardGameConfigs")
-                        .HasForeignKey("BoardGameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BoardGame");
-                });
-
             modelBuilder.Entity("Scorpanion.DAL.Context.Entities.Game", b =>
                 {
-                    b.HasOne("Scorpanion.DAL.Context.Entities.BoardGameConfig", "BoardGameConfig")
-                        .WithMany()
-                        .HasForeignKey("BoardGameConfigId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("Scorpanion.DAL.Context.Entities.BoardGame", "BoardGame")
                         .WithMany()
                         .HasForeignKey("BoardGameId")
@@ -308,11 +250,11 @@ namespace Scorpanion.DAL.Migrations
 
                     b.HasOne("Scorpanion.DAL.Context.Entities.Scoreboard", "Scoreboard")
                         .WithMany()
-                        .HasForeignKey("ScoreboardId");
+                        .HasForeignKey("ScoreboardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("BoardGame");
-
-                    b.Navigation("BoardGameConfig");
 
                     b.Navigation("Scoreboard");
                 });
@@ -377,11 +319,6 @@ namespace Scorpanion.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Player");
-                });
-
-            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.BoardGame", b =>
-                {
-                    b.Navigation("BoardGameConfigs");
                 });
 
             modelBuilder.Entity("Scorpanion.DAL.Context.Entities.Game", b =>

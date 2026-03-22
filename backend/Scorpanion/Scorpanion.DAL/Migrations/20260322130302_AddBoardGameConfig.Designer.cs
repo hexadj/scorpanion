@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Scorpanion.DAL.Context;
@@ -11,9 +12,11 @@ using Scorpanion.DAL.Context;
 namespace Scorpanion.DAL.Migrations
 {
     [DbContext(typeof(ScorpanionDbContext))]
-    partial class ScorpanionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260322130302_AddBoardGameConfig")]
+    partial class AddBoardGameConfig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,24 +93,19 @@ namespace Scorpanion.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("BoardGameConfigId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("BoardGameId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("ScoreboardId")
+                    b.Property<Guid>("ScoreboardId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BoardGameConfigId");
 
                     b.HasIndex("BoardGameId");
 
@@ -295,11 +293,6 @@ namespace Scorpanion.DAL.Migrations
 
             modelBuilder.Entity("Scorpanion.DAL.Context.Entities.Game", b =>
                 {
-                    b.HasOne("Scorpanion.DAL.Context.Entities.BoardGameConfig", "BoardGameConfig")
-                        .WithMany()
-                        .HasForeignKey("BoardGameConfigId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("Scorpanion.DAL.Context.Entities.BoardGame", "BoardGame")
                         .WithMany()
                         .HasForeignKey("BoardGameId")
@@ -308,11 +301,11 @@ namespace Scorpanion.DAL.Migrations
 
                     b.HasOne("Scorpanion.DAL.Context.Entities.Scoreboard", "Scoreboard")
                         .WithMany()
-                        .HasForeignKey("ScoreboardId");
+                        .HasForeignKey("ScoreboardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("BoardGame");
-
-                    b.Navigation("BoardGameConfig");
 
                     b.Navigation("Scoreboard");
                 });
