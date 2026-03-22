@@ -1,9 +1,10 @@
-using System.Security.Cryptography;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Scorpanion.DAL.Context;
+using Scorpanion.DAL.Context.Entities;
 using Scorpanion.DAL.Context.Services;
 using Scorpanion.DAL.Context.Services.Interfaces;
 
@@ -28,6 +29,8 @@ public static class ServicesExtensions
         
         services.AddDbContext<ScorpanionDbContext>(options => options.UseNpgsql(connectionString));
         services.TryAddTransient<IBoardGameService, BoardGameService>();
+        // Registration/login: inject IPasswordHasher<User> — HashPassword on sign-up/change; VerifyHashedPassword on login.
+        services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
         return services;
     }
 }
