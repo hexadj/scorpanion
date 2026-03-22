@@ -6,4 +6,5 @@ namespace Scorpanion.DAL.Context.Entities;
 public class GameResult :BaseEntity
 {
     public required Game Game { get; set; }
+    public required ICollection<PlayerResult> PlayerResults { get; set; }
 }

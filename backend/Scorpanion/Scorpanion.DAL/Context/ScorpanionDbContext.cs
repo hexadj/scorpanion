@@ -20,6 +20,7 @@ public class ScorpanionDbContext : DbContext
     public DbSet<Game> Games { get; set; }
     public DbSet<Player> Players { get; set; }
     public DbSet<GameResult> GameResults { get; set; }
+    public DbSet<PlayerResult> PlayerResults { get; set; }
     public DbSet<Round> Rounds { get; set; }
     
 }
