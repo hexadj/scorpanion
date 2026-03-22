@@ -16,7 +16,5 @@ export interface Game {
     boardGameName: string;
     scoreboardId: string;
     players: Player[];
-    nbRounds: number | null;
-    currentRound: number;
     roundHistory: Round[];
 }

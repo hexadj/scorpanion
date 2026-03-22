@@ -6,7 +6,12 @@
  */
 import { endGame, updateGame } from '@/api';
 import { useGameContext } from '@/contexts/GameContext';
-import { buildCompleteRoundFromScores, buildDraftSnapshotFromGame, validateRoundComplete } from '@/utils/gameScore.utils';
+import {
+    buildCompleteRoundFromScores,
+    buildDraftSnapshotFromGame,
+    getCurrentRoundNumber,
+    validateRoundComplete,
+} from '@/utils/gameScore.utils';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useNotification } from './useNotification';
@@ -23,9 +28,9 @@ export function useGameScores() {
     const [draft, setDraft] = useState<Record<string, string>>({});
 
     const roundsToDisplay = useMemo(() => {
-        const historyLen = game.roundHistory?.length ?? 0;
-        const roundsCount = game.nbRounds ?? Math.max(1, game.currentRound, historyLen);
-        return Array.from({ length: roundsCount }, (_, index) => index + 1);
+        const currentRound = getCurrentRoundNumber(game);
+        // Pas de limite de manches : toutes les manches jouées + la manche en cours.
+        return Array.from({ length: Math.max(1, currentRound) }, (_, index) => index + 1);
     }, [game]);
 
     useEffect(() => {
