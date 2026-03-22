@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Scorpanion.API;
+using Scorpanion.API.Logic;
 using Scorpanion.DAL.Context;
 using Scorpanion.DAL.Extensions;
 
@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Ajout des services DAL 
 builder.Services.AddDataAccessLayer(builder.Configuration);
+builder.Services.AddScoped<GameLogic>();
 
 var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
 builder.Services.AddCors(options =>

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Scorpanion.API.Logic;
 using Scorpanion.DAL.Context.Services.Interfaces;
 using Scorpanion.DAL.ExchangeModels;
 
@@ -6,7 +7,7 @@ namespace Scorpanion.API.Controllers;
 
 [ApiController]
 [Route("game/")]
-public class GameController(IGameService service) : Controller
+public class GameController(IGameService service, GameLogic gameLogic) : Controller
 {
     // POST
     /// <summary>
@@ -25,6 +26,14 @@ public class GameController(IGameService service) : Controller
     {
         var updatedGame = service.UpdateGame(gameId, round);
         return Ok(updatedGame);
+    }
+
+    [HttpPost("end")]
+    public IActionResult EndGame(Guid gameId, RoundModel finalRound)
+    {
+        var game = service.GetGame(gameId);
+        var result = gameLogic.EndGame(game, finalRound);
+        return Ok(result);
     }
     
     // GET
