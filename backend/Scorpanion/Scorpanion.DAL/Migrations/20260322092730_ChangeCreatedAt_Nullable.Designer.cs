@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Scorpanion.DAL.Context;
@@ -11,9 +12,11 @@ using Scorpanion.DAL.Context;
 namespace Scorpanion.DAL.Migrations
 {
     [DbContext(typeof(ScorpanionDbContext))]
-    partial class ScorpanionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260322092730_ChangeCreatedAt_Nullable")]
+    partial class ChangeCreatedAt_Nullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
