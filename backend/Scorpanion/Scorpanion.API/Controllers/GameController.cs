@@ -22,9 +22,9 @@ public class GameController(IGameService service, GameLogic gameLogic) : Control
     }
 
     [HttpPost("update")]
-    public IActionResult UpdateGame(Guid gameId, RoundModel round)
+    public IActionResult UpdateRound(RoundModel round)
     {
-        var updatedGame = service.UpdateGame(gameId, round);
+        var updatedGame = service.UpdateRound(round);
         return Ok(updatedGame);
     }
 

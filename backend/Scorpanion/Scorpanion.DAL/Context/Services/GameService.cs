@@ -128,17 +128,17 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
         context.SaveChanges();
     }
 
-    public GameModel UpdateGame(Guid gameId, RoundModel round)
+    public GameModel UpdateRound(RoundModel round)
     {
         // Récupération de la game
-        var game = context.Games.FirstOrDefault(g => g.Id == gameId);
+        var game = context.Games.FirstOrDefault(g => g.Id == round.GameId);
         if (game is null)
             throw new KeyNotFoundException("Game not found");
 
         // Vérification de l'existence du round (pour voir si création ou modification)
         var roundScores = context.Rounds.Include(r => r.Game)
             .Include(r => r.Player)
-            .Where(r => r.Game.Id == gameId && r.Number == round.Number).ToList();
+            .Where(r => r.Game.Id == round.GameId && r.Number == round.Number).ToList();
         // Modification
         if (roundScores.Any())
         {
@@ -170,6 +170,6 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
         }
             
         context.SaveChanges();
-        return GetGame(gameId);
+        return GetGame(round.GameId);
     }
 }

@@ -12,5 +12,5 @@ public interface IGameService
 
     void SaveGameResult(GameResultModel gameResult);
 
-    GameModel UpdateGame(Guid gameId, RoundModel round);
+    GameModel UpdateRound(RoundModel round);
 }
