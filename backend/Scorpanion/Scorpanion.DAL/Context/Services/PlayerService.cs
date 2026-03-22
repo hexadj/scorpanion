@@ -26,7 +26,7 @@ public class PlayerService(ScorpanionDbContext context, IUserService userService
             string playerName = user?.Username ?? player.PlayerName ?? string.Empty;
             
             if (string.IsNullOrWhiteSpace(playerName))
-                throw new ArgumentException("Player name is empty, and no user has been provided");
+                throw new ArgumentException("PlayerId name is empty, and no user has been provided");
             
             playerEntities.Add(new Player
             {

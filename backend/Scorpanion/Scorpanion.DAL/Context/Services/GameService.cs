@@ -1,7 +1,9 @@
+using System.Net.Sockets;
 using Microsoft.EntityFrameworkCore;
 using Scorpanion.DAL.Context.Entities;
 using Scorpanion.DAL.Context.Services.Interfaces;
 using Scorpanion.DAL.ExchangeModels;
+using Scorpanion.DAL.Models;
 
 namespace Scorpanion.DAL.Context.Services;
 
@@ -24,13 +26,13 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
             BoardGame = boardGame,
             Scoreboard = scoreboard
         }).Entity;
-        
+
         context.SaveChanges();
-        
-         // Création des entités de joueur
-         playerService.CreatePlayers(gameEntity.Id ,game.Players);
-         
-         return gameEntity.Id;
+
+        // Création des entités de joueur
+        playerService.CreatePlayers(gameEntity.Id, game.Players);
+
+        return gameEntity.Id;
     }
 
     public GameModel GetGame(Guid id)
@@ -73,19 +75,22 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
                     Id = player.Id, UserId = player.User?.Id, PlayerName = player.User?.Username ?? player.GuestName
                 })
                 .ToList(),
-            Rounds = game.Rounds.Select(r => new RoundModel
-            {
-                Id = r.Id,
-                Number = r.Number,
-                PlayerId = r.Player.Id,
-                Score = r.Score
-            }).ToList()
+            Rounds = game.Rounds.GroupBy(r => r.Number)
+                .Select(group => new RoundModel
+                {
+                    Number = group.First().Number,
+                    Scores = group.Select(score => new RoundScoreModel
+                    {
+                        PlayerId = score.Player.Id,
+                        Score = score.Score
+                    }).ToList()
+                }).ToList()
         };
 
     public void SaveGameResult(GameResultModel model)
     {
         var game = context.Games.FirstOrDefault(g => g.Id == model.GameId)
-            ?? throw new KeyNotFoundException("Game not found");
+                   ?? throw new KeyNotFoundException("Game not found");
 
         var playerIds = model.PlayerResults.Select(p => p.PlayerId).ToHashSet();
         var playersById = context.Players
@@ -121,5 +126,50 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
 
         context.GameResults.Add(gameResult);
         context.SaveChanges();
+    }
+
+    public GameModel UpdateGame(Guid gameId, RoundModel round)
+    {
+        // Récupération de la game
+        var game = context.Games.FirstOrDefault(g => g.Id == gameId);
+        if (game is null)
+            throw new KeyNotFoundException("Game not found");
+
+        // Vérification de l'existence du round (pour voir si création ou modification)
+        var roundScores = context.Rounds.Include(r => r.Game)
+            .Include(r => r.Player)
+            .Where(r => r.Game.Id == gameId && r.Number == round.Number).ToList();
+        // Modification
+        if (roundScores.Any())
+        {
+            foreach (var score in roundScores)
+            {
+                score.Score = round.Scores.First(s => s.PlayerId == score.Player.Id).Score;
+                score.UpdatedAt = DateTime.UtcNow;
+            }
+        }
+        // Création
+        else
+        {
+            foreach (var score in round.Scores)
+            {
+                // Recherche du joueur correspondant
+                var player = context.Players.FirstOrDefault(p => p.Id == score.PlayerId);
+                if (player is null)
+                    throw new KeyNotFoundException("Player not found");
+                context.Rounds.Add(new Round()
+                {
+                    Id = Guid.NewGuid(),
+                    Player = player,
+                    Number = round.Number,
+                    CreatedAt = DateTime.UtcNow,
+                    Game = game,
+                    Score = score.Score,
+                });
+            }
+        }
+            
+        context.SaveChanges();
+        return GetGame(gameId);
     }
 }

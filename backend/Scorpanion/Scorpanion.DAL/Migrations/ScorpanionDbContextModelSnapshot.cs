@@ -138,7 +138,7 @@ namespace Scorpanion.DAL.Migrations
                     b.ToTable("game_results");
                 });
 
-            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.Player", b =>
+            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.PlayerId", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -328,7 +328,7 @@ namespace Scorpanion.DAL.Migrations
                     b.Navigation("Game");
                 });
 
-            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.Player", b =>
+            modelBuilder.Entity("Scorpanion.DAL.Context.Entities.PlayerId", b =>
                 {
                     b.HasOne("Scorpanion.DAL.Context.Entities.Game", "Game")
                         .WithMany("Players")
@@ -353,7 +353,7 @@ namespace Scorpanion.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Scorpanion.DAL.Context.Entities.Player", "Player")
+                    b.HasOne("Scorpanion.DAL.Context.Entities.PlayerId", "PlayerId")
                         .WithMany()
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -361,7 +361,7 @@ namespace Scorpanion.DAL.Migrations
 
                     b.Navigation("GameResult");
 
-                    b.Navigation("Player");
+                    b.Navigation("PlayerId");
                 });
 
             modelBuilder.Entity("Scorpanion.DAL.Context.Entities.Round", b =>
@@ -370,13 +370,13 @@ namespace Scorpanion.DAL.Migrations
                         .WithMany("Rounds")
                         .HasForeignKey("GameId");
 
-                    b.HasOne("Scorpanion.DAL.Context.Entities.Player", "Player")
+                    b.HasOne("Scorpanion.DAL.Context.Entities.PlayerId", "PlayerId")
                         .WithMany()
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Player");
+                    b.Navigation("PlayerId");
                 });
 
             modelBuilder.Entity("Scorpanion.DAL.Context.Entities.BoardGame", b =>

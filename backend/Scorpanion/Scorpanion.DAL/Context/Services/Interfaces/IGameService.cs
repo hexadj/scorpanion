@@ -11,4 +11,6 @@ public interface IGameService
     IReadOnlyList<GameModel> GetGamesForUser(Guid userId);
 
     void SaveGameResult(GameResultModel gameResult);
+
+    GameModel UpdateGame(Guid gameId, RoundModel round);
 }
