@@ -1,15 +1,11 @@
 import type { BoardGame } from '@/models/types';
+import { getApiBaseUrl } from './api.utils';
 
-// TODO(back): supprimer MOCK_BOARDGAMES au branchement du backend.
-const MOCK_BOARDGAMES: BoardGame[] = [
-    { id: 'bg-1', name: 'Les Aventuriers du Rail' },
-    { id: 'bg-2', name: '7 Wonders' },
-    { id: 'bg-3', name: 'Carcassonne' },
-];
-
-// TODO(back): remplacer par l’appel HTTP réel (liste des jeux). Supprimer : setTimeout et la copie de MOCK_BOARDGAMES.
-export function getBoardgames(): Promise<BoardGame[]> {
-    return new Promise((resolve) => {
-        setTimeout(() => resolve([...MOCK_BOARDGAMES]), 400);
-    });
+export async function getBoardgames(): Promise<BoardGame[]> {
+    const base = getApiBaseUrl();
+    const res = await fetch(`${base}/boardgame/getAll`);
+    if (!res.ok) {
+        throw new Error(`getBoardgames: ${res.status} ${res.statusText}`);
+    }
+    return res.json() as Promise<BoardGame[]>;
 }

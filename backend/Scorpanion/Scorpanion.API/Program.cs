@@ -3,10 +3,24 @@ using Scorpanion.API;
 using Scorpanion.DAL.Context;
 using Scorpanion.DAL.Extensions;
 
+const string corsPolicyName = "ScorpanionCors";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Ajout des services DAL 
 builder.Services.AddDataAccessLayer(builder.Configuration);
+
+var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(corsPolicyName, policy =>
+    {
+        if (corsOrigins.Length > 0)
+            policy.WithOrigins(corsOrigins).AllowAnyHeader().AllowAnyMethod();
+        else
+            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -30,6 +44,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(corsPolicyName);
 app.MapControllers();
 
 app.Run();
