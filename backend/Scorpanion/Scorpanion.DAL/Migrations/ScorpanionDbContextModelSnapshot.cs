@@ -96,7 +96,7 @@ namespace Scorpanion.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("ScoreboardId")
+                    b.Property<Guid?>("ScoreboardId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -298,9 +298,7 @@ namespace Scorpanion.DAL.Migrations
 
                     b.HasOne("Scorpanion.DAL.Context.Entities.Scoreboard", "Scoreboard")
                         .WithMany()
-                        .HasForeignKey("ScoreboardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ScoreboardId");
 
                     b.Navigation("BoardGame");
 

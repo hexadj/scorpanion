@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Scorpanion.DAL.Context.Services.Interfaces;
 using Scorpanion.DAL.ExchangeModels;
 
 namespace Scorpanion.API.Controllers;
 
 [ApiController]
 [Route("game/")]
-public class GameController : Controller
+public class GameController(IGameService service) : Controller
 {
     // POST
     /// <summary>
@@ -15,7 +16,7 @@ public class GameController : Controller
     [HttpPost("start")]
     public IActionResult StartGame(GameModel model)
     {
-        
-        return View();
+        var gameId = service.StartGame(model);
+        return Created("start/" + gameId.ToString(), gameId);
     }
 }

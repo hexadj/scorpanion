@@ -4,5 +4,5 @@ namespace Scorpanion.DAL.Context.Services.Interfaces;
 
 public interface IGameService
 {
-    void StartGame(GameModel game);
+    Guid StartGame(GameModel game);
 }

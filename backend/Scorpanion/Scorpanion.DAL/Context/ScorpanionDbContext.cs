@@ -13,15 +13,15 @@ public class ScorpanionDbContext : DbContext
         
     }
     
-    public DbSet<User> Users { get; set; } 
-    public DbSet<BoardGame> BoardGames { get; set; }
-    public DbSet<Scoreboard> Scoreboards { get; set; }
-    public DbSet<Game> Games { get; set; }
-    public DbSet<Player> Players { get; set; }
-    public DbSet<GameResult> GameResults { get; set; }
-    public DbSet<PlayerResult> PlayerResults { get; set; }
-    public DbSet<Round> Rounds { get; set; }
-    public DbSet<BoardGameConfig> BoardGameConfigs { get; set; }
+    public DbSet<User> Users { get; init; } 
+    public DbSet<BoardGame> BoardGames { get; init; }
+    public DbSet<Scoreboard> Scoreboards { get; init; }
+    public DbSet<Game> Games { get; init; }
+    public DbSet<Player> Players { get; init; }
+    public DbSet<GameResult> GameResults { get; init; }
+    public DbSet<PlayerResult> PlayerResults { get; init; }
+    public DbSet<Round> Rounds { get; init; }
+    public DbSet<BoardGameConfig> BoardGameConfigs { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
