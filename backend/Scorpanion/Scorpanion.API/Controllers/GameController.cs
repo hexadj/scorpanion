@@ -29,10 +29,9 @@ public class GameController(IGameService service, GameLogic gameLogic) : Control
     }
 
     [HttpPost("end")]
-    public IActionResult EndGame(Guid gameId, RoundModel finalRound)
+    public IActionResult EndGame(RoundModel finalRound)
     {
-        var game = service.GetGame(gameId);
-        var result = gameLogic.EndGame(game, finalRound);
+        var result = gameLogic.EndGame(finalRound);
         return Ok(result);
     }
     

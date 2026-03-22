@@ -4,10 +4,12 @@ using Scorpanion.DAL.ExchangeModels;
 
 namespace Scorpanion.API.Logic;
 
-public class GameLogic(IBoardGameConfigService boardGameConfigService)
+public class GameLogic(IBoardGameConfigService boardGameConfigService, IGameService gameService)
 {
-    public GameResultModel EndGame(GameModel game, RoundModel finalRound)
+    public GameResultModel EndGame(RoundModel finalRound)
     {
+        var game = gameService.GetGame(finalRound.GameId);
+
         var gameConfig = boardGameConfigService.GetBoardGameConfig(game.BoardGameConfigId)
             ?? throw new KeyNotFoundException("Game configuration not found");
 
