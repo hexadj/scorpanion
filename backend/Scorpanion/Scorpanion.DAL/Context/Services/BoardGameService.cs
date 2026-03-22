@@ -38,6 +38,19 @@ public class BoardGameService : IBoardGameService
     #endregion
     
     #region Queries
-    //
+
+    /// <summary>
+    /// Récupération de la liste complète des jeux existants
+    /// </summary>
+    /// <returns></returns>
+    public ICollection<BoardGameModel> GetAllBoardGames()
+    {
+        return _context.BoardGames.Select(bg => new BoardGameModel()
+        {
+            Id = bg.Id,
+            Name = bg.Name
+        }).ToList();
+    }
+    
     #endregion
 }

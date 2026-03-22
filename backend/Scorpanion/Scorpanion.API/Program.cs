@@ -16,7 +16,11 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.Services.GetService<ScorpanionDbContext>()?.Database.Migrate();
+// Migration automatique de la base de données
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetService<ScorpanionDbContext>()?.Database;
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

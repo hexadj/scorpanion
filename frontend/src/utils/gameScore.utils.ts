@@ -7,8 +7,8 @@ export function cellKey(roundNumber: number, playerName: string): string {
 
 /** Lit le score serveur pour une manche donnée (roundHistory est indexé par numéro de manche 1-based). */
 export function getScoreFromGame(game: Game, roundNumber: number, playerName: string): number | null {
-    const round = game.roundHistory[roundNumber - 1];
-    const score = round?.playersScores.find((playerScore) => playerScore.playerName === playerName);
+    const round = game.roundHistory?.[roundNumber - 1];
+    const score = round?.playersScores?.find((playerScore) => playerScore.playerName === playerName);
     return score?.score ?? null;
 }
 
@@ -18,10 +18,11 @@ export function getScoreFromGame(game: Game, roundNumber: number, playerName: st
  */
 export function buildDraftSnapshotFromGame(game: Game, roundNumbers: number[]): Record<string, string> {
     const out: Record<string, string> = {};
-    const playerNames = game.players.map((p) => p.name);
+    const history = game.roundHistory ?? [];
+    const playerNames = (game.players ?? []).map((p) => p.name);
 
     for (const roundNumber of roundNumbers) {
-        const round = game.roundHistory[roundNumber - 1];
+        const round = history[roundNumber - 1];
         const byPlayer = new Map((round?.playersScores ?? []).map((ps) => [ps.playerName, ps.score]));
 
         for (const name of playerNames) {
@@ -40,7 +41,7 @@ export function scoresRecordForRound(
     draft: Record<string, string>,
 ): Record<string, string> {
     const out: Record<string, string> = {};
-    for (const p of game.players) {
+    for (const p of game.players ?? []) {
         out[p.name] = draft[cellKey(roundNumber, p.name)] ?? '';
     }
     return out;
@@ -48,7 +49,7 @@ export function scoresRecordForRound(
 
 /** Tous les joueurs doivent avoir un score numérique non vide. */
 export function validateRoundComplete(game: Game, scores: Record<string, string>): string | null {
-    for (const p of game.players) {
+    for (const p of game.players ?? []) {
         const raw = (scores[p.name] ?? '').trim();
         if (raw === '') {
             return `Score manquant pour ${p.name}.`;

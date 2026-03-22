@@ -2,8 +2,6 @@
  * Point d'entrée de l'application frontend
  *
  * Monte l'arbre React dans #root avec le store Redux et le routeur (data router).
- * Le store est fourni via Provider pour que tous les composants puissent accéder
- * à l'état (auth, game) via useAppSelector / useAppDispatch.
  */
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';

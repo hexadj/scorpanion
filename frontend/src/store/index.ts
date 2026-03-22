@@ -1,19 +1,20 @@
 /**
- * Store Redux global de l'application
- *
- * Centralise tout l'état client : auth (token, user). Utilisé via useAppSelector / useAppDispatch
- * (hooks dans hooks/store) dans les pages et composants.
+ * Store Redux global — prêt pour de futurs slices (ex. auth).
+ * Le slice `app` est un placeholder sans actions ; remplace-le ou fusionne avec d’autres reducers.
  */
-import { configureStore } from '@reduxjs/toolkit';
-import notificationReducer from './notificationSlice';
+import { configureStore, createSlice } from '@reduxjs/toolkit';
 
-export const store = configureStore({
-    reducer: {
-        notification: notificationReducer,
-    },
+const appSlice = createSlice({
+  name: 'app',
+  initialState: {} as Record<string, never>,
+  reducers: {},
 });
 
-/** Type de l'état global (utile pour les selecteurs typés). */
+export const store = configureStore({
+  reducer: {
+    app: appSlice.reducer,
+  },
+});
+
 export type RootState = ReturnType<typeof store.getState>;
-/** Type du dispatch (pour useAppDispatch). */
 export type AppDispatch = typeof store.dispatch;

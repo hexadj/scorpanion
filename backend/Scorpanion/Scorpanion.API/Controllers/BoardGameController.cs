@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Scorpanion.DAL.Context.Services;
 using Scorpanion.DAL.Context.Services.Interfaces;
 using Scorpanion.DAL.ExchangeModels;
 
@@ -8,6 +9,15 @@ namespace Scorpanion.API.Controllers;
 [Route("boardGame/")]
 public class BoardGameController(IBoardGameService boardGameService) : Controller
 {
+    // GET
+    [HttpGet("getAll")]
+    public IActionResult GetAll()
+    {
+        var boardGames = boardGameService.GetAllBoardGames();
+        return Ok(boardGames);
+    }
+    
+    
     // POST
     [HttpPost("create/")]
     public IActionResult Create(BoardGameModel model)
@@ -16,10 +26,4 @@ public class BoardGameController(IBoardGameService boardGameService) : Controlle
         return Created($"boardGame/{createdId}", createdId);
     }
 
-    // GET
-    [HttpGet("prout")]
-    public IActionResult Get(string id)
-    {
-        return Ok("PROUT PROUT");
-    }
 }

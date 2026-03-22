@@ -23,7 +23,8 @@ export function useGameScores() {
     const [draft, setDraft] = useState<Record<string, string>>({});
 
     const roundsToDisplay = useMemo(() => {
-        const roundsCount = game.nbRounds ?? Math.max(1, game.currentRound, game.roundHistory.length);
+        const historyLen = game.roundHistory?.length ?? 0;
+        const roundsCount = game.nbRounds ?? Math.max(1, game.currentRound, historyLen);
         return Array.from({ length: roundsCount }, (_, index) => index + 1);
     }, [game]);
 
@@ -43,7 +44,7 @@ export function useGameScores() {
         }
         setIsSaving(true);
         try {
-            const round = buildCompleteRoundFromScores(roundNumber, game.players, scores);
+            const round = buildCompleteRoundFromScores(roundNumber, game.players ?? [], scores);
             const response = await updateGame(gameId, { rounds: [round] });
             setGame(response.game);
             notification.showSuccess({

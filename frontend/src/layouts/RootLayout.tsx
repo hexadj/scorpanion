@@ -1,14 +1,14 @@
 /**
- * Layout racine : rend l'Outlet et le conteneur de notifications (toast).
+ * Layout racine : rend l'Outlet et les toasts (Sonner / shadcn).
  */
 import { Outlet } from 'react-router-dom';
-import { NotificationContainer } from '@/components';
+import { Toaster } from '@/components/ui/sonner';
 
 export function RootLayout() {
   return (
     <>
       <Outlet />
-      <NotificationContainer />
+      <Toaster position="bottom-center" />
     </>
   );
 }

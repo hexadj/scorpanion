@@ -4,11 +4,12 @@ import type { Game } from '@/models/types';
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet, useNavigate, useParams } from 'react-router-dom';
 import { useNotification } from '@/hooks';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type LoadState = 'loading' | 'ready';
 
 type GameLayoutContentProps = {
-    gameId: string;
+  gameId: string;
 };
 
 /**
@@ -16,60 +17,60 @@ type GameLayoutContentProps = {
  * pour repartir d’un état vierge à chaque changement de partie (pas d’affichage de l’ancienne partie pendant le fetch).
  */
 function GameLayoutContent({ gameId }: GameLayoutContentProps) {
-    const navigate = useNavigate();
-    const notification = useNotification();
+  const navigate = useNavigate();
+  const notification = useNotification();
 
-    const [game, setGame] = useState<Game | null>(null);
-    const [loadState, setLoadState] = useState<LoadState>('loading');
+  const [game, setGame] = useState<Game | null>(null);
+  const [loadState, setLoadState] = useState<LoadState>('loading');
 
-    useEffect(() => {
-        let cancelled = false;
+  useEffect(() => {
+    let cancelled = false;
 
-        async function load() {
-            try {
-                const response = await getGame(gameId);
-                if (cancelled) {
-                    return;
-                }
-                setGame(response.game);
-                setLoadState('ready');
-                notification.showSuccess({
-                    message: 'Partie chargée avec succès.',
-                });
-            } catch {
-                if (cancelled) {
-                    return;
-                }
-                notification.showError({
-                    message: 'Une erreur est survenue lors du chargement de la partie.',
-                });
-                navigate('/', { replace: true });
-            }
+    async function load() {
+      try {
+        const response = await getGame(gameId);
+        if (cancelled) {
+          return;
         }
-
-        void load();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [gameId, navigate, notification]);
-
-    if (loadState === 'loading' || !game) {
-        return (
-            <main className="mx-auto w-full max-w-3xl px-4 py-10">
-                <div className="flex flex-col gap-4">
-                    <h1 className="text-4xl font-bold tracking-tight text-slate-900">Score Board</h1>
-                    <p className="text-slate-600">Chargement de la partie…</p>
-                </div>
-            </main>
-        );
+        setGame(response.game);
+        setLoadState('ready');
+        notification.showSuccess({
+          message: 'Partie chargée avec succès.',
+        });
+      } catch {
+        if (cancelled) {
+          return;
+        }
+        notification.showError({
+          message: 'Une erreur est survenue lors du chargement de la partie.',
+        });
+        navigate('/', { replace: true });
+      }
     }
 
+    void load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [gameId, navigate, notification]);
+
+  if (loadState === 'loading' || !game) {
     return (
-        <GameProvider game={game} setGame={setGame}>
-            <Outlet />
-        </GameProvider>
+      <main className="mx-auto w-full max-w-3xl px-4 py-10">
+        <div className="flex flex-col gap-4">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-5 w-48" />
+        </div>
+      </main>
     );
+  }
+
+  return (
+    <GameProvider game={game} setGame={setGame}>
+      <Outlet />
+    </GameProvider>
+  );
 }
 
 /**
@@ -84,11 +85,11 @@ function GameLayoutContent({ gameId }: GameLayoutContentProps) {
  * Un changement de `gameId` (navigation vers une autre partie) remonte le contenu (`key`) pour repartir d’un état vierge.
  */
 export function GameLayout() {
-    const { gameId } = useParams();
+  const { gameId } = useParams();
 
-    if (!gameId) {
-        return <Navigate to="/" replace />;
-    }
+  if (!gameId) {
+    return <Navigate to="/" replace />;
+  }
 
-    return <GameLayoutContent key={gameId} gameId={gameId} />;
+  return <GameLayoutContent key={gameId} gameId={gameId} />;
 }
