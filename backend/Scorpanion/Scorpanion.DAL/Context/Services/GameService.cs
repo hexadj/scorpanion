@@ -32,4 +32,45 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
          
          return gameEntity.Id;
     }
+
+    public void SaveGameResult(GameResultModel model)
+    {
+        var game = context.Games.FirstOrDefault(g => g.Id == model.GameId)
+            ?? throw new KeyNotFoundException("Game not found");
+
+        var playerIds = model.PlayerResults.Select(p => p.PlayerId).ToHashSet();
+        var playersById = context.Players
+            .Where(p => p.Game.Id == model.GameId && playerIds.Contains(p.Id))
+            .ToDictionary(p => p.Id);
+
+        if (playersById.Count != model.PlayerResults.Count)
+        {
+            throw new ArgumentException("One or more players are not part of this game.");
+        }
+
+        var gameResult = new GameResult
+        {
+            Id = model.Id,
+            CreatedAt = DateTime.UtcNow,
+            Game = game,
+            PlayerResults = new List<PlayerResult>(),
+        };
+
+        foreach (var pr in model.PlayerResults)
+        {
+            gameResult.PlayerResults.Add(new PlayerResult
+            {
+                Id = pr.Id,
+                CreatedAt = DateTime.UtcNow,
+                GameResult = gameResult,
+                Player = playersById[pr.PlayerId],
+                FinalScore = pr.FinalScore,
+                HasWon = pr.HasWon,
+                Rank = pr.Rank,
+            });
+        }
+
+        context.GameResults.Add(gameResult);
+        context.SaveChanges();
+    }
 }

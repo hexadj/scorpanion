@@ -29,6 +29,7 @@ public static class ServicesExtensions
         
         services.AddDbContext<ScorpanionDbContext>(options => options.UseNpgsql(connectionString));
         services.TryAddTransient<IBoardGameService, BoardGameService>();
+        services.TryAddTransient<IBoardGameConfigService, BoardGameConfigService>();
         services.TryAddTransient<IUserService, UserService>();
         services.TryAddTransient<IPlayerService, PlayerService>();
         services.TryAddTransient<IGameService, GameService>();
