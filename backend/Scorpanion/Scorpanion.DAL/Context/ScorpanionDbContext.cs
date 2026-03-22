@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Scorpanion.DAL.Context.Entities;
 
 namespace Scorpanion.DAL.Context;
@@ -22,5 +21,12 @@ public class ScorpanionDbContext : DbContext
     public DbSet<GameResult> GameResults { get; set; }
     public DbSet<PlayerResult> PlayerResults { get; set; }
     public DbSet<Round> Rounds { get; set; }
-    
+    public DbSet<BoardGameConfig> BoardGameConfigs { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<BoardGameConfig>()
+            .Property(e => e.WinType)
+            .HasConversion<string>();
+    }
 }
