@@ -21,7 +21,7 @@ export function GamePage() {
             />
             <div className="mt-8">
                 <GameScoreTable
-                    players={game.players}
+                    players={game.players ?? []}
                     roundsToDisplay={roundsToDisplay}
                     currentRound={game.currentRound}
                     draft={draft}
@@ -34,7 +34,7 @@ export function GamePage() {
                 <RoundScoreModal
                     key={modalRound}
                     title={`Manche ${modalRound}`}
-                    players={game.players}
+                    players={game.players ?? []}
                     initialScores={scoresRecordForRound(game, modalRound, draft)}
                     isSubmitting={isSaving}
                     onClose={() => setModalRound(null)}

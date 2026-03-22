@@ -39,8 +39,8 @@ const MOCK_GAME_TEMPLATE: Game = {
 function cloneGame(game: Game): Game {
     return {
         ...game,
-        players: game.players.map((p) => ({ ...p })),
-        roundHistory: game.roundHistory.map((r) => ({
+        players: (game.players ?? []).map((p) => ({ ...p })),
+        roundHistory: (game.roundHistory ?? []).map((r) => ({
             ...r,
             playersScores: r.playersScores.map((ps) => ({ ...ps })),
         })),

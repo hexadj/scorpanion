@@ -1,57 +1,67 @@
-import { addNotification, clearNotification, removeNotification } from '@/store/notificationSlice';
-import { useAppDispatch } from './useStore';
+import { toast } from 'sonner';
 import { useCallback, useMemo } from 'react';
 import type { Notification } from '@/models/types';
 import { NotificationSeverityEnum } from '@/models/enums';
 
-export function useNotification() {
-  const dispatch = useAppDispatch();
+function toastOptions(duration?: number) {
+  return duration != null ? { duration } : undefined;
+}
 
-  const show = useCallback(
-    (notification: Omit<Notification, 'id'>) => {
-      dispatch(addNotification(notification));
-    },
-    [dispatch]
-  );
+export function useNotification() {
+  const show = useCallback((notification: Omit<Notification, 'id'>) => {
+    const { message, severity, duration } = notification;
+    const opts = toastOptions(duration);
+    switch (severity) {
+      case NotificationSeverityEnum.SUCCESS:
+        toast.success(message, opts);
+        break;
+      case NotificationSeverityEnum.ERROR:
+        toast.error(message, opts);
+        break;
+      case NotificationSeverityEnum.WARNING:
+        toast.warning(message, opts);
+        break;
+      case NotificationSeverityEnum.INFO:
+        toast.info(message, opts);
+        break;
+    }
+  }, []);
 
   const showSuccess = useCallback(
-    (notification: Omit<Notification, 'id' | 'severity'>) => {
-      show({ ...notification, severity: NotificationSeverityEnum.SUCCESS });
+    (n: Omit<Notification, 'id' | 'severity'>) => {
+      toast.success(n.message, toastOptions(n.duration));
     },
-    [show]
+    []
   );
 
   const showError = useCallback(
-    (notification: Omit<Notification, 'id' | 'severity'>) => {
-      show({ ...notification, severity: NotificationSeverityEnum.ERROR });
+    (n: Omit<Notification, 'id' | 'severity'>) => {
+      toast.error(n.message, toastOptions(n.duration));
     },
-    [show]
+    []
   );
 
   const showWarning = useCallback(
-    (notification: Omit<Notification, 'id' | 'severity'>) => {
-      show({ ...notification, severity: NotificationSeverityEnum.WARNING });
+    (n: Omit<Notification, 'id' | 'severity'>) => {
+      toast.warning(n.message, toastOptions(n.duration));
     },
-    [show]
+    []
   );
 
   const showInfo = useCallback(
-    (notification: Omit<Notification, 'id' | 'severity'>) => {
-      show({ ...notification, severity: NotificationSeverityEnum.INFO });
+    (n: Omit<Notification, 'id' | 'severity'>) => {
+      toast.info(n.message, toastOptions(n.duration));
     },
-    [show]
+    []
   );
 
-  const remove = useCallback(
-    (id: string) => {
-      dispatch(removeNotification(id));
-    },
-    [dispatch]
-  );
+  const remove = useCallback((id: string | number) => {
+    toast.dismiss(id);
+  }, []);
 
   const clear = useCallback(() => {
-    dispatch(clearNotification());
-  }, [dispatch]);
+    toast.dismiss();
+  }, []);
 
   return useMemo(
     () => ({
