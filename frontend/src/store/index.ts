@@ -1,20 +1,39 @@
 /**
- * Store Redux global — prêt pour de futurs slices (ex. auth).
- * Le slice `app` est un placeholder sans actions ; remplace-le ou fusionne avec d’autres reducers.
+ * Store Redux global — slice `auth` persisté (localStorage) via redux-persist.
  */
-import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from 'redux-persist';
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/es/storage';
+import { authReducer } from './authSlice';
 
-const appSlice = createSlice({
-  name: 'app',
-  initialState: {} as Record<string, never>,
-  reducers: {},
-});
+const authPersistConfig = {
+  key: 'scorpanion_auth',
+  storage,
+};
+
+const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
 
 export const store = configureStore({
   reducer: {
-    app: appSlice.reducer,
+    auth: persistedAuthReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
+
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

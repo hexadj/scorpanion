@@ -1,14 +1,21 @@
 import { BoardGameCard } from '@/components/BoardGameCard';
 import { FortuneWheel } from '@/components/FortuneWheel';
 import { SpinningArrow } from '@/components/SpinningArrow';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getBoardgames } from '@/api';
+import { useAppDispatch, useAppSelector } from '@/hooks/useStore';
+import { clearUser } from '@/store/authSlice';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 import type { BoardGame } from '@/models/types';
 
 export function HomePage() {
+  const dispatch = useAppDispatch();
+  const authUser = useAppSelector((s) => s.auth.user);
   const [boardGames, setBoardGames] = useState<BoardGame[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [wheelResult, setWheelResult] = useState<string | null>(null);
@@ -36,7 +43,32 @@ export function HomePage() {
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10">
-      <h1 className="font-heading text-4xl font-bold tracking-tight text-foreground">Scorpanion</h1>
+      <header className="flex items-center justify-between gap-4">
+        <h1 className="font-heading text-4xl font-bold tracking-tight text-foreground">Scorpanion</h1>
+        {authUser !== null ? (
+          <div className="flex min-w-0 max-w-[min(100%,18rem)] items-center gap-3 sm:max-w-none">
+            <span className="truncate text-sm font-medium text-foreground" title={authUser.username}>
+              {authUser.username}
+            </span>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="shrink-0"
+              onClick={() => {
+                dispatch(clearUser());
+                toast.message('Vous êtes déconnecté.');
+              }}
+            >
+              Se déconnecter
+            </Button>
+          </div>
+        ) : (
+          <Button asChild variant="outline" size="sm" className="shrink-0">
+            <Link to="/login">Connexion</Link>
+          </Button>
+        )}
+      </header>
 
       <section className="mt-8">
         <h2 className="mb-4 text-sm font-medium tracking-wide text-muted-foreground uppercase">Jeux</h2>
