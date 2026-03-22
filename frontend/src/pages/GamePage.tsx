@@ -2,13 +2,14 @@ import { GamePageHeader } from '@/components/GamePageHeader';
 import { GameScoreTable } from '@/components/GameScoreTable';
 import { RoundScoreModal } from '@/components/RoundScoreModal';
 import { useGameScores } from '@/hooks/useGameScores';
-import { scoresRecordForRound } from '@/utils/gameScore.utils';
+import { getCurrentRoundNumber, scoresRecordForRound } from '@/utils/gameScore.utils';
 import { useState } from 'react';
 
 export function GamePage() {
     const { game, isEnding, isSaving, draft, roundsToDisplay, submitRound, handleEndGame } = useGameScores();
 
     const [modalRound, setModalRound] = useState<number | null>(null);
+    const currentRound = getCurrentRoundNumber(game);
 
     return (
         <main className="mx-auto w-full max-w-3xl px-4 py-10">
@@ -16,14 +17,14 @@ export function GamePage() {
                 boardGameName={game.boardGameName}
                 isSaving={isSaving}
                 isEnding={isEnding}
-                onEndRound={() => setModalRound(game.currentRound)}
+                onEndRound={() => setModalRound(currentRound)}
                 onEndGame={handleEndGame}
             />
             <div className="mt-8">
                 <GameScoreTable
                     players={game.players ?? []}
                     roundsToDisplay={roundsToDisplay}
-                    currentRound={game.currentRound}
+                    currentRound={currentRound}
                     draft={draft}
                     isSaving={isSaving}
                     onEditPastRound={(roundNumber) => setModalRound(roundNumber)}

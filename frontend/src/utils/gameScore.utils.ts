@@ -1,5 +1,10 @@
 import type { Game, PlayerScore, Round } from '@/models/types';
 
+/** Manche courante (1-based) : pas de champ serveur dédié — dérivée de l’historique. */
+export function getCurrentRoundNumber(game: Game): number {
+    return (game.roundHistory?.length ?? 0) + 1;
+}
+
 /** Clé stable pour lier une cellule du tableau (manche × joueur) à l’état local du formulaire. */
 export function cellKey(roundNumber: number, playerName: string): string {
     return `${roundNumber}__${playerName}`;
@@ -19,7 +24,7 @@ export function getScoreFromGame(game: Game, roundNumber: number, playerName: st
 export function buildDraftSnapshotFromGame(game: Game, roundNumbers: number[]): Record<string, string> {
     const out: Record<string, string> = {};
     const history = game.roundHistory ?? [];
-    const playerNames = (game.players ?? []).map((p) => p.name);
+    const playerNames = (game.players ?? []).map((p) => p.playerName);
 
     for (const roundNumber of roundNumbers) {
         const round = history[roundNumber - 1];
@@ -42,7 +47,7 @@ export function scoresRecordForRound(
 ): Record<string, string> {
     const out: Record<string, string> = {};
     for (const p of game.players ?? []) {
-        out[p.name] = draft[cellKey(roundNumber, p.name)] ?? '';
+        out[p.playerName] = draft[cellKey(roundNumber, p.playerName)] ?? '';
     }
     return out;
 }
@@ -50,13 +55,13 @@ export function scoresRecordForRound(
 /** Tous les joueurs doivent avoir un score numérique non vide. */
 export function validateRoundComplete(game: Game, scores: Record<string, string>): string | null {
     for (const p of game.players ?? []) {
-        const raw = (scores[p.name] ?? '').trim();
+        const raw = (scores[p.playerName] ?? '').trim();
         if (raw === '') {
-            return `Score manquant pour ${p.name}.`;
+            return `Score manquant pour ${p.playerName}.`;
         }
         const n = Number(raw.replace(',', '.'));
         if (!Number.isFinite(n)) {
-            return `Score invalide pour ${p.name}.`;
+            return `Score invalide pour ${p.playerName}.`;
         }
     }
     return null;
@@ -64,13 +69,13 @@ export function validateRoundComplete(game: Game, scores: Record<string, string>
 
 export function buildCompleteRoundFromScores(
     roundNumber: number,
-    players: { name: string }[],
+    players: { playerName: string }[],
     scores: Record<string, string>,
 ): Round {
     const playersScores: PlayerScore[] = players.map((p) => {
-        const raw = (scores[p.name] ?? '').trim();
+        const raw = (scores[p.playerName] ?? '').trim();
         const n = Number(raw.replace(',', '.'));
-        return { playerName: p.name, score: n };
+        return { playerName: p.playerName, score: n };
     });
     return { roundNumber, playersScores };
 }
@@ -82,15 +87,15 @@ export function isCellValueInvalid(value: string): boolean {
 
 /** Somme des scores par joueur sur les manches données (brouillon texte ; vide ou invalide = ignoré). */
 export function totalScoresByPlayer(
-    players: { name: string }[],
+    players: { playerName: string }[],
     roundNumbers: number[],
     draft: Record<string, string>,
 ): Record<string, number> {
     return Object.fromEntries(
         players.map((p) => [
-            p.name,
+            p.playerName,
             roundNumbers.reduce((sum, roundNumber) => {
-                const raw = (draft[cellKey(roundNumber, p.name)] ?? '').trim();
+                const raw = (draft[cellKey(roundNumber, p.playerName)] ?? '').trim();
                 if (raw === '') {
                     return sum;
                 }
