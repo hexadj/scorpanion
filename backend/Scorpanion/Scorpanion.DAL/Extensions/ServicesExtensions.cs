@@ -29,6 +29,7 @@ public static class ServicesExtensions
         
         services.AddDbContext<ScorpanionDbContext>(options => options.UseNpgsql(connectionString));
         services.TryAddTransient<IBoardGameService, BoardGameService>();
+        services.TryAddTransient<IUserService, UserService>();
         // Registration/login: inject IPasswordHasher<User> — HashPassword on sign-up/change; VerifyHashedPassword on login.
         services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
         return services;
