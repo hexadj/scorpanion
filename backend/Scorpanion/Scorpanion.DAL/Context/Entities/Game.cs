@@ -6,7 +6,7 @@ namespace Scorpanion.DAL.Context.Entities;
 public class Game : BaseEntity
 {
     public required BoardGame BoardGame { get; set; }
-    public required Scoreboard Scoreboard { get; set; }
-    public required ICollection<Player> Players { get; set; }
-    public required ICollection<Round> Rounds { get; set; }
+    public Scoreboard? Scoreboard { get; set; }
+    public ICollection<Player> Players { get; init; } = new List<Player>();
+    public ICollection<Round> Rounds { get; init; } = new List<Round>();
 }
