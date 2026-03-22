@@ -70,11 +70,7 @@ export type CreateGamePayload = {
     players: Player[];
 };
 
-export type CreateGameResponse = {
-    gameId: string;
-};
-
-export async function createGame(payload: CreateGamePayload): Promise<CreateGameResponse> {
+export async function createGame(payload: CreateGamePayload): Promise<string> {
     const base = getApiBaseUrl();
     const res = await fetch(`${base}/game/create`, {
         method: "POST",
@@ -91,14 +87,14 @@ export async function createGame(payload: CreateGamePayload): Promise<CreateGame
     if (!res.ok) {
         throw new Error(`Création de partie : ${res.status} ${res.statusText}`);
     }
-    return (await res.json()) as CreateGameResponse;
+    return await res.json();
 }
 
 export type GameResponse = {
     game: Game;
 };
 
-export async function getGame(gameId: string): Promise<GameResponse> {
+export async function getGame(gameId: string): Promise<Game> {
     const base = getApiBaseUrl();
     const url = new URL(`${base}/game/get`);
     url.searchParams.set("gameId", gameId);
@@ -106,7 +102,7 @@ export async function getGame(gameId: string): Promise<GameResponse> {
     if (!res.ok) {
         throw new Error(`Chargement de partie : ${res.status} ${res.statusText}`);
     }
-    return (await res.json()) as GameResponse;
+    return await res.json();
 }
 
 export type UpdateGamePayload = {

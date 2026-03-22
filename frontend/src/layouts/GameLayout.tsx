@@ -28,11 +28,11 @@ function GameLayoutContent({ gameId }: GameLayoutContentProps) {
 
     async function load() {
       try {
-        const response = await getGame(gameId);
+        const game = await getGame(gameId);
         if (cancelled) {
           return;
         }
-        setGame(response.game);
+        setGame(game);
         setLoadState('ready');
         notification.showSuccess({
           message: 'Partie chargée avec succès.',
