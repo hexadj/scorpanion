@@ -7,6 +7,4 @@ public class RoundModel : ExchangeModel
     public Guid PlayerId { get; set; }
 
     public int Score { get; set; }
-
-    public Guid? GameId { get; set; }
 }

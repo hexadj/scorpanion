@@ -38,7 +38,7 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
         var game = context.Games.Include(g => g.BoardGame)
             .Include(g => g.Scoreboard)
             .Include(g => g.Players).ThenInclude(p => p.User)
-            .Include(g => g.Rounds)
+            .Include(g => g.Rounds).ThenInclude(p => p.Player)
             .FirstOrDefault(g => g.Id == id);
         if (game is null)
             throw new KeyNotFoundException("Game not found");
@@ -54,7 +54,13 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
                     Id = player.Id, UserId = player.User?.Id
                 })
                 .ToList(),
-            //Round = 
+            Rounds = game.Rounds.Select(r => new RoundModel
+            {
+                Id = r.Id,
+                Number = r.Number,
+                PlayerId = r.Player.Id,
+                Score = r.Score
+            }).ToList()
         };
     }
 }

@@ -27,6 +27,7 @@ public class GameController(IGameService service) : Controller
     [HttpGet("get")]
     public IActionResult GetGame(Guid gameId)
     {
-        return Created("start/" + gameId.ToString(), gameId);
+        var game = service.GetGame(gameId);   
+        return Ok(game);
     }
 }
