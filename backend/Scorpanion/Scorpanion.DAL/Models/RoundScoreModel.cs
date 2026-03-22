@@ -1,5 +1,3 @@
-using Scorpanion.DAL.ExchangeModels;
-
 namespace Scorpanion.DAL.Models;
 
 public class RoundScoreModel
