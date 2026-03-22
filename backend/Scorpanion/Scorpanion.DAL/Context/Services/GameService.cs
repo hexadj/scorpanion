@@ -7,7 +7,7 @@ namespace Scorpanion.DAL.Context.Services;
 
 public class GameService(IPlayerService playerService, ScorpanionDbContext context) : IGameService
 {
-    public Guid StartGame(GameModel game)
+    public Guid CreateGame(GameModel game)
     {
         // Vérifier l'existence du boardgame
         var boardGame = context.BoardGames.FirstOrDefault(bg => bg.Id == game.BoardGameId);
@@ -31,5 +31,30 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
          playerService.CreatePlayers(gameEntity.Id ,game.Players);
          
          return gameEntity.Id;
+    }
+
+    public GameModel GetGame(Guid id)
+    {
+        var game = context.Games.Include(g => g.BoardGame)
+            .Include(g => g.Scoreboard)
+            .Include(g => g.Players).ThenInclude(p => p.User)
+            .Include(g => g.Rounds)
+            .FirstOrDefault(g => g.Id == id);
+        if (game is null)
+            throw new KeyNotFoundException("Game not found");
+
+        return new GameModel
+        {
+            Id = game.Id,
+            BoardGameId = game.BoardGame.Id,
+            BoardGameName = game.BoardGame.Name,
+            ScoreboardId = game.Scoreboard?.Id,
+            Players = game.Players.Select(player => new PlayerModel
+                {
+                    Id = player.Id, UserId = player.User?.Id
+                })
+                .ToList(),
+            //Round = 
+        };
     }
 }

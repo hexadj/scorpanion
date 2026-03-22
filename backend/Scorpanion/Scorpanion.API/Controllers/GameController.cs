@@ -13,10 +13,20 @@ public class GameController(IGameService service) : Controller
     /// Commencer une nouvelle partie
     /// </summary>
     /// <returns></returns>
-    [HttpPost("start")]
-    public IActionResult StartGame(GameModel model)
+    [HttpPost("create")]
+    public IActionResult CreateGame(GameModel model)
     {
-        var gameId = service.StartGame(model);
+        var gameId = service.CreateGame(model);
+        return Created("start/" + gameId.ToString(), gameId);
+    }
+    // GET
+    /// <summary>
+    /// Récupérer une partie
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("get")]
+    public IActionResult GetGame(Guid gameId)
+    {
         return Created("start/" + gameId.ToString(), gameId);
     }
 }
