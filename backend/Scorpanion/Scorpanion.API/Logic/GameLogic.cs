@@ -23,7 +23,8 @@ namespace Scorpanion.API.Services
                 };
             }
 
-            var scoreByPlayer = finalRounds
+            var scoreByPlayer = game.Rounds
+                .Concat(finalRounds)
                 .GroupBy(r => r.PlayerId)
                 .ToDictionary(g => g.Key, g => g.Sum(r => r.Score));
 
