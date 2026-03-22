@@ -9,7 +9,7 @@ public class Player : BaseEntity
     [MaxLength(50)]
     public string? GuestName { get; set; }
     
-    public required BoardGame BoardGame { get; set; }
-    
     public User? User { get; set; } 
+    
+    public required Game Game { get; set; }
 }

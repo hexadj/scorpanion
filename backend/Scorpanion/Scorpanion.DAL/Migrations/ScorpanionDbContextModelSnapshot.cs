@@ -99,13 +99,10 @@ namespace Scorpanion.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("BoardGameId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("GameId")
+                    b.Property<Guid>("GameId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("GuestName")
@@ -119,8 +116,6 @@ namespace Scorpanion.DAL.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BoardGameId");
 
                     b.HasIndex("GameId");
 
@@ -238,21 +233,17 @@ namespace Scorpanion.DAL.Migrations
 
             modelBuilder.Entity("Scorpanion.DAL.Context.Entities.Player", b =>
                 {
-                    b.HasOne("Scorpanion.DAL.Context.Entities.BoardGame", "BoardGame")
-                        .WithMany()
-                        .HasForeignKey("BoardGameId")
+                    b.HasOne("Scorpanion.DAL.Context.Entities.Game", "Game")
+                        .WithMany("Players")
+                        .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Scorpanion.DAL.Context.Entities.Game", null)
-                        .WithMany("Players")
-                        .HasForeignKey("GameId");
 
                     b.HasOne("Scorpanion.DAL.Context.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
-                    b.Navigation("BoardGame");
+                    b.Navigation("Game");
 
                     b.Navigation("User");
                 });

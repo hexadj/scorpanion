@@ -5,15 +5,8 @@ using Scorpanion.DAL.ExchangeModels;
 
 namespace Scorpanion.DAL.Context.Services;
 
-public class BoardGameService : IBoardGameService
+public class BoardGameService(ScorpanionDbContext context) : IBoardGameService
 {
-    private readonly ScorpanionDbContext _context;
-    public BoardGameService(ScorpanionDbContext context)
-    {
-        _context = context;
-    }
-    
-    
     #region Commands
 
     public Guid CreateBoardGame(BoardGameModel boardGame)
@@ -24,14 +17,14 @@ public class BoardGameService : IBoardGameService
         if (boardGame.Name.Length > 100)
             throw new ArgumentOutOfRangeException(nameof(boardGame.Name));
         
-        var entity = _context.BoardGames.Add(new BoardGame
+        var entity = context.BoardGames.Add(new BoardGame
         {
             Name = boardGame.Name,
             CreatedAt = DateTime.UtcNow,
             Id = Guid.Empty,
         }).Entity;
         
-        _context.SaveChanges();
+        context.SaveChanges();
         
         return entity.Id;
     }
@@ -45,7 +38,7 @@ public class BoardGameService : IBoardGameService
     /// <returns></returns>
     public ICollection<BoardGameModel> GetAllBoardGames()
     {
-        return _context.BoardGames.Select(bg => new BoardGameModel()
+        return context.BoardGames.Select(bg => new BoardGameModel()
         {
             Id = bg.Id,
             Name = bg.Name
