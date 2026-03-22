@@ -18,9 +18,9 @@ public class UserController(IUserService userService) : Controller
             var createdId = userService.CreateUser(model);
             return Created($"user/{createdId}", createdId);
         }
-        catch (DuplicateUsernameException)
+        catch (DuplicateUsernameException e)
         {
-            return Conflict();
+            return Conflict(e.Message);
         }
     }
 

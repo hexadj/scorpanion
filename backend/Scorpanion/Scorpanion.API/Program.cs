@@ -34,6 +34,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetService<ScorpanionDbContext>()?.Database;
+    db?.Migrate();
+    Console.WriteLine("Vérification des migrations effectuées");
 }
 
 // Configure the HTTP request pipeline.
