@@ -9,4 +9,6 @@ public interface IGameService
     GameModel GetGame(Guid id);
 
     void SaveGameResult(GameResultModel gameResult);
+
+    GameModel UpdateGame(Guid gameId, RoundModel round);
 }

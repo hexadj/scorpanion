@@ -19,6 +19,14 @@ public class GameController(IGameService service) : Controller
         var gameId = service.CreateGame(model);
         return Created("start/" + gameId.ToString(), gameId);
     }
+
+    [HttpPost("update")]
+    public IActionResult UpdateGame(Guid gameId, RoundModel round)
+    {
+        var updatedGame = service.UpdateGame(gameId, round);
+        return Ok(updatedGame);
+    }
+    
     // GET
     /// <summary>
     /// Récupérer une partie
@@ -30,4 +38,6 @@ public class GameController(IGameService service) : Controller
         var game = service.GetGame(gameId);   
         return Ok(game);
     }
+    
+    
 }

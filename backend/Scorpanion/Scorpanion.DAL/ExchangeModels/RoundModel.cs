@@ -1,10 +1,10 @@
+using Scorpanion.DAL.Models;
+
 namespace Scorpanion.DAL.ExchangeModels;
 
-public class RoundModel : ExchangeModel
+public class RoundModel
 {
     public int Number { get; set; }
 
-    public Guid PlayerId { get; set; }
-
-    public int Score { get; set; }
+    public ICollection<RoundScoreModel> Scores = new List<RoundScoreModel>();
 }

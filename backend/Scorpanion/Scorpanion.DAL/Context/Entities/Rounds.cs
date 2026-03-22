@@ -8,4 +8,6 @@ public class Round : BaseEntity
     public int Number { get; set; }
     public required Player Player { get; set; }
     public required int Score { get; set; }
+    
+    public required Game Game { get; set; }
 }
