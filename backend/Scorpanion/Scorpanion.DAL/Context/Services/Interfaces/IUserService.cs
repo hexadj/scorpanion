@@ -8,5 +8,7 @@ public interface IUserService
 
     ICollection<UserModel> GetAllUsers();
 
+    bool UserExists(Guid id);
+
     UserModel? Login(UserCredentialsModel model);
 }

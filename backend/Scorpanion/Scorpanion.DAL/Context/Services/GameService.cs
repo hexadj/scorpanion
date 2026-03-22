@@ -35,20 +35,39 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
 
     public GameModel GetGame(Guid id)
     {
-        var game = context.Games.Include(g => g.BoardGame)
-            .Include(g => g.Scoreboard)
-            .Include(g => g.Players).ThenInclude(p => p.User)
-            .Include(g => g.Rounds).ThenInclude(p => p.Player)
+        var game = GamesWithDetails()
             .FirstOrDefault(g => g.Id == id);
         if (game is null)
             throw new KeyNotFoundException("Game not found");
 
-        return new GameModel
+        return MapToModel(game);
+    }
+
+    public IReadOnlyList<GameModel> GetGamesForUser(Guid userId)
+    {
+        return GamesWithDetails()
+            .Where(g => g.Players.Any(p => p.User != null && p.User.Id == userId))
+            .OrderByDescending(g => g.CreatedAt)
+            .ToList()
+            .Select(MapToModel)
+            .ToList();
+    }
+
+    private IQueryable<Game> GamesWithDetails() =>
+        context.Games
+            .Include(g => g.BoardGame)
+            .Include(g => g.Scoreboard)
+            .Include(g => g.Players).ThenInclude(p => p.User)
+            .Include(g => g.Rounds).ThenInclude(r => r.Player);
+
+    private static GameModel MapToModel(Game game) =>
+        new()
         {
             Id = game.Id,
             BoardGameId = game.BoardGame.Id,
             BoardGameName = game.BoardGame.Name,
             ScoreboardId = game.Scoreboard?.Id,
+            BoardGameConfigId = game.BoardGameConfigId ?? Guid.Empty,
             Players = game.Players.Select(player => new PlayerModel
                 {
                     Id = player.Id, UserId = player.User?.Id, PlayerName = player.User?.Username ?? player.GuestName
@@ -62,7 +81,6 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
                 Score = r.Score
             }).ToList()
         };
-    }
 
     public void SaveGameResult(GameResultModel model)
     {

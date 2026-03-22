@@ -61,6 +61,8 @@ public class UserService : IUserService
         }).ToList();
     }
 
+    public bool UserExists(Guid id) => _context.Users.Any(u => u.Id == id);
+
     public UserModel? Login(UserCredentialsModel model)
     {
         if (string.IsNullOrWhiteSpace(model.Username) || string.IsNullOrWhiteSpace(model.Password))

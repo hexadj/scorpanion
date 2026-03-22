@@ -8,5 +8,7 @@ public interface IGameService
     
     GameModel GetGame(Guid id);
 
+    IReadOnlyList<GameModel> GetGamesForUser(Guid userId);
+
     void SaveGameResult(GameResultModel gameResult);
 }
