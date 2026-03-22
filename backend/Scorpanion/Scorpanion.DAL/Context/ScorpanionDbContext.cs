@@ -28,5 +28,11 @@ public class ScorpanionDbContext : DbContext
         modelBuilder.Entity<BoardGameConfig>()
             .Property(e => e.WinType)
             .HasConversion<string>();
+
+        modelBuilder.Entity<Game>()
+            .HasOne(g => g.BoardGameConfig)
+            .WithMany()
+            .HasForeignKey(g => g.BoardGameConfigId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

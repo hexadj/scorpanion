@@ -15,14 +15,14 @@ namespace Scorpanion.DAL.Migrations
                 name: "board_game_configs",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValue: Guid.NewGuid()),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     PlayerCount = table.Column<int>(type: "integer", nullable: false),
                     RoundCount = table.Column<int>(type: "integer", nullable: true),
                     WinType = table.Column<string>(type: "text", nullable: false),
                     IsTemporary = table.Column<bool>(type: "boolean", nullable: false),
                     BoardGameId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: DateTime.UtcNow),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
