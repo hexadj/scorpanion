@@ -51,7 +51,7 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
             ScoreboardId = game.Scoreboard?.Id,
             Players = game.Players.Select(player => new PlayerModel
                 {
-                    Id = player.Id, UserId = player.User?.Id
+                    Id = player.Id, UserId = player.User?.Id, PlayerName = player.User?.Username ?? player.GuestName
                 })
                 .ToList(),
             Rounds = game.Rounds.Select(r => new RoundModel
