@@ -2,14 +2,14 @@ import { GamePageHeader } from '@/components/GamePageHeader';
 import { GameScoreTable } from '@/components/GameScoreTable';
 import { RoundScoreModal } from '@/components/RoundScoreModal';
 import { useGameScores } from '@/hooks/useGameScores';
-import { getCurrentRoundNumber, scoresRecordForRound } from '@/utils/gameScore.utils';
+import { scoresRecordForRound } from '@/utils/gameScore.utils';
 import { useState } from 'react';
 
 export function GamePage() {
-    const { game, isEnding, isSaving, draft, roundsToDisplay, submitRound, handleEndGame } = useGameScores();
+    const { game, currentRound, isEnding, isSaving, draft, roundsToDisplay, submitRound, handleEndGame } =
+        useGameScores();
 
     const [modalRound, setModalRound] = useState<number | null>(null);
-    const currentRound = getCurrentRoundNumber(game);
 
     return (
         <main className="mx-auto w-full max-w-3xl px-4 py-10">

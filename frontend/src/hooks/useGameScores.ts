@@ -27,10 +27,11 @@ export function useGameScores() {
 
     const [draft, setDraft] = useState<Record<string, string>>({});
 
-    const roundsToDisplay = useMemo(() => {
+    const { currentRound, roundsToDisplay } = useMemo(() => {
         const currentRound = getCurrentRoundNumber(game);
         // Pas de limite de manches : toutes les manches jouées + la manche en cours.
-        return Array.from({ length: Math.max(1, currentRound) }, (_, index) => index + 1);
+        const roundsToDisplay = Array.from({ length: Math.max(1, currentRound) }, (_, index) => index + 1);
+        return { currentRound, roundsToDisplay };
     }, [game]);
 
     useEffect(() => {
@@ -50,8 +51,8 @@ export function useGameScores() {
         setIsSaving(true);
         try {
             const round = buildCompleteRoundFromScores(roundNumber, game.players ?? [], scores);
-            const response = await updateGame(gameId, { rounds: [round] });
-            setGame(response.game);
+            const updatedGame = await updateGame({ gameId, round });
+            setGame(updatedGame);
             notification.showSuccess({
                 message: 'Manche enregistrée.',
             });
@@ -87,6 +88,7 @@ export function useGameScores() {
 
     return {
         game,
+        currentRound,
         isEnding,
         isSaving,
         draft,

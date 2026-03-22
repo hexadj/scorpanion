@@ -34,9 +34,6 @@ function GameLayoutContent({ gameId }: GameLayoutContentProps) {
         }
         setGame(game);
         setLoadState('ready');
-        notification.showSuccess({
-          message: 'Partie chargée avec succès.',
-        });
       } catch {
         if (cancelled) {
           return;

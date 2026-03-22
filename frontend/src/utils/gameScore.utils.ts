@@ -1,4 +1,4 @@
-import type { Game, PlayerScore, Round } from '@/models/types';
+import type { Game, Player, PlayerScore, Round } from '@/models/types';
 
 /** Manche courante (1-based) : pas de champ serveur dédié — dérivée de l’historique. */
 export function getCurrentRoundNumber(game: Game): number {
@@ -6,15 +6,37 @@ export function getCurrentRoundNumber(game: Game): number {
 }
 
 /** Clé stable pour lier une cellule du tableau (manche × joueur) à l’état local du formulaire. */
-export function cellKey(roundNumber: number, playerName: string): string {
-    return `${roundNumber}__${playerName}`;
+export function cellKey(roundNumber: number, playerId: string): string {
+    return `${roundNumber}__${playerId}`;
 }
 
-/** Lit le score serveur pour une manche donnée (roundHistory est indexé par numéro de manche 1-based). */
-export function getScoreFromGame(game: Game, roundNumber: number, playerName: string): number | null {
-    const round = game.roundHistory?.[roundNumber - 1];
-    const score = round?.playersScores?.find((playerScore) => playerScore.playerName === playerName);
-    return score?.score ?? null;
+/**
+ * Parse une saisie utilisateur (virgule ou point). Chaîne vide ou invalide → `null`.
+ */
+export function parseScoreString(raw: string): number | null {
+    const t = raw.trim();
+    if (t === '') {
+        return null;
+    }
+    const n = Number(t.replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
+}
+
+/** Champ non vide mais qui ne parse pas en nombre fini (ex. saisie partielle). */
+export function isCellValueInvalid(value: string): boolean {
+    return value.trim() !== '' && parseScoreString(value) === null;
+}
+
+/**
+ * Scores par id joueur : complète les entrées manquantes avec des chaînes vides.
+ * Utilisable pour un brouillon issu du `draft` (cellKey) ou pour les valeurs initiales de la modale.
+ */
+export function fillScoresForPlayers(players: Player[], values: Record<string, string>): Record<string, string> {
+    const out: Record<string, string> = {};
+    for (const p of players) {
+        out[p.id] = values[p.id] ?? '';
+    }
+    return out;
 }
 
 /**
@@ -24,83 +46,81 @@ export function getScoreFromGame(game: Game, roundNumber: number, playerName: st
 export function buildDraftSnapshotFromGame(game: Game, roundNumbers: number[]): Record<string, string> {
     const out: Record<string, string> = {};
     const history = game.roundHistory ?? [];
-    const playerNames = (game.players ?? []).map((p) => p.playerName);
+    const playerIds = (game.players ?? []).map((p) => p.id);
 
     for (const roundNumber of roundNumbers) {
         const round = history[roundNumber - 1];
-        const byPlayer = new Map((round?.playersScores ?? []).map((ps) => [ps.playerName, ps.score]));
+        const byPlayer = new Map((round?.playersScores ?? []).map((ps) => [ps.playerId, ps.score]));
 
-        for (const name of playerNames) {
-            const key = cellKey(roundNumber, name);
-            const score = byPlayer.get(name);
+        for (const id of playerIds) {
+            const key = cellKey(roundNumber, id);
+            const score = byPlayer.get(id);
             out[key] = score == null ? '' : String(score);
         }
     }
     return out;
 }
 
-/** Valeurs par joueur pour une manche (clé = nom du joueur), alignées sur `draft` / `game`. */
+/** Valeurs par joueur pour une manche (clé = id joueur), alignées sur `draft` / `game`. */
 export function scoresRecordForRound(
     game: Game,
     roundNumber: number,
     draft: Record<string, string>,
 ): Record<string, string> {
-    const out: Record<string, string> = {};
+    const fromDraft: Record<string, string> = {};
     for (const p of game.players ?? []) {
-        out[p.playerName] = draft[cellKey(roundNumber, p.playerName)] ?? '';
+        fromDraft[p.id] = draft[cellKey(roundNumber, p.id)] ?? '';
     }
-    return out;
+    return fillScoresForPlayers(game.players ?? [], fromDraft);
 }
 
-/** Tous les joueurs doivent avoir un score numérique non vide. */
-export function validateRoundComplete(game: Game, scores: Record<string, string>): string | null {
-    for (const p of game.players ?? []) {
-        const raw = (scores[p.playerName] ?? '').trim();
+/** Tous les joueurs listés doivent avoir un score numérique non vide. */
+export function validateScoresComplete(players: Player[], scores: Record<string, string>): string | null {
+    for (const p of players) {
+        const raw = (scores[p.id] ?? '').trim();
         if (raw === '') {
             return `Score manquant pour ${p.playerName}.`;
         }
-        const n = Number(raw.replace(',', '.'));
-        if (!Number.isFinite(n)) {
+        if (parseScoreString(scores[p.id] ?? '') === null) {
             return `Score invalide pour ${p.playerName}.`;
         }
     }
     return null;
 }
 
+export function validateRoundComplete(game: Game, scores: Record<string, string>): string | null {
+    return validateScoresComplete(game.players ?? [], scores);
+}
+
 export function buildCompleteRoundFromScores(
     roundNumber: number,
-    players: { playerName: string }[],
+    players: Player[],
     scores: Record<string, string>,
 ): Round {
     const playersScores: PlayerScore[] = players.map((p) => {
-        const raw = (scores[p.playerName] ?? '').trim();
-        const n = Number(raw.replace(',', '.'));
-        return { playerName: p.playerName, score: n };
+        const raw = (scores[p.id] ?? '').trim();
+        const n = parseScoreString(raw)!;
+        return { playerId: p.id, score: n };
     });
-    return { roundNumber, playersScores };
-}
-
-export function isCellValueInvalid(value: string): boolean {
-    const t = value.trim();
-    return t !== '' && !Number.isFinite(Number(t.replace(',', '.')));
+    return { id: null, roundNumber, playersScores };
 }
 
 /** Somme des scores par joueur sur les manches données (brouillon texte ; vide ou invalide = ignoré). */
 export function totalScoresByPlayer(
-    players: { playerName: string }[],
+    players: Player[],
     roundNumbers: number[],
     draft: Record<string, string>,
 ): Record<string, number> {
     return Object.fromEntries(
         players.map((p) => [
-            p.playerName,
+            p.id,
             roundNumbers.reduce((sum, roundNumber) => {
-                const raw = (draft[cellKey(roundNumber, p.playerName)] ?? '').trim();
+                const raw = (draft[cellKey(roundNumber, p.id)] ?? '').trim();
                 if (raw === '') {
                     return sum;
                 }
-                const n = Number(raw.replace(',', '.'));
-                return Number.isFinite(n) ? sum + n : sum;
+                const n = parseScoreString(raw);
+                return n != null ? sum + n : sum;
             }, 0),
         ]),
     );

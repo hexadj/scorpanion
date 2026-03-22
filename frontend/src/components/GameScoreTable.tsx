@@ -56,12 +56,12 @@ export function GameScoreTable({
             <TableRow key={roundNumber}>
               <TableCell className="whitespace-nowrap font-medium">{roundNumber}</TableCell>
               {players.map((player) => {
-                const key = cellKey(roundNumber, player.playerName);
+                const key = cellKey(roundNumber, player.id);
                 const value = (draft[key] ?? '').trim();
 
                 return (
                   <TableCell
-                    key={`${roundNumber}-${player.userId ?? player.playerName}`}
+                    key={`${roundNumber}-${player.id}`}
                     className="whitespace-normal"
                   >
                     {value === '' ? (
@@ -96,8 +96,8 @@ export function GameScoreTable({
         <TableRow>
           <TableCell className="font-semibold">Total</TableCell>
           {players.map((player) => (
-            <TableCell key={`total-${player.userId ?? player.playerName}`} className="font-semibold">
-              {totalsByPlayer[player.playerName] ?? 0}
+            <TableCell key={`total-${player.id}`} className="font-semibold">
+              {totalsByPlayer[player.id] ?? 0}
             </TableCell>
           ))}
           <TableCell aria-hidden />

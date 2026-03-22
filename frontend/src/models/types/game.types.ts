@@ -1,11 +1,12 @@
 import type { Player } from "./player.types";
 
 export interface PlayerScore {
-    playerName: string;
+    playerId: string;
     score: number;
 }
 
 export interface Round {
+    id: string | null;
     roundNumber: number;
     playersScores: PlayerScore[];
 }

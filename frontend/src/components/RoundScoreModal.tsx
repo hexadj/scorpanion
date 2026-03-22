@@ -1,5 +1,5 @@
 import type { Player } from '@/models/types';
-import { isCellValueInvalid } from '@/utils/gameScore.utils';
+import { fillScoresForPlayers, isCellValueInvalid, validateScoresComplete } from '@/utils/gameScore.utils';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,14 +20,6 @@ type RoundScoreModalProps = {
   onConfirm: (scores: Record<string, string>) => void | Promise<void>;
 };
 
-function buildScoresState(players: Player[], initialScores: Record<string, string>): Record<string, string> {
-  const next: Record<string, string> = {};
-  for (const p of players) {
-    next[p.playerName] = initialScores[p.playerName] ?? '';
-  }
-  return next;
-}
-
 export function RoundScoreModal({
   title,
   players,
@@ -37,16 +29,13 @@ export function RoundScoreModal({
   onConfirm,
 }: RoundScoreModalProps) {
   const [values, setValues] = useState<Record<string, string>>(() =>
-    buildScoresState(players, initialScores),
+    fillScoresForPlayers(players, initialScores),
   );
 
-  const canSubmit = players.every((p) => {
-    const raw = (values[p.playerName] ?? '').trim();
-    return raw !== '' && !isCellValueInvalid(values[p.playerName] ?? '');
-  });
+  const canSubmit = validateScoresComplete(players, values) === null;
 
-  function setPlayerValue(name: string, value: string) {
-    setValues((prev) => ({ ...prev, [name]: value }));
+  function setPlayerValue(playerId: string, value: string) {
+    setValues((prev) => ({ ...prev, [playerId]: value }));
   }
 
   return (
@@ -73,16 +62,16 @@ export function RoundScoreModal({
           }}
         >
           {players.map((player) => (
-            <div key={player.userId ?? player.playerName} className="flex flex-col gap-2">
-              <Label htmlFor={`score-${player.userId ?? player.playerName}`}>{player.playerName}</Label>
+            <div key={player.id} className="flex flex-col gap-2">
+              <Label htmlFor={`score-${player.id}`}>{player.playerName}</Label>
               <Input
-                id={`score-${player.userId ?? player.playerName}`}
+                id={`score-${player.id}`}
                 type="text"
                 inputMode="decimal"
                 disabled={isSubmitting}
-                value={values[player.playerName] ?? ''}
-                onChange={(e) => setPlayerValue(player.playerName, e.target.value)}
-                aria-invalid={isCellValueInvalid(values[player.playerName] ?? '')}
+                value={values[player.id] ?? ''}
+                onChange={(e) => setPlayerValue(player.id, e.target.value)}
+                aria-invalid={isCellValueInvalid(values[player.id] ?? '')}
               />
             </div>
           ))}
