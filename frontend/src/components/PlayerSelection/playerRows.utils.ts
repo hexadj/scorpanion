@@ -11,9 +11,9 @@ export function buildPlayersFromRows(rows: PlayerInputRow[]): Player[] {
         .filter((r): r is PlayerInputRow & { committed: CommittedPlayer } => r.committed !== null)
         .map((r) => {
             if (r.committed.kind === 'user') {
-                return { id: r.committed.userId, name: r.committed.name };
+                return { userId: r.committed.userId, playerName: r.committed.name };
             }
-            return { id: null, name: r.committed.name };
+            return { userId: null, playerName: r.committed.name };
         });
 }
 

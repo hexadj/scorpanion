@@ -1,4 +1,7 @@
 import type { Game, Player, Round } from "@/models/types";
+import { getApiBaseUrl } from "./api.utils";
+
+const JSON_HEADERS = { "Content-Type": "application/json" } as const;
 
 // TODO(back): supprimer tout le bloc ci-dessous (état mock + helpers) au branchement du backend.
 const MOCK_GAME_TEMPLATE: Game = {
@@ -7,12 +10,10 @@ const MOCK_GAME_TEMPLATE: Game = {
     boardGameName: 'Les Aventuriers du Rail',
     scoreboardId: '123',
     players: [
-        { id: 'p1', name: 'Alice' },
-        { id: 'p2', name: 'Bob' },
-        { id: 'p3', name: 'Charlie' },
+        { userId: 'p1', playerName: 'Alice' },
+        { userId: 'p2', playerName: 'Bob' },
+        { userId: 'p3', playerName: 'Charlie' },
     ],
-    nbRounds: null,
-    currentRound: 4,
     roundHistory: [
         {
             roundNumber: 1,
@@ -73,27 +74,39 @@ export type CreateGameResponse = {
     gameId: string;
 };
 
-// TODO(back): remplacer par l’appel HTTP réel (création de partie). Supprimer : setTimeout et l’ID mocké.
-export function createGame(_payload: CreateGamePayload): Promise<CreateGameResponse> {
-    // TODO(back): supprimer cette ligne au branchement HTTP.
-    void _payload;
-    return new Promise((resolve) => {
-        setTimeout(() => resolve({ gameId: '123' }), 500);
+export async function createGame(payload: CreateGamePayload): Promise<CreateGameResponse> {
+    const base = getApiBaseUrl();
+    const res = await fetch(`${base}/game/create`, {
+        method: "POST",
+        headers: JSON_HEADERS,
+        body: JSON.stringify({
+            boardGameId: payload.boardGameId,
+            scoreboardId: payload.scoreboardId,
+            players: payload.players.map((p) => ({
+                userId: p.userId,
+                playerName: p.playerName,
+            })),
+        }),
     });
+    if (!res.ok) {
+        throw new Error(`Création de partie : ${res.status} ${res.statusText}`);
+    }
+    return (await res.json()) as CreateGameResponse;
 }
 
 export type GameResponse = {
     game: Game;
 };
 
-
-// TODO(back): remplacer par l’appel HTTP réel (GET partie). Supprimer : setTimeout et cloneGame(currentMockGame).
-export function getGame(_gameId: string): Promise<GameResponse> {
-    // TODO(back): supprimer cette ligne au branchement HTTP.
-    void _gameId;
-    return new Promise((resolve) => {
-        setTimeout(() => resolve({ game: cloneGame(currentMockGame) }), 500);
-    });
+export async function getGame(gameId: string): Promise<GameResponse> {
+    const base = getApiBaseUrl();
+    const url = new URL(`${base}/game/get`);
+    url.searchParams.set("gameId", gameId);
+    const res = await fetch(url.toString());
+    if (!res.ok) {
+        throw new Error(`Chargement de partie : ${res.status} ${res.statusText}`);
+    }
+    return (await res.json()) as GameResponse;
 }
 
 export type UpdateGamePayload = {
@@ -101,23 +114,15 @@ export type UpdateGamePayload = {
 };
 
 // TODO(back): remplacer par l’appel HTTP réel (PATCH/PUT manches). Supprimer : setTimeout, mergeRoundHistory,
-// mutation de currentMockGame, cloneGame ici, et la logique locale d’incrément de currentRound (l’API renverra le jeu à jour).
+// mutation de currentMockGame, cloneGame ici (l’API renverra le jeu à jour ; la manche courante se déduit de roundHistory).
 export function updateGame(_gameId: string, payload: UpdateGamePayload): Promise<GameResponse> {
     return new Promise((resolve) => {
         setTimeout(() => {
             // TODO(back): supprimer tout le corps mock ci-dessous au branchement HTTP.
             const mergedHistory = mergeRoundHistory(currentMockGame.roundHistory, payload.rounds);
-            const completedCurrentRound = payload.rounds.some(
-                (r) => r.roundNumber === currentMockGame.currentRound,
-            );
-            const nextCurrentRound = completedCurrentRound
-                ? currentMockGame.currentRound + 1
-                : currentMockGame.currentRound;
-
             currentMockGame = {
                 ...currentMockGame,
                 roundHistory: mergedHistory,
-                currentRound: nextCurrentRound,
             };
             resolve({ game: cloneGame(currentMockGame) });
         }, 400);

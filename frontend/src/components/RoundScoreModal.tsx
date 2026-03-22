@@ -23,7 +23,7 @@ type RoundScoreModalProps = {
 function buildScoresState(players: Player[], initialScores: Record<string, string>): Record<string, string> {
   const next: Record<string, string> = {};
   for (const p of players) {
-    next[p.name] = initialScores[p.name] ?? '';
+    next[p.playerName] = initialScores[p.playerName] ?? '';
   }
   return next;
 }
@@ -41,8 +41,8 @@ export function RoundScoreModal({
   );
 
   const canSubmit = players.every((p) => {
-    const raw = (values[p.name] ?? '').trim();
-    return raw !== '' && !isCellValueInvalid(values[p.name] ?? '');
+    const raw = (values[p.playerName] ?? '').trim();
+    return raw !== '' && !isCellValueInvalid(values[p.playerName] ?? '');
   });
 
   function setPlayerValue(name: string, value: string) {
@@ -73,16 +73,16 @@ export function RoundScoreModal({
           }}
         >
           {players.map((player) => (
-            <div key={player.id ?? player.name} className="flex flex-col gap-2">
-              <Label htmlFor={`score-${player.id ?? player.name}`}>{player.name}</Label>
+            <div key={player.userId ?? player.playerName} className="flex flex-col gap-2">
+              <Label htmlFor={`score-${player.userId ?? player.playerName}`}>{player.playerName}</Label>
               <Input
-                id={`score-${player.id ?? player.name}`}
+                id={`score-${player.userId ?? player.playerName}`}
                 type="text"
                 inputMode="decimal"
                 disabled={isSubmitting}
-                value={values[player.name] ?? ''}
-                onChange={(e) => setPlayerValue(player.name, e.target.value)}
-                aria-invalid={isCellValueInvalid(values[player.name] ?? '')}
+                value={values[player.playerName] ?? ''}
+                onChange={(e) => setPlayerValue(player.playerName, e.target.value)}
+                aria-invalid={isCellValueInvalid(values[player.playerName] ?? '')}
               />
             </div>
           ))}

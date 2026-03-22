@@ -41,7 +41,7 @@ export function GameScoreTable({
         <TableRow>
           <TableHead className="w-[1%] whitespace-nowrap">Manche</TableHead>
           {players.map((player) => (
-            <TableHead key={player.id ?? player.name}>{player.name}</TableHead>
+            <TableHead key={player.userId ?? player.playerName}>{player.playerName}</TableHead>
           ))}
           <TableHead className="w-14 text-center">
             <span className="sr-only">Modifier la manche</span>
@@ -56,12 +56,12 @@ export function GameScoreTable({
             <TableRow key={roundNumber}>
               <TableCell className="whitespace-nowrap font-medium">{roundNumber}</TableCell>
               {players.map((player) => {
-                const key = cellKey(roundNumber, player.name);
+                const key = cellKey(roundNumber, player.playerName);
                 const value = (draft[key] ?? '').trim();
 
                 return (
                   <TableCell
-                    key={`${roundNumber}-${player.id ?? player.name}`}
+                    key={`${roundNumber}-${player.userId ?? player.playerName}`}
                     className="whitespace-normal"
                   >
                     {value === '' ? (
@@ -96,8 +96,8 @@ export function GameScoreTable({
         <TableRow>
           <TableCell className="font-semibold">Total</TableCell>
           {players.map((player) => (
-            <TableCell key={`total-${player.id ?? player.name}`} className="font-semibold">
-              {totalsByPlayer[player.name] ?? 0}
+            <TableCell key={`total-${player.userId ?? player.playerName}`} className="font-semibold">
+              {totalsByPlayer[player.playerName] ?? 0}
             </TableCell>
           ))}
           <TableCell aria-hidden />
