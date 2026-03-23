@@ -75,7 +75,9 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
                     Id = player.Id, UserId = player.User?.Id, PlayerName = player.User?.Username ?? player.GuestName
                 })
                 .ToList(),
-            Rounds = game.Rounds.GroupBy(r => r.Number)
+            Rounds = game.Rounds
+                .GroupBy(r => r.Number)
+                .OrderBy(group => group.Key)
                 .Select(group => new RoundModel
                 {
                     GameId = game.Id,
