@@ -2,7 +2,7 @@ import type { Game, Player, PlayerScore, Round } from '@/models/types';
 
 /** Manche courante (1-based) : pas de champ serveur dédié — dérivée de l’historique. */
 export function getCurrentRoundNumber(game: Game): number {
-    return (game.roundHistory?.length ?? 0) + 1;
+    return (game.rounds?.length ?? 0) + 1;
 }
 
 /** Clé stable pour lier une cellule du tableau (manche × joueur) à l’état local du formulaire. */
@@ -45,9 +45,8 @@ export function fillScoresForPlayers(players: Player[], values: Record<string, s
  */
 export function buildDraftSnapshotFromGame(game: Game, roundNumbers: number[]): Record<string, string> {
     const out: Record<string, string> = {};
-    const history = game.roundHistory ?? [];
+    const history = game.rounds ?? [];
     const playerIds = (game.players ?? []).map((p) => p.id);
-
     for (const roundNumber of roundNumbers) {
         const round = history[roundNumber - 1];
         const byPlayer = new Map((round?.playersScores ?? []).map((ps) => [ps.playerId, ps.score]));

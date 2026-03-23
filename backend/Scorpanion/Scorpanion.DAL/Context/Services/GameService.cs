@@ -78,8 +78,9 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
             Rounds = game.Rounds.GroupBy(r => r.Number)
                 .Select(group => new RoundModel
                 {
+                    GameId = game.Id,
                     Number = group.First().Number,
-                    Scores = group.Select(score => new RoundScoreModel
+                    PlayersScores = group.Select(score => new RoundScoreModel
                     {
                         PlayerId = score.Player.Id,
                         Score = score.Score
@@ -144,14 +145,14 @@ public class GameService(IPlayerService playerService, ScorpanionDbContext conte
         {
             foreach (var score in roundScores)
             {
-                score.Score = round.Scores.First(s => s.PlayerId == score.Player.Id).Score;
+                score.Score = round.PlayersScores.First(s => s.PlayerId == score.Player.Id).Score;
                 score.UpdatedAt = DateTime.UtcNow;
             }
         }
         // Création
         else
         {
-            foreach (var score in round.Scores)
+            foreach (var score in round.PlayersScores)
             {
                 // Recherche du joueur correspondant
                 var player = context.Players.FirstOrDefault(p => p.Id == score.PlayerId);

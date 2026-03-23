@@ -51,7 +51,7 @@ export async function updateGame(payload: UpdateGamePayload): Promise<Game> {
     const roundModel = {
         gameId: payload.gameId,
         number: payload.round.roundNumber,
-        scores: payload.round.playersScores.map((s) => ({
+        playersScores: payload.round.playersScores.map((s) => ({
             playerId: s.playerId,
             score: s.score,
         })),
@@ -59,9 +59,7 @@ export async function updateGame(payload: UpdateGamePayload): Promise<Game> {
     const res = await fetch(`${base}/game/update`, {
         method: "POST",
         headers: JSON_HEADERS,
-        body: JSON.stringify({
-            round: roundModel,
-        }),
+        body: JSON.stringify(roundModel),
     });
     if (!res.ok) {
         throw new Error(`Mise à jour de partie : ${res.status} ${res.statusText}`);

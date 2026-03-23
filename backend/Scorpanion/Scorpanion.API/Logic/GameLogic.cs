@@ -25,8 +25,8 @@ public class GameLogic(IBoardGameConfigService boardGameConfigService, IGameServ
             };
         }
 
-        var scoreByPlayer = game.Rounds.SelectMany(r => r.Scores)
-            .Concat(finalRound.Scores)
+        var scoreByPlayer = game.Rounds.SelectMany(r => r.PlayersScores)
+            .Concat(finalRound.PlayersScores)
             .GroupBy(r => r.PlayerId)
             .ToDictionary(g => g.Key, g => g.Sum(r => r.Score));
 
