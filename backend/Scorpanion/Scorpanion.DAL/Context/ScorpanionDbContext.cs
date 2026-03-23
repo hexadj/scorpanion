@@ -25,6 +25,10 @@ public class ScorpanionDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Username)
+            .IsUnique();
+
         modelBuilder.Entity<BoardGameConfig>()
             .Property(e => e.WinType)
             .HasConversion<string>();

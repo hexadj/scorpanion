@@ -4,10 +4,10 @@ using Scorpanion.DAL.ExchangeModels;
 
 namespace Scorpanion.DAL.Context.Services;
 
-public class PlayerService(ScorpanionDbContext context, IUserService userService) : IPlayerService
+public class PlayerService(ScorpanionDbContext context) : IPlayerService
 {
     /// <summary>
-    /// Création des entités de joueur pour uen partie
+    /// Création des entités de joueur pour une partie
     /// </summary>
     /// <param name="players"></param>
     /// <exception cref="NotImplementedException"></exception>

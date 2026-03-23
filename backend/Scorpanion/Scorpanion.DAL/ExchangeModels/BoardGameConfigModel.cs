@@ -6,7 +6,7 @@ public class BoardGameConfigModel : ExchangeModel
 {
     public string? Name { get; set; }
 
-    public int PlayerCount { get; set; }
+    public int? PlayerCount { get; set; }
 
     public int? RoundCount { get; set; }
 

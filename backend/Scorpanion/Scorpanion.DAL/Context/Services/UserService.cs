@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Scorpanion.DAL.Context.Entities;
 using Scorpanion.DAL.Context.Services.Interfaces;
 using Scorpanion.DAL.Exceptions;
@@ -47,7 +49,14 @@ public class UserService : IUserService
         entity.PasswordHash = _passwordHasher.HashPassword(entity, model.Password);
 
         _context.Users.Add(entity);
-        _context.SaveChanges();
+        try
+        {
+            _context.SaveChanges();
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
+        {
+            throw new DuplicateUsernameException();
+        }
 
         return entity.Id;
     }
