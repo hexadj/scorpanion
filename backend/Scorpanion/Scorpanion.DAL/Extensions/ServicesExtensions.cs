@@ -32,6 +32,7 @@ public static class ServicesExtensions
         services.TryAddTransient<IBoardGameConfigService, BoardGameConfigService>();
         services.TryAddTransient<IUserService, UserService>();
         services.TryAddTransient<IPlayerService, PlayerService>();
+        services.TryAddTransient<IPlayerResultService, PlayerResultService>();
         services.TryAddTransient<IGameService, GameService>();
         // Registration/login: inject IPasswordHasher<User> — HashPassword on sign-up/change; VerifyHashedPassword on login.
         services.TryAddTransient<IPasswordHasher<User>, PasswordHasher<User>>();

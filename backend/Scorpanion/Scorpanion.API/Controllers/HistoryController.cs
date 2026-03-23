@@ -5,7 +5,7 @@ namespace Scorpanion.API.Controllers;
 
 [ApiController]
 [Route("history")]
-public class HistoryController(IUserService userService, IGameService gameService) : Controller
+public class HistoryController(IUserService userService, IPlayerResultService playerResultService) : Controller
 {
     [HttpGet("user/{userId:guid}")]
     public IActionResult GetHistory(Guid userId)
@@ -13,6 +13,6 @@ public class HistoryController(IUserService userService, IGameService gameServic
         if (!userService.UserExists(userId))
             return NotFound();
 
-        return Ok(gameService.GetGamesForUser(userId));
+        return Ok(playerResultService.GetPlayerResultsByUserId(userId));
     }
 }

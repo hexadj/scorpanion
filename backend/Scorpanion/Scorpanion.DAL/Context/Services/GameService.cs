@@ -1,4 +1,3 @@
-using System.Net.Sockets;
 using Microsoft.EntityFrameworkCore;
 using Scorpanion.DAL.Context.Entities;
 using Scorpanion.DAL.Context.Services.Interfaces;
