@@ -1,5 +1,11 @@
 # React + TypeScript + Vite
 
+## Thème / couleurs
+
+Référence des tokens (`--background`, `--primary`, etc.) et de leur usage dans l’UI : **[docs/THEME.md](./docs/THEME.md)**. Les valeurs sont dans `src/index.css`.
+
+---
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

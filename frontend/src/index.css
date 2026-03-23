@@ -6,6 +6,12 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  /*
+   * Thème Scorpanion (unique, sombre).
+   * Carte détaillée : docs/THEME.md (token → zone de l’UI + classes Tailwind).
+   */
+  color-scheme: dark;
+
   font-family:
     system-ui,
     -apple-system,
@@ -24,70 +30,101 @@
   /* Lissage des polices sur WebKit/Firefox macOS pour un rendu de texte plus propre. */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Fond page (body) + texte/icônes par défaut → bg-background, text-foreground */
   --background:
-    oklch(1 0 0);
+    #1a3d2e;
+  /* Légèrement plus clair que l’ancien #e8e4e0 → meilleur contraste sur cartes / champs */
   --foreground:
-    oklch(0.145 0 0);
+    #f4f1eb;
+
+  /* Cartes / panneaux → bg-card, text-card-foreground (couleur marque #2E3636) */
   --card:
-    oklch(1 0 0);
+    #2e3636;
   --card-foreground:
-    oklch(0.145 0 0);
+    #f4f1eb;
+
+  /* Menus flottants, overlays type shadcn → bg-popover */
   --popover:
-    oklch(1 0 0);
+    #3e5048;
   --popover-foreground:
-    oklch(0.145 0 0);
+    #f4f1eb;
+
+  /* CTA, action principale → bg-primary, text-primary-foreground */
   --primary:
-    oklch(0.205 0 0);
+    #d3a56d;
   --primary-foreground:
-    oklch(0.985 0 0);
+    #1a3d2e;
+
+  /* Boutons secondaires, surfaces moins prioritaires → bg-secondary */
   --secondary:
-    oklch(0.97 0 0);
+    #3d4f5f;
   --secondary-foreground:
-    oklch(0.205 0 0);
+    #f4f1eb;
+
+  /* Zones atténuées + texte secondaire (hints, placeholders) → bg-muted, text-muted-foreground */
   --muted:
-    oklch(0.97 0 0);
+    #2d3834;
+  /* Plus lisible sur --card et --background (WCAG texte courant) */
   --muted-foreground:
-    oklch(0.556 0 0);
+    #b0c6b8;
+
+  /* Survol / sélection discrète → bg-accent */
   --accent:
-    oklch(0.97 0 0);
+    #819d83;
   --accent-foreground:
-    oklch(0.205 0 0);
+    #1a3d2e;
+
+  /* Erreurs, actions dangereuses → text-destructive, bordures invalides */
   --destructive:
-    oklch(0.577 0.245 27.325);
+    #c45c5c;
+
+  /* Bordures visibles sur fond page et sur cartes ; --input plus clair que --border pour détacher le cadre des champs */
   --border:
-    oklch(0.922 0 0);
+    #5d7269;
   --input:
-    oklch(0.922 0 0);
+    #7a9086;
+
+  /* Focus clavier (accessibilité) → ring-* */
   --ring:
-    oklch(0.708 0 0);
+    #d3a56d;
+
+  /* Graphiques (séries) — peu utilisé hors charts */
   --chart-1:
-    oklch(0.87 0 0);
+    #d3a56d;
   --chart-2:
-    oklch(0.556 0 0);
+    #819d83;
   --chart-3:
-    oklch(0.439 0 0);
+    #3d4f5f;
   --chart-4:
-    oklch(0.371 0 0);
+    #3e5048;
   --chart-5:
-    oklch(0.269 0 0);
+    #c45c5c;
+
   --radius:
     0.625rem;
+
+  /* Sidebar shadcn (si ajoutée plus tard) */
   --sidebar:
-    oklch(0.985 0 0);
+    #3e5048;
   --sidebar-foreground:
-    oklch(0.145 0 0);
+    #f4f1eb;
   --sidebar-primary:
-    oklch(0.205 0 0);
+    #d3a56d;
   --sidebar-primary-foreground:
-    oklch(0.985 0 0);
+    #1a3d2e;
   --sidebar-accent:
-    oklch(0.97 0 0);
+    #819d83;
   --sidebar-accent-foreground:
-    oklch(0.205 0 0);
+    #1a3d2e;
   --sidebar-border:
-    oklch(0.922 0 0);
+    #5d7269;
   --sidebar-ring:
-    oklch(0.708 0 0);
+    #d3a56d;
+
+  /* Ligne « manche en cours » du tableau des scores (repère type maquette score) */
+  --score-table-highlight:
+    #3d5245;
 }
 
 @theme inline {
@@ -157,6 +194,8 @@
     var(--foreground);
   --color-background:
     var(--background);
+  --color-score-table-highlight:
+    var(--score-table-highlight);
   --radius-sm:
     calc(var(--radius) * 0.6);
   --radius-md:
@@ -173,69 +212,76 @@
     calc(var(--radius) * 2.6);
 }
 
+/*
+ * Même sémantique que :root (valeurs identiques).
+ * Requis pour les classes Tailwind `dark:*` (@custom-variant dark).
+ */
 .dark {
   --background:
-    oklch(0.145 0 0);
+    #385d4d;
   --foreground:
-    oklch(0.985 0 0);
+    #e8e4e0;
   --card:
-    oklch(0.205 0 0);
+    #374848;
   --card-foreground:
-    oklch(0.985 0 0);
+    #e8e4e0;
   --popover:
-    oklch(0.205 0 0);
+    #2e3636;
   --popover-foreground:
-    oklch(0.985 0 0);
+    #e8e4e0;
   --primary:
-    oklch(0.922 0 0);
+    #d3a56d;
   --primary-foreground:
-    oklch(0.205 0 0);
+    #1a3d2e;
   --secondary:
-    oklch(0.269 0 0);
+    #3d4f5f;
   --secondary-foreground:
-    oklch(0.985 0 0);
+    #e8e4e0;
   --muted:
-    oklch(0.269 0 0);
+    #252b2b;
   --muted-foreground:
-    oklch(0.708 0 0);
+    #819d83;
   --accent:
-    oklch(0.269 0 0);
+    #819d83;
   --accent-foreground:
-    oklch(0.985 0 0);
+    #1a3d2e;
   --destructive:
-    oklch(0.704 0.191 22.216);
+    #c45c5c;
   --border:
-    oklch(1 0 0 / 10%);
+    #3d4f5f;
   --input:
-    oklch(1 0 0 / 15%);
+    #a3bcd1;
   --ring:
-    oklch(0.556 0 0);
+    #d3a56d;
   --chart-1:
-    oklch(0.87 0 0);
+    #d3a56d;
   --chart-2:
-    oklch(0.556 0 0);
+    #819d83;
   --chart-3:
-    oklch(0.439 0 0);
+    #3d4f5f;
   --chart-4:
-    oklch(0.371 0 0);
+    #2e3636;
   --chart-5:
-    oklch(0.269 0 0);
+    #c45c5c;
   --sidebar:
-    oklch(0.205 0 0);
+    #2e3636;
   --sidebar-foreground:
-    oklch(0.985 0 0);
+    #e8e4e0;
   --sidebar-primary:
-    oklch(0.488 0.243 264.376);
+    #d3a56d;
   --sidebar-primary-foreground:
-    oklch(0.985 0 0);
+    #1a3d2e;
   --sidebar-accent:
-    oklch(0.269 0 0);
+    #819d83;
   --sidebar-accent-foreground:
-    oklch(0.985 0 0);
+    #1a3d2e;
   --sidebar-border:
-    oklch(1 0 0 / 10%);
+    #3d4f5f;
   --sidebar-ring:
-    oklch(0.556 0 0);
+    #d3a56d;
+
+  --score-table-highlight:
+    #3d5245;
 }
 
 @layer base {
