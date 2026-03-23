@@ -32,6 +32,7 @@ public class GameController(IGameService service, GameLogic gameLogic) : Control
     public IActionResult EndGame(RoundModel finalRound)
     {
         var result = gameLogic.EndGame(finalRound);
+        service.SaveGameResult(result);
         return Ok(result);
     }
     
