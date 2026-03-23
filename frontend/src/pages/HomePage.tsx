@@ -88,7 +88,25 @@ export function HomePage() {
         )}
       </section>
 
-      <Separator className="my-10" />
+      {authUser !== null ? (
+        <>
+          <Separator className="my-10" />
+          <section>
+            <h2 className="mb-4 text-sm font-medium tracking-wide text-muted-foreground uppercase">
+              Historique
+            </h2>
+            <Button
+              asChild
+              className="w-full justify-center rounded-xl bg-blue-600 text-lg font-semibold tracking-tight text-white hover:bg-blue-700"
+            >
+              <Link to="/history">Voir son historique</Link>
+            </Button>
+          </section>
+          <Separator className="my-10" />
+        </>
+      ) : (
+        <Separator className="my-10" />
+      )}
 
       <section>
         <h2 className="mb-6 text-sm font-medium tracking-wide text-muted-foreground uppercase">

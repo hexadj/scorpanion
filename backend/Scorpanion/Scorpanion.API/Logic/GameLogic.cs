@@ -61,9 +61,11 @@ public class GameLogic(IBoardGameConfigService boardGameConfigService, IGameServ
                 Id = Guid.NewGuid(),
                 GameResultId = gameResultId,
                 PlayerId = ordered[i].PlayerId,
+                GameName = game.BoardGameName ?? string.Empty,
                 FinalScore = ordered[i].FinalScore,
                 HasWon = ordered[i].FinalScore == winningScore,
                 Rank = rank,
+                PlayedAt = DateTime.UtcNow,
             });
         }
 

@@ -15,9 +15,11 @@ public class PlayerResultService(ScorpanionDbContext context) : IPlayerResultSer
                 Id = pr.Id,
                 GameResultId = pr.GameResult.Id,
                 PlayerId = pr.Player.Id,
+                GameName = pr.GameResult.Game.BoardGame.Name,
                 FinalScore = pr.FinalScore,
                 HasWon = pr.HasWon,
                 Rank = pr.Rank,
+                PlayedAt = pr.GameResult.CreatedAt,
             })
             .ToList();
     }

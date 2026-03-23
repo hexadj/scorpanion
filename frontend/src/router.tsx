@@ -1,5 +1,5 @@
 import { GameLayout, GuestAuthLayout, RootLayout } from '@/layouts';
-import { GameCreationPage, HomePage, LoginPage, RegisterPage, GamePage } from '@/pages';
+import { GameCreationPage, GamePage, HistoryPage, HomePage, LoginPage, RegisterPage } from '@/pages';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const router = createBrowserRouter(
@@ -19,6 +19,7 @@ const router = createBrowserRouter(
                     Component: GuestAuthLayout,
                     children: [{ index: true, Component: RegisterPage }],
                 },
+                { path: 'history', Component: HistoryPage },
                 {
                     path: 'game/:boardGameId',
                     children: [
