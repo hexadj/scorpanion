@@ -4,7 +4,7 @@ namespace Scorpanion.DAL.ExchangeModels;
 
 public class BoardGameConfigModel : ExchangeModel
 {
-    public required string Name { get; set; }
+    public string? Name { get; set; }
 
     public int PlayerCount { get; set; }
 

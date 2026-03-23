@@ -10,8 +10,13 @@ public class GameLogic(IBoardGameConfigService boardGameConfigService, IGameServ
     {
         var game = gameService.GetGame(finalRound.GameId);
 
-        var gameConfig = boardGameConfigService.GetBoardGameConfig(game.BoardGameConfigId)
-            ?? throw new KeyNotFoundException("Game configuration not found");
+        // TODO: Implement game config
+        var gameConfig = new BoardGameConfigModel
+        {
+            Id = game.BoardGameConfigId,
+            WinType = WinType.HIGHER_SCORE,
+            IsTemporary = true,
+        };
 
         var gameResultId = Guid.NewGuid();
 

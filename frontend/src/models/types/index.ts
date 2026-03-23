@@ -2,5 +2,6 @@ export * from './boardgame.types';
 export * from './notification.types';
 export * from './player.types';
 export * from './game.types';
+export * from './result.type';
 export * from './user.types';
 export * from './scoreboard.types';

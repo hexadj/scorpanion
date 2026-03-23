@@ -1,4 +1,4 @@
-import type { Game, Player, Round } from "@/models/types";
+import type { Game, GameResult, Player, Round } from "@/models/types";
 import { getApiBaseUrl } from "./api.utils";
 
 const JSON_HEADERS = { "Content-Type": "application/json" } as const;
@@ -67,11 +67,28 @@ export async function updateGame(payload: UpdateGamePayload): Promise<Game> {
     return (await res.json()) as Game;
 }
 
-// TODO(back): remplacer par l’appel HTTP réel (fin de partie). Supprimer : setTimeout.
-export function endGame(_gameId: string): Promise<void> {
-    // TODO(back): supprimer cette ligne au branchement HTTP.
-    void _gameId;
-    return new Promise((resolve) => {
-        setTimeout(() => resolve(), 400);
+export type EndGamePayload = {
+    gameId: string;
+    round: Round;
+};
+
+export async function endGame(payload: EndGamePayload): Promise<GameResult> {
+    const base = getApiBaseUrl();
+    const roundModel = {
+        gameId: payload.gameId,
+        number: payload.round.roundNumber,
+        playersScores: payload.round.playersScores.map((s) => ({
+            playerId: s.playerId,
+            score: s.score,
+        })),
+    };
+    const res = await fetch(`${base}/game/end`, {
+        method: "POST",
+        headers: JSON_HEADERS,
+        body: JSON.stringify(roundModel),
     });
+    if (!res.ok) {
+        throw new Error(`Fin de partie : ${res.status} ${res.statusText}`);
+    }
+    return (await res.json()) as GameResult;
 }

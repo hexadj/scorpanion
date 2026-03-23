@@ -19,6 +19,7 @@ type GameScoreTableProps = {
   currentRound: number;
   draft: Record<string, string>;
   isSaving: boolean;
+  isEnded: boolean;
   onEditPastRound: (roundNumber: number) => void;
 };
 
@@ -28,6 +29,7 @@ export function GameScoreTable({
   currentRound,
   draft,
   isSaving,
+  isEnded,
   onEditPastRound,
 }: GameScoreTableProps) {
   const totalsByPlayer = useMemo(
@@ -43,9 +45,11 @@ export function GameScoreTable({
           {players.map((player) => (
             <TableHead key={player.userId ?? player.playerName}>{player.playerName}</TableHead>
           ))}
-          <TableHead className="w-14 text-center">
-            <span className="sr-only">Modifier la manche</span>
-          </TableHead>
+          {!isEnded && (
+            <TableHead className="w-14 text-center">
+              <span className="sr-only">Modifier la manche</span>
+            </TableHead>
+          )}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -72,22 +76,24 @@ export function GameScoreTable({
                   </TableCell>
                 );
               })}
-              <TableCell className="text-center align-middle">
-                {isPastRound ? (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    disabled={isSaving}
-                    onClick={() => onEditPastRound(roundNumber)}
-                    aria-label={`Modifier la manche ${roundNumber}`}
-                  >
-                    <Pencil className="size-4" />
-                  </Button>
-                ) : (
-                  <span className="inline-block w-9" aria-hidden />
-                )}
-              </TableCell>
+              {!isEnded && (
+                <TableCell className="text-center align-middle">
+                  {isPastRound ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon-sm"
+                      disabled={isSaving}
+                      onClick={() => onEditPastRound(roundNumber)}
+                      aria-label={`Modifier la manche ${roundNumber}`}
+                    >
+                      <Pencil className="size-4" />
+                    </Button>
+                  ) : (
+                    <span className="inline-block w-9" aria-hidden />
+                  )}
+                </TableCell>
+              )}
             </TableRow>
           );
         })}
@@ -100,7 +106,7 @@ export function GameScoreTable({
               {totalsByPlayer[player.id] ?? 0}
             </TableCell>
           ))}
-          <TableCell aria-hidden />
+          {!isEnded && <TableCell aria-hidden />}
         </TableRow>
       </TableFooter>
     </Table>

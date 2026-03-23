@@ -7,7 +7,7 @@ namespace Scorpanion.DAL.Context.Entities;
 public class BoardGameConfig : BaseEntity
 {
     [MaxLength(100)]
-    public required string Name { get; set; }
+    public string? Name { get; set; }
 
     public int PlayerCount { get; set; }
 

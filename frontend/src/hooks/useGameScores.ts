@@ -6,6 +6,7 @@
  */
 import { endGame, updateGame } from '@/api';
 import { useGameContext } from '@/contexts/GameContext';
+import type { GameResult } from '@/models/types';
 import {
     buildCompleteRoundFromScores,
     buildDraftSnapshotFromGame,
@@ -24,6 +25,9 @@ export function useGameScores() {
 
     const [isEnding, setIsEnding] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+
+    const [finalResult, setFinalResult] = useState<GameResult | null>(null);
+    const isEnded = finalResult !== null;
 
     const [draft, setDraft] = useState<Record<string, string>>({});
 
@@ -67,23 +71,35 @@ export function useGameScores() {
         }
     }
 
-    async function handleEndGame() {
-        if (!gameId || isEnding) {
-            return;
+    async function submitEndGameBonus(scores: Record<string, string>): Promise<boolean> {
+        if (!gameId || isEnding || isEnded) {
+            return false;
+        }
+        const validationError = validateRoundComplete(game, scores);
+        if (validationError) {
+            notification.showError({ message: validationError });
+            return false;
         }
         setIsEnding(true);
         try {
-            await endGame(gameId);
+            const finalRound = buildCompleteRoundFromScores(currentRound, game.players ?? [], scores);
+            const result = await endGame({ gameId, round: finalRound });
+            setFinalResult(result);
             notification.showSuccess({
                 message: 'Partie terminée.',
             });
-            navigate('/');
+            return true;
         } catch {
             notification.showError({
                 message: "Impossible de terminer la partie. Réessaie dans un instant.",
             });
             setIsEnding(false);
+            return false;
         }
+    }
+
+    function quitGame() {
+        navigate('/');
     }
 
     return {
@@ -91,9 +107,12 @@ export function useGameScores() {
         currentRound,
         isEnding,
         isSaving,
+        isEnded,
         draft,
+        finalResult,
         roundsToDisplay,
         submitRound,
-        handleEndGame,
+        submitEndGameBonus,
+        quitGame,
     };
 }
