@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using Scorpanion.API.Logic;
-using Scorpanion.DAL.Context.Services.Interfaces;
-using Scorpanion.DAL.ExchangeModels;
+using Scorpanion.Contracts.Models;
+using Scorpanion.BLL.Services.Interfaces;
 
 namespace Scorpanion.API.Controllers;
 
 [ApiController]
 [Route("game/")]
-public class GameController(IGameService service, GameLogic gameLogic) : Controller
+public class GameController(IGameService service) : Controller
 {
     // POST
     /// <summary>
@@ -31,8 +30,7 @@ public class GameController(IGameService service, GameLogic gameLogic) : Control
     [HttpPost("end")]
     public IActionResult EndGame(RoundModel finalRound)
     {
-        var result = gameLogic.EndGame(finalRound);
-        service.SaveGameResult(result);
+        var result = service.EndGame(finalRound);
         return Ok(result);
     }
     

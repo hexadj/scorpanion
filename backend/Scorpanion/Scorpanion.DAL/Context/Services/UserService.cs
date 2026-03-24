@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using Scorpanion.Contracts.Exceptions;
+using Scorpanion.Contracts.Models;
 using Scorpanion.DAL.Context.Entities;
 using Scorpanion.DAL.Context.Services.Interfaces;
-using Scorpanion.DAL.Exceptions;
-using Scorpanion.DAL.ExchangeModels;
 
 namespace Scorpanion.DAL.Context.Services;
 

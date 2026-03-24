@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scorpanion.DAL", "Scorpanio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scorpanion.BLL", "Scorpanion.BLL\Scorpanion.BLL.csproj", "{284E212A-5532-4C92-8056-DB6BB44A1015}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scorpanion.Contracts", "Scorpanion.Contracts\Scorpanion.Contracts.csproj", "{8E338D3E-0C10-486F-B39C-0768DE55D84D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{284E212A-5532-4C92-8056-DB6BB44A1015}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{284E212A-5532-4C92-8056-DB6BB44A1015}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{284E212A-5532-4C92-8056-DB6BB44A1015}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E338D3E-0C10-486F-B39C-0768DE55D84D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E338D3E-0C10-486F-B39C-0768DE55D84D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E338D3E-0C10-486F-B39C-0768DE55D84D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E338D3E-0C10-486F-B39C-0768DE55D84D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

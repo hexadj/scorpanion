@@ -15,4 +15,9 @@
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Scorpanion.BLL\Scorpanion.BLL.csproj" />
+      <ProjectReference Include="..\Scorpanion.Contracts\Scorpanion.Contracts.csproj" />
+    </ItemGroup>
+
 </Project>

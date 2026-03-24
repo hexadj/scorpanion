@@ -1,5 +1,5 @@
 using Scorpanion.BLL.Managers;
-using Scorpanion.BLL.Models;
+using Scorpanion.Contracts.Models;
 using Scorpanion.BLL.Ports;
 using Scorpanion.BLL.Services.Interfaces;
 

@@ -1,4 +1,4 @@
-using Scorpanion.BLL.Models;
+using Scorpanion.Contracts.Models;
 using Scorpanion.BLL.Ports;
 
 namespace Scorpanion.BLL.Managers;

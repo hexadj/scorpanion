@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Scorpanion.DAL.Context.Services.Interfaces;
-using Scorpanion.DAL.Exceptions;
-using Scorpanion.DAL.ExchangeModels;
+using Scorpanion.Contracts.Exceptions;
+using Scorpanion.Contracts.Models;
+using Scorpanion.BLL.Services.Interfaces;
 
 namespace Scorpanion.API.Controllers;
 

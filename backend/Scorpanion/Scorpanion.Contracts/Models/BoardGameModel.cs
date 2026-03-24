@@ -1,4 +1,4 @@
-namespace Scorpanion.BLL.Models;
+namespace Scorpanion.Contracts.Models;
 
 public class BoardGameModel : ExchangeModel
 {

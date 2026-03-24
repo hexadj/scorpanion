@@ -1,6 +1,4 @@
-using Scorpanion.DAL.Context.Entities;
-
-namespace Scorpanion.DAL.ExchangeModels;
+namespace Scorpanion.Contracts.Models;
 
 public class BoardGameConfigModel : ExchangeModel
 {
