@@ -1,8 +1,8 @@
 using Scorpanion.Contracts.Models;
 
-namespace Scorpanion.BLL.Services.Interfaces;
+namespace Scorpanion.BLL.Managers.Interfaces;
 
-public interface IHistoryService
+public interface IHistoryManager
 {
     IReadOnlyList<PlayerResultModel>? GetHistory(Guid userId);
 }

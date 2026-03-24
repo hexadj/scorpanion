@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Scorpanion.Contracts.Models;
-using Scorpanion.BLL.Services.Interfaces;
+using Scorpanion.BLL.Managers.Interfaces;
 
 namespace Scorpanion.API.Controllers;
 
 [ApiController]
 [Route("game/")]
-public class GameController(IGameService service) : Controller
+public class GameController(IGameManager manager) : Controller
 {
     // POST
     /// <summary>
@@ -16,21 +16,21 @@ public class GameController(IGameService service) : Controller
     [HttpPost("create")]
     public IActionResult CreateGame(GameModel model)
     {
-        var gameId = service.CreateGame(model);
+        var gameId = manager.CreateGame(model);
         return Created("start/" + gameId.ToString(), gameId);
     }
 
     [HttpPost("update")]
     public IActionResult UpdateRound(RoundModel round)
     {
-        var updatedGame = service.UpdateRound(round);
+        var updatedGame = manager.UpdateRound(round);
         return Ok(updatedGame);
     }
 
     [HttpPost("end")]
     public IActionResult EndGame(RoundModel finalRound)
     {
-        var result = service.EndGame(finalRound);
+        var result = manager.EndGame(finalRound);
         return Ok(result);
     }
     
@@ -42,7 +42,7 @@ public class GameController(IGameService service) : Controller
     [HttpGet("get")]
     public IActionResult GetGame(Guid gameId)
     {
-        var game = service.GetGame(gameId);   
+        var game = manager.GetGame(gameId);   
         return Ok(game);
     }
     

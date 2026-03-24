@@ -1,10 +1,10 @@
+using Scorpanion.BLL.Managers.Interfaces;
 using Scorpanion.Contracts.Models;
 using Scorpanion.Contracts.Ports;
-using Scorpanion.BLL.Services.Interfaces;
 
-namespace Scorpanion.BLL.Services;
+namespace Scorpanion.BLL.Managers;
 
-public class HistoryService(IUserDataPort userDataPort, IHistoryDataPort historyDataPort) : IHistoryService
+public class HistoryManager(IUserDataPort userDataPort, IHistoryDataPort historyDataPort) : IHistoryManager
 {
     public IReadOnlyList<PlayerResultModel>? GetHistory(Guid userId)
     {

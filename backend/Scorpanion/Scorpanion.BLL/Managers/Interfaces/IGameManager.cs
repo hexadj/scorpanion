@@ -1,8 +1,8 @@
 using Scorpanion.Contracts.Models;
 
-namespace Scorpanion.BLL.Services.Interfaces;
+namespace Scorpanion.BLL.Managers.Interfaces;
 
-public interface IGameService
+public interface IGameManager
 {
     Guid CreateGame(GameModel game);
 

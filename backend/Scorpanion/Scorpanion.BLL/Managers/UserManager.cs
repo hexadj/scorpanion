@@ -1,10 +1,10 @@
+using Scorpanion.BLL.Managers.Interfaces;
 using Scorpanion.Contracts.Models;
 using Scorpanion.Contracts.Ports;
-using Scorpanion.BLL.Services.Interfaces;
 
-namespace Scorpanion.BLL.Services;
+namespace Scorpanion.BLL.Managers;
 
-public class UserService(IUserDataPort userDataPort) : IUserService
+public class UserManager(IUserDataPort userDataPort) : IUserManager
 {
     public Guid CreateUser(UserCredentialsModel model) => userDataPort.CreateUser(model);
 

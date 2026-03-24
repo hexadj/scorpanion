@@ -1,19 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
 using Scorpanion.Contracts.Exceptions;
 using Scorpanion.Contracts.Models;
-using Scorpanion.BLL.Services.Interfaces;
+using Scorpanion.BLL.Managers.Interfaces;
 
 namespace Scorpanion.API.Controllers;
 
 [ApiController]
 [Route("user/")]
-public class UserController(IUserService userService) : Controller
+public class UserController(IUserManager userManager) : Controller
 {
     // GET
     [HttpGet("getAll")]
     public IActionResult GetAll()
     {
-        var users = userService.GetAllUsers();
+        var users = userManager.GetAllUsers();
         return Ok(users);
     }
 
@@ -23,7 +23,7 @@ public class UserController(IUserService userService) : Controller
     {
         try
         {
-            var createdId = userService.CreateUser(model);
+            var createdId = userManager.CreateUser(model);
             return Created($"user/{createdId}", createdId);
         }
         catch (DuplicateUsernameException e)
@@ -36,7 +36,7 @@ public class UserController(IUserService userService) : Controller
     [HttpPost("login/")]
     public IActionResult Login(UserCredentialsModel model)
     {
-        var summary = userService.Login(model);
+        var summary = userManager.Login(model);
         if (summary is null)
             return Unauthorized();
 

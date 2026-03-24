@@ -1,10 +1,15 @@
+using Scorpanion.BLL.Managers.Interfaces;
 using Scorpanion.Contracts.Models;
 using Scorpanion.Contracts.Ports;
 
 namespace Scorpanion.BLL.Managers;
 
-public class GameManager(IGameDataPort gameDataPort)
+public class GameManager(IGameDataPort gameDataPort) : IGameManager
 {
+    public Guid CreateGame(GameModel game) => gameDataPort.CreateGame(game);
+
+    public GameModel UpdateRound(RoundModel round) => gameDataPort.UpdateRound(round);
+
     public GameResultModel EndGame(RoundModel finalRound)
     {
         var game = gameDataPort.GetGame(finalRound.GameId);
@@ -12,15 +17,19 @@ public class GameManager(IGameDataPort gameDataPort)
 
         if (game.Players.Count == 0)
         {
-            return new GameResultModel
+            var emptyGameResult = new GameResultModel
             {
                 Id = gameResultId,
                 GameId = game.Id,
                 PlayerResults = [],
             };
+
+            gameDataPort.SaveGameResult(emptyGameResult);
+            return emptyGameResult;
         }
 
-        var scoreByPlayer = game.Rounds.SelectMany(r => r.PlayersScores)
+        var scoreByPlayer = game.Rounds
+            .SelectMany(round => round.PlayersScores)
             .Concat(finalRound.PlayersScores)
             .GroupBy(score => score.PlayerId)
             .ToDictionary(group => group.Key, group => group.Sum(score => score.Score));
@@ -58,11 +67,16 @@ public class GameManager(IGameDataPort gameDataPort)
             });
         }
 
-        return new GameResultModel
+        var gameResult = new GameResultModel
         {
             Id = gameResultId,
             GameId = game.Id,
             PlayerResults = results,
         };
+
+        gameDataPort.SaveGameResult(gameResult);
+        return gameResult;
     }
+
+    public GameModel GetGame(Guid gameId) => gameDataPort.GetGame(gameId);
 }

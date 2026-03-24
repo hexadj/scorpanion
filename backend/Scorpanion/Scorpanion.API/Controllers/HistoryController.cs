@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
-using Scorpanion.BLL.Services.Interfaces;
+using Scorpanion.BLL.Managers.Interfaces;
 
 namespace Scorpanion.API.Controllers;
 
 [ApiController]
 [Route("history")]
-public class HistoryController(IHistoryService historyService) : Controller
+public class HistoryController(IHistoryManager historyManager) : Controller
 {
     [HttpGet("user/{userId:guid}")]
     public IActionResult GetHistory(Guid userId)
     {
-        var history = historyService.GetHistory(userId);
+        var history = historyManager.GetHistory(userId);
         if (history is null)
         {
             return NotFound();

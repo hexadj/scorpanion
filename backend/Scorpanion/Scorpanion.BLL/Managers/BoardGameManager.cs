@@ -1,10 +1,10 @@
+using Scorpanion.BLL.Managers.Interfaces;
 using Scorpanion.Contracts.Models;
 using Scorpanion.Contracts.Ports;
-using Scorpanion.BLL.Services.Interfaces;
 
-namespace Scorpanion.BLL.Services;
+namespace Scorpanion.BLL.Managers;
 
-public class BoardGameService(IBoardGameDataPort boardGameDataPort) : IBoardGameService
+public class BoardGameManager(IBoardGameDataPort boardGameDataPort) : IBoardGameManager
 {
     public Guid CreateBoardGame(BoardGameModel model) => boardGameDataPort.CreateBoardGame(model);
 
