@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Scorpanion.Contracts.Models;
 using Scorpanion.DAL.Context.Entities;
 using Scorpanion.DAL.Context.Services.Interfaces;
-using Scorpanion.DAL.ExchangeModels;
-using Scorpanion.DAL.Models;
 
 namespace Scorpanion.DAL.Context.Services;
 

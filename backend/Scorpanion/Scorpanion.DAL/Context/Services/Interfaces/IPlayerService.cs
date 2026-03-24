@@ -1,5 +1,5 @@
 using Scorpanion.DAL.Context.Entities;
-using Scorpanion.DAL.ExchangeModels;
+using Scorpanion.Contracts.Models;
 
 namespace Scorpanion.DAL.Context.Services.Interfaces;
 

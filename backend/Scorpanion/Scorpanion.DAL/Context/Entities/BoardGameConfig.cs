@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Scorpanion.Contracts.Models;
 
 namespace Scorpanion.DAL.Context.Entities;
 

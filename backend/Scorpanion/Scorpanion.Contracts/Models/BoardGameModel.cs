@@ -1,7 +1,6 @@
-namespace Scorpanion.DAL.ExchangeModels;
+namespace Scorpanion.Contracts.Models;
 
 public class BoardGameModel : ExchangeModel
 {
     public string? Name { get; set; }
-    
 }

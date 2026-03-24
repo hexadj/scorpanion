@@ -1,4 +1,4 @@
-namespace Scorpanion.DAL.ExchangeModels;
+namespace Scorpanion.Contracts.Models;
 
 public class PlayerResultModel : ExchangeModel
 {

@@ -1,18 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
-using Scorpanion.DAL.Context.Services.Interfaces;
+using Scorpanion.BLL.Managers.Interfaces;
 
 namespace Scorpanion.API.Controllers;
 
 [ApiController]
 [Route("history")]
-public class HistoryController(IUserService userService, IPlayerResultService playerResultService) : Controller
+public class HistoryController(IHistoryManager historyManager) : Controller
 {
     [HttpGet("user/{userId:guid}")]
     public IActionResult GetHistory(Guid userId)
     {
-        if (!userService.UserExists(userId))
+        var history = historyManager.GetHistory(userId);
+        if (history is null)
+        {
             return NotFound();
+        }
 
-        return Ok(playerResultService.GetPlayerResultsByUserId(userId));
+        return Ok(history);
     }
 }

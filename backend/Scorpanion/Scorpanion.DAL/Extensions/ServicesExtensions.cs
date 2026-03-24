@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Scorpanion.Contracts.Ports;
+using Scorpanion.DAL.Adapters;
 using Scorpanion.DAL.Context;
 using Scorpanion.DAL.Context.Entities;
 using Scorpanion.DAL.Context.Services;
@@ -34,6 +36,10 @@ public static class ServicesExtensions
         services.TryAddTransient<IPlayerService, PlayerService>();
         services.TryAddTransient<IPlayerResultService, PlayerResultService>();
         services.TryAddTransient<IGameService, GameService>();
+        services.TryAddTransient<IBoardGameDataPort, BoardGameDataPortAdapter>();
+        services.TryAddTransient<IUserDataPort, UserDataPortAdapter>();
+        services.TryAddTransient<IHistoryDataPort, HistoryDataPortAdapter>();
+        services.TryAddTransient<IGameDataPort, GameDataPortAdapter>();
         // Registration/login: inject IPasswordHasher<User> — HashPassword on sign-up/change; VerifyHashedPassword on login.
         services.TryAddTransient<IPasswordHasher<User>, PasswordHasher<User>>();
         return services;

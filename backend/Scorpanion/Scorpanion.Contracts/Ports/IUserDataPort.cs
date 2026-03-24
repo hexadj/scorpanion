@@ -1,8 +1,8 @@
 using Scorpanion.Contracts.Models;
 
-namespace Scorpanion.DAL.Context.Services.Interfaces;
+namespace Scorpanion.Contracts.Ports;
 
-public interface IUserService
+public interface IUserDataPort
 {
     Guid CreateUser(UserCredentialsModel model);
 

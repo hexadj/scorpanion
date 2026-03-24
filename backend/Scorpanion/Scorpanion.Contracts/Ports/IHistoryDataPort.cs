@@ -1,8 +1,8 @@
 using Scorpanion.Contracts.Models;
 
-namespace Scorpanion.DAL.Context.Services.Interfaces;
+namespace Scorpanion.Contracts.Ports;
 
-public interface IPlayerResultService
+public interface IHistoryDataPort
 {
     IReadOnlyList<PlayerResultModel> GetPlayerResultsByUserId(Guid userId);
 }

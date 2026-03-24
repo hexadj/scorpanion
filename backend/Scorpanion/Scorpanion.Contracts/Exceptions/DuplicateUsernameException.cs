@@ -1,4 +1,4 @@
-namespace Scorpanion.DAL.Exceptions;
+namespace Scorpanion.Contracts.Exceptions;
 
 public sealed class DuplicateUsernameException : Exception
 {
