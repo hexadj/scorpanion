@@ -1,6 +1,6 @@
-using Scorpanion.BLL.Ports;
 using Scorpanion.Contracts.Exceptions;
 using Scorpanion.Contracts.Models;
+using Scorpanion.Contracts.Ports;
 using Scorpanion.DAL.Context.Services.Interfaces;
 
 namespace Scorpanion.DAL.Adapters;

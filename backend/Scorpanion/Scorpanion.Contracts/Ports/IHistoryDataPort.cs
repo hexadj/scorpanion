@@ -1,6 +1,6 @@
 using Scorpanion.Contracts.Models;
 
-namespace Scorpanion.BLL.Ports;
+namespace Scorpanion.Contracts.Ports;
 
 public interface IHistoryDataPort
 {

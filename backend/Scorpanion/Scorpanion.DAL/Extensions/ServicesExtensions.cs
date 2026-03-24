@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Scorpanion.BLL.Ports;
+using Scorpanion.Contracts.Ports;
 using Scorpanion.DAL.Adapters;
 using Scorpanion.DAL.Context;
 using Scorpanion.DAL.Context.Entities;

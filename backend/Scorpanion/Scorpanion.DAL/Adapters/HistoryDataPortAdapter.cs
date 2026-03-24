@@ -1,4 +1,4 @@
-using Scorpanion.BLL.Ports;
+using Scorpanion.Contracts.Ports;
 using Scorpanion.Contracts.Models;
 using Scorpanion.DAL.Context.Services.Interfaces;
 
