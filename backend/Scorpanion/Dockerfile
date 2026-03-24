@@ -4,6 +4,8 @@ WORKDIR /src
 COPY ["Scorpanion.sln", "./"]
 COPY ["Scorpanion.API/Scorpanion.API.csproj", "Scorpanion.API/"]
 COPY ["Scorpanion.DAL/Scorpanion.DAL.csproj", "Scorpanion.DAL/"]
+COPY ["Scorpanion.BLL/Scorpanion.BLL.csproj", "Scorpanion.BLL/"]
+COPY ["Scorpanion.Contracts/Scorpanion.Contracts.csproj", "Scorpanion.Contracts/"]
 RUN dotnet restore "Scorpanion.sln"
 
 COPY . .
