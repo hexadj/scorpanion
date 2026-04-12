@@ -21,6 +21,7 @@ Ce document reste au niveau de la conception. Il ne decrit pas encore la stack n
 - Le frontend calcule la premiere proposition de resultat d'une `GameSession`.
 - L'API recoit uniquement le resultat final valide par l'utilisateur.
 - L'API ne recalcule pas le resultat final en V1.
+- L'API valide la structure des requetes et delegue la validation metier a la couche `Business`.
 
 ## Conventions
 
@@ -105,6 +106,7 @@ Reponse `201 Created` :
 
 Validations :
 - `name` est obligatoire
+- `name` est trimme avant validation et persistance
 - `name` doit etre unique de facon insensible a la casse
 - les espaces en debut et fin sont ignores pour l'unicite
 - `resultType` est obligatoire
@@ -160,6 +162,7 @@ Reponse `201 Created` :
 
 Validations :
 - `name` est obligatoire
+- `name` est trimme avant validation et persistance
 - `name` doit etre unique de facon insensible a la casse
 - les espaces en debut et fin sont ignores pour l'unicite
 
@@ -248,13 +251,12 @@ Validations d'entree :
 - `playerResults` doit contenir au moins une entree
 - chaque entree doit contenir `playerId`
 - chaque entree doit contenir `isWinner`
-- pour les jeux a score, `score` et `rank` sont attendus
-- pour les jeux `NO_SCORE`, `score` et `rank` sont absents
 
 Validations metier minimales :
 - le `Game` reference doit exister
 - chaque `Player` reference doit exister
 - un meme `Player` ne peut apparaitre qu'une seule fois dans la meme `GameSession`
+- la coherence de `score` et `rank` est verifiee selon le `ResultType` du `Game`
 
 Persistance :
 - `GameSession` et `SessionPlayerResult` sont enregistres dans une transaction unique
@@ -288,7 +290,7 @@ Le frontend :
 
 L'API backend :
 - valide la structure des requetes
-- verifie les invariants minimaux portes par la couche `Business`
+- delegue a `Business` la verification des invariants metier minimaux
 - persiste le resultat final sans le recalculer
 
 ## Hors perimetre pour l'instant

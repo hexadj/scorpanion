@@ -76,6 +76,7 @@ Responsabilites :
 - verifier que le `Game` reference existe
 - verifier que les `Player` references existent
 - verifier qu'un meme `Player` n'apparait pas plusieurs fois dans la meme `GameSession`
+- verifier la coherence metier minimale des donnees recues selon le `Game` reference
 - garantir l'immuabilite des donnees en V1 en ne prevoyant que des usages de creation
 - declencher l'enregistrement d'une partie complete dans une transaction unique
 
@@ -137,6 +138,7 @@ Cette couche ne porte pas de decision metier.
 
 - l'existence des references `Game` et `Player`
 - l'absence de doublon de `Player` dans une meme `GameSession`
+- la coherence metier minimale du payload final selon le `Game` reference
 - l'enregistrement atomique d'une partie complete
 - l'immuabilite des donnees de la V1
 

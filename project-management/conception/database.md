@@ -20,6 +20,7 @@ Ce document reste au niveau de la conception. Il ne decrit pas encore l'implemen
 - En V1, toutes les donnees persistees sont immuables apres creation.
 - La source de verite absolue est la validation finale par l'utilisateur avant l'enregistrement d'une partie.
 - Les calculs automatiques servent uniquement d'aide a la saisie.
+- Les noms de `Game` et `Player` sont trimmes avant validation et persistance.
 - Les noms de `Game` et `Player` sont uniques de facon insensible a la casse.
 - Les espaces en debut et fin sont ignores pour l'unicite.
 - Les accents et les autres differences de caracteres restent significatifs.
@@ -71,6 +72,7 @@ Champs :
 - `result_type`
 
 Regles :
+- `name` est trimme avant validation et persistance.
 - `name` est unique selon une comparaison insensible a la casse.
 - Les espaces autour du nom sont ignores pour l'unicite.
 - Un `Game` est immuable apres creation en V1.
@@ -85,6 +87,7 @@ Champs :
 - `name`
 
 Regles :
+- `name` est trimme avant validation et persistance.
 - `name` est unique selon une comparaison insensible a la casse.
 - Les espaces autour du nom sont ignores pour l'unicite.
 - Un `Player` est immuable apres creation en V1.
