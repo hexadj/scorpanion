@@ -1,0 +1,5 @@
+# Cursor (IDE, règles locales, état workspace)
+.cursor/
+
+# Claude Code (paramètres projet, hooks locaux)
+.claude/
