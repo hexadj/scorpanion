@@ -24,6 +24,7 @@ Ce document reste au niveau de la conception. Il sert a guider l'implementation 
   - `repository`
   - `entity`
   - `dto`
+  - `mapper`
   - `config`
   - `exception`
 - Les classes de persistance portent le suffixe `Entity`.
@@ -38,6 +39,7 @@ src/main/java/com/scorpanion/backend/
   dto/
   entity/
   exception/
+  mapper/
   repository/
   service/
 ```
@@ -89,6 +91,17 @@ Responsabilites :
 
 Les entites ne doivent pas etre exposees directement comme contrat API.
 
+### mapper
+
+Contient les classes de transformation entre `dto` et `entity`.
+
+Responsabilites :
+- convertir les DTO de requete en entites de persistance
+- convertir les entites de persistance en DTO de reponse
+- centraliser les transformations d'objets pour alleger la couche `service`
+
+Le package `mapper` ne porte pas de logique metier ni d'acces a la base.
+
 ### repository
 
 Contient les acces a la base de donnees.
@@ -125,16 +138,19 @@ Responsabilites :
 La structure suit les dependances suivantes :
 
 - `controller` depend de `service` et de `dto`
-- `service` depend de `repository` et de `entity`
+- `service` depend de `repository`, de `entity` et de `mapper`
+- `mapper` depend de `dto` et de `entity`
 - `repository` depend de `entity`
 - `exception` peut etre utilise par `controller` et `service`
 - `config` peut etre utilise par l'ensemble du backend
 
 Regles importantes :
 - `controller` ne depend pas directement de `repository`
+- `controller` ne depend pas directement de `mapper`
 - `repository` ne depend pas de `service`
 - `entity` ne depend pas de `controller` ni de `dto`
 - `dto` ne remplace pas les entites de persistance
+- `mapper` ne porte pas de validation metier
 
 ## Conventions de nommage
 
@@ -204,6 +220,16 @@ Exemples :
 - `GameSessionResponse`
 - `SessionPlayerResultResponse`
 
+### Mappers
+
+Les mappers suivent la convention :
+- `<BusinessObject>Mapper`
+
+Exemples :
+- `GameMapper`
+- `PlayerMapper`
+- `GameSessionMapper`
+
 ## Exemple autour de Game
 
 Pour l'objet metier `Game`, la structure cible serait :
@@ -214,6 +240,7 @@ Pour l'objet metier `Game`, la structure cible serait :
 - `entity/GameEntity`
 - `dto/CreateGameRequest`
 - `dto/GameResponse`
+- `mapper/GameMapper`
 
 Le meme schema s'applique a `Player` et `GameSession`.
 
@@ -239,6 +266,12 @@ Pour la V1, les classes les plus probables sont :
 - `PlayerRepository`
 - `GameSessionRepository`
 - `SessionPlayerResultRepository`
+
+### mapper
+
+- `GameMapper`
+- `PlayerMapper`
+- `GameSessionMapper`
 
 ### entity
 
@@ -269,7 +302,6 @@ Exemples probables :
 ## Choix volontaires pour la V1
 
 - pas de decoupage par feature
-- pas de package `mapper` pour l'instant
 - pas de package `validation` pour l'instant
 - pas de package `domain` separe
 - pas de package `stats` en V1
@@ -281,6 +313,5 @@ Ces choix servent a garder un backend simple et conventionnel.
 Si le projet grossit, les evolutions naturelles pourront etre :
 
 - introduire un package ou un module `stats`
-- introduire un package `mapper` si les conversions deviennent nombreuses
 - introduire un package `validation` si les regles se multiplient
 - reorganiser le projet par feature si la base de code grossit fortement

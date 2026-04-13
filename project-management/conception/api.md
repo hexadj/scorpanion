@@ -199,7 +199,7 @@ Requete :
 }
 ```
 
-Exemple `NO_SCORE` :
+Exemple `NO_SCORE` avec classement manuel optionnel :
 
 ```json
 {
@@ -208,6 +208,7 @@ Exemple `NO_SCORE` :
   "playerResults": [
     {
       "playerId": "c17e04f3-5f9d-43d4-9067-8ae8f30f4e14",
+      "rank": 1,
       "isWinner": false
     },
     {
@@ -256,7 +257,8 @@ Validations metier minimales :
 - le `Game` reference doit exister
 - chaque `Player` reference doit exister
 - un meme `Player` ne peut apparaitre qu'une seule fois dans la meme `GameSession`
-- la coherence de `score` et `rank` est verifiee selon le `ResultType` du `Game`
+- la coherence minimale du payload est verifiee selon le `ResultType` du `Game`
+- pour les jeux `NO_SCORE`, `score` ne doit pas etre fourni
 
 Persistance :
 - `GameSession` et `SessionPlayerResult` sont enregistres dans une transaction unique

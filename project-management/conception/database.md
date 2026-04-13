@@ -139,7 +139,7 @@ Valeurs :
 - `LOWEST_SCORE`
 
 Signification :
-- `NO_SCORE` : aucun score n'est saisi
+- `NO_SCORE` : aucun score n'est saisi et un classement manuel peut eventuellement etre renseigne
 - `HIGHEST_SCORE` : l'application propose un resultat initial base sur le score le plus eleve
 - `LOWEST_SCORE` : l'application propose un resultat initial base sur le score le plus faible
 
@@ -172,10 +172,9 @@ Signification :
 - `game_session_id` est obligatoire.
 - `player_id` est obligatoire.
 - `is_winner` est obligatoire.
-- `score` et `rank` sont absents pour les jeux `NO_SCORE`.
+- `score` est absent pour les jeux `NO_SCORE`.
 - `score` est un entier et peut etre negatif.
-- `rank` n'existe que pour les jeux a score.
-- Le classement suit la convention `1, 1, 3` en cas d'ex aequo.
+- `rank` est optionnel, y compris pour les jeux `NO_SCORE`.
 
 ## Regles de verite metier
 
@@ -185,13 +184,15 @@ Signification :
 - Le score n'est pas la source de verite absolue sur l'issue d'une partie.
 - Le classement n'est pas forcement deduit mecaniquement du score.
 - Le ou les vainqueurs ne sont pas forcement determines uniquement par le score.
+- Pour les jeux `NO_SCORE`, un classement manuel peut etre renseigne, de facon partielle ou complete.
 
 ## Cas particuliers actes
 
 - Une partie peut avoir un seul joueur.
 - Une partie solo peut etre perdue.
 - Une partie peut avoir zero, un ou plusieurs vainqueurs.
-- Une partie `NO_SCORE` n'a ni score ni classement.
+- Une partie `NO_SCORE` n'a pas de score.
+- Une partie `NO_SCORE` peut avoir un classement manuel ou aucun classement.
 - Une partie `NO_SCORE` peut ne pas avoir de vainqueur.
 - Lors de la saisie d'une partie, un `Game` ou un `Player` peut etre cree a la volee.
 - Cette creation a la volee est prise en compte immediatement.

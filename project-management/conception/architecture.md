@@ -76,7 +76,7 @@ Responsabilites :
 - verifier que le `Game` reference existe
 - verifier que les `Player` references existent
 - verifier qu'un meme `Player` n'apparait pas plusieurs fois dans la meme `GameSession`
-- verifier la coherence metier minimale des donnees recues selon le `Game` reference
+- verifier la coherence metier minimale des donnees recues selon le `Game` reference, notamment l'absence de `score` pour les jeux `NO_SCORE`
 - garantir l'immuabilite des donnees en V1 en ne prevoyant que des usages de creation
 - declencher l'enregistrement d'une partie complete dans une transaction unique
 
@@ -146,6 +146,7 @@ Cette couche ne porte pas de decision metier.
 
 - recalculer le resultat final a la place du frontend
 - imposer une coherence forte entre score, classement et vainqueur
+- imposer une structure particuliere au classement manuel des jeux `NO_SCORE`
 - gerer l'historique detaille
 - gerer les statistiques
 - gerer les modifications ou suppressions
