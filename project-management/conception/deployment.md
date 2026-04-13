@@ -25,6 +25,8 @@ Ce document reste un document de conception. Il ne fournit pas encore les fichie
   - `postgres`
 - Le frontend et l'API seront exposes sous le meme domaine.
 - Le backend et la base ne seront pas exposes publiquement.
+- Le redeploiement automatique sera declenche sur `push` vers `main` via GitHub Actions.
+- Le deploiement sera execute sur la Raspberry Pi via un `self-hosted runner`.
 
 ## Vue d'ensemble
 
@@ -118,6 +120,35 @@ Chaque service devra avoir :
 - des variables d'environnement explicites
 - un redemarrage automatique adapte au contexte serveur
 
+## CI/CD et redeploiement automatique
+
+La V1 retient un pipeline GitHub Actions avec execution du deploiement sur la Raspberry Pi.
+
+Principe :
+- `push` sur la branche `main`
+- declenchement du workflow GitHub Actions
+- execution du job de deploiement sur un `self-hosted runner` installe sur la Raspberry Pi
+- relance de la stack applicative via `docker compose`
+
+Repartition recommandee :
+- jobs de verification (lint/tests) sur runner GitHub heberge
+- job de deploiement sur runner `self-hosted` (labels `linux`, `arm64`, `rpi-prod`)
+
+Actions de deploiement attendues sur la Pi :
+- recuperation de la version cible du code
+- reconstruction et/ou mise a jour des conteneurs applicatifs
+- redemarrage de la stack en mode detache
+- verification basique de disponibilite post-deploiement
+
+## Securite CI/CD
+
+Points d'attention minimum :
+- runner `self-hosted` dedie au repo Scorpanion
+- deploiement autorise uniquement sur `push` de `main`
+- protection de branche `main` recommandee avant deploiement auto
+- secrets GitHub limites au strict necessaire
+- permissions minimales pour l'utilisateur systeme du runner
+
 ## Variables d'environnement
 
 ### frontend
@@ -187,4 +218,3 @@ Ce document ne couvre pas encore :
 - les secrets de production
 - la strategie de sauvegarde de la base
 - la supervision et l'observabilite
-- la CI/CD

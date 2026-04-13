@@ -31,7 +31,7 @@ Role :
 
 - `Java 26`
 - `Spring Boot 4`
-- `Gradle`
+- `Gradle 9`
 
 Role :
 - exposer l'API `REST JSON`
@@ -91,7 +91,7 @@ Cette stack est egalement coherente avec le modele de donnees defini dans [datab
 - bon compromis entre simplicite, lisibilite et evolutivite
 - bonne integration avec une base relationnelle et un ORM classique
 - choix moderne et pertinent pour un projet neuf
-- `Gradle` apporte un outillage de build moderne et flexible pour le backend
+- `Gradle 9` apporte un outillage de build moderne et flexible pour le backend
 
 ### Pourquoi PostgreSQL
 
