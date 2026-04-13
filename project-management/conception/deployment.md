@@ -43,7 +43,7 @@ flowchart LR
 ### frontend
 
 Responsabilites :
-- servir la SPA React buildée
+- servir la SPA React buildee
 - exposer l'application sous le domaine public
 - relayer les appels `/api` vers le conteneur `backend`
 
@@ -181,6 +181,13 @@ Principes retenus :
 - les donnees ne doivent pas dependre du cycle de vie du conteneur
 - la recreation du conteneur `postgres` ne doit pas supprimer les donnees
 - les migrations de schema sont gerees par `Flyway`
+
+## Migrations et operations DB
+
+Principes retenus :
+- les migrations applicatives standard passent par `Flyway`
+- les operations DB lourdes ou sensibles ne font pas partie du flux automatique de redeploiement standard
+- ces operations sont preparees et executees de facon controlee, avec intervention manuelle si necessaire
 
 ## Demarrage et robustesse
 

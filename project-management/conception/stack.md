@@ -8,7 +8,7 @@ Il formalise :
 - les technologies principales retenues
 - leur role dans le projet
 - les raisons de ces choix
-- les points encore ouverts a preciser plus tard
+- les points restant a preciser a l'interieur de cette stack
 
 Ce document reste volontairement plus concret que `architecture.md`, mais ne decrit pas encore l'implementation detaillee.
 
@@ -74,6 +74,14 @@ La stack retenue est coherente avec l'architecture definie dans [architecture.md
 
 Cette stack est egalement coherente avec le modele de donnees defini dans [database.md](/C:/Users/Arnaud/Documents/Perso/Projects/Workspace/scorpanion/project-management/conception/database.md:1) et avec le contrat defini dans [api.md](/C:/Users/Arnaud/Documents/Perso/Projects/Workspace/scorpanion/project-management/conception/api.md:1).
 
+Elle est egalement coherente avec la cible de deploiement decrite dans [deployment.md](/C:/Users/Arnaud/Documents/Perso/Projects/Workspace/scorpanion/project-management/conception/deployment.md:1) :
+
+- hebergement sur Raspberry Pi
+- `Traefik` deja present devant l'application
+- deploiement en `docker compose` avec `frontend`, `backend` et `postgres`
+- domaine public unique avec proxy `/api` du `frontend` vers le `backend`
+- redeploiement automatique sur `push` vers `main` via GitHub Actions et `self-hosted runner`
+
 ## Raisons des choix
 
 ### Pourquoi React + TypeScript
@@ -121,19 +129,19 @@ Cette stack est egalement coherente avec le modele de donnees defini dans [datab
 - les donnees persistees sont immuables apres creation en V1
 - la persistance d'une `GameSession` et de ses `SessionPlayerResult` doit se faire dans une transaction unique
 
-## Points encore ouverts
+## Points restant a preciser
 
-Les points suivants ne sont pas encore figes :
+Les points suivants restent volontairement a preciser plus tard :
 
+- les versions exactes de `React`, `TypeScript` et `Vite`
 - la strategie de tests
-- la strategie de deploiement
 - l'introduction eventuelle de `Kotlin` plus tard
 
 ## Hors perimetre pour l'instant
 
 Ce document ne couvre pas encore :
 - les details de configuration de la stack
-- l'infrastructure d'hebergement
+- la configuration detaillee de l'hebergement et du `docker compose`
 - l'observabilite
 - l'authentification
-- les outils de CI/CD
+- le detail des workflows CI/CD

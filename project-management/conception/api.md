@@ -22,6 +22,7 @@ Ce document reste au niveau de la conception. Il ne decrit pas encore la stack n
 - L'API recoit uniquement le resultat final valide par l'utilisateur.
 - L'API ne recalcule pas le resultat final en V1.
 - L'API valide la structure des requetes et delegue la validation metier a la couche `Business`.
+- Dans le flux de saisie d'une partie, le frontend peut creer a la volee un `Game` ou un `Player` via les endpoints dedies avant d'appeler `POST /game-sessions`.
 
 ## Conventions
 
@@ -109,6 +110,7 @@ Validations :
 - `name` est trimme avant validation et persistance
 - `name` doit etre unique de facon insensible a la casse
 - les espaces en debut et fin sont ignores pour l'unicite
+- les accents restent significatifs pour l'unicite
 - `resultType` est obligatoire
 - `resultType` doit etre l'une des valeurs autorisees
 
@@ -165,6 +167,7 @@ Validations :
 - `name` est trimme avant validation et persistance
 - `name` doit etre unique de facon insensible a la casse
 - les espaces en debut et fin sont ignores pour l'unicite
+- les accents restent significatifs pour l'unicite
 
 Erreurs principales :
 - `400 Bad Request` si le payload est invalide
@@ -175,6 +178,8 @@ Erreurs principales :
 Cree une nouvelle `GameSession` avec ses `SessionPlayerResult`.
 
 La requete contient le resultat final valide par l'utilisateur.
+
+Cet endpoint reference un `Game` et des `Player` deja existants. Leur creation a la volee, si necessaire pendant la saisie, passe par `POST /games` et `POST /players` dans le flux frontend juste avant cet appel.
 
 Requete :
 
@@ -252,6 +257,7 @@ Validations d'entree :
 - `playerResults` doit contenir au moins une entree
 - chaque entree doit contenir `playerId`
 - chaque entree doit contenir `isWinner`
+- `score`, s'il est fourni, doit etre un entier et peut etre negatif
 
 Validations metier minimales :
 - le `Game` reference doit exister
@@ -259,6 +265,8 @@ Validations metier minimales :
 - un meme `Player` ne peut apparaitre qu'une seule fois dans la meme `GameSession`
 - la coherence minimale du payload est verifiee selon le `ResultType` du `Game`
 - pour les jeux `NO_SCORE`, `score` ne doit pas etre fourni
+- pour les jeux `NO_SCORE`, `rank` reste un champ manuel optionnel, y compris de facon partielle
+- `isWinner` reste une valeur finale manuelle et une session peut avoir zero, un ou plusieurs gagnants
 
 Persistance :
 - `GameSession` et `SessionPlayerResult` sont enregistres dans une transaction unique
