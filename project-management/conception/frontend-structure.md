@@ -17,6 +17,7 @@ Ce document reste au niveau de la conception. Il sert a guider l'implementation 
 ## Principes generaux
 
 - Le frontend est une SPA React en TypeScript, buildee avec Vite.
+- Le gestionnaire de paquets du projet frontend est `pnpm`.
 - La structure est organisee par type en V1.
 - Le projet reste leger et n'est pas decoupe par feature a ce stade.
 - Les responsabilites sont separees par couche :
