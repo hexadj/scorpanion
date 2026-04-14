@@ -1,0 +1,25 @@
+# Gradle build outputs
+.gradle/
+.gradle-user/
+build/
+out/
+bin/
+
+# Keep Gradle wrapper JAR tracked
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE / editor files
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+.factorypath
+.apt_generated
+.springBeans
+.sts4-cache/
+
+# Local artifacts
+*.log
+*.tmp

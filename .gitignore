@@ -1,5 +1,19 @@
-# Cursor (IDE, règles locales, état workspace)
+# Local AI/IDE state
 .cursor/
-
-# Claude Code (paramètres projet, hooks locaux)
 .claude/
+
+# Editor settings
+.vscode/
+.idea/
+*.iml
+
+# OS / logs
+.DS_Store
+Thumbs.db
+*.log
+
+# Java/Gradle local artifacts accidentally created at root
+.gradle/
+.gradle-user/
+build/
+out/

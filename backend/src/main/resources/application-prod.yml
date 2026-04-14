@@ -1,0 +1,22 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${SCORPANION_DB_URL}
+    username: ${SCORPANION_DB_USERNAME}
+    password: ${SCORPANION_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${SCORPANION_DB_POOL_MAX_SIZE:10}
+      minimum-idle: ${SCORPANION_DB_POOL_MIN_IDLE:2}
+      connection-timeout: ${SCORPANION_DB_POOL_CONNECTION_TIMEOUT_MS:30000}
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: ${SCORPANION_FLYWAY_ENABLED:true}
+
+server:
+  port: ${PORT:8080}
