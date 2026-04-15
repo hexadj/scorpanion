@@ -8,6 +8,7 @@ import com.scorpanion.backend.entity.SessionPlayerResultEntity;
 import com.scorpanion.backend.exception.DuplicatePlayerInSessionException;
 import com.scorpanion.backend.exception.InvalidGameSessionException;
 import com.scorpanion.backend.exception.ResourceNotFoundException;
+import com.scorpanion.backend.mapper.GameSessionMapper;
 import com.scorpanion.backend.repository.GameRepository;
 import com.scorpanion.backend.repository.GameSessionRepository;
 import com.scorpanion.backend.repository.PlayerRepository;
@@ -27,15 +28,18 @@ public class GameSessionServiceImpl implements GameSessionService {
 	private final GameRepository gameRepository;
 	private final PlayerRepository playerRepository;
 	private final GameSessionRepository gameSessionRepository;
+	private final GameSessionMapper gameSessionMapper;
 
 	public GameSessionServiceImpl(
 		GameRepository gameRepository,
 		PlayerRepository playerRepository,
-		GameSessionRepository gameSessionRepository
+		GameSessionRepository gameSessionRepository,
+		GameSessionMapper gameSessionMapper
 	) {
 		this.gameRepository = gameRepository;
 		this.playerRepository = playerRepository;
 		this.gameSessionRepository = gameSessionRepository;
+		this.gameSessionMapper = gameSessionMapper;
 	}
 
 	@Override
@@ -59,19 +63,14 @@ public class GameSessionServiceImpl implements GameSessionService {
 
 		validateUniquePlayers(command.playerResults());
 
-		GameSessionEntity gameSession = new GameSessionEntity(game, command.playedAt());
+		GameSessionEntity gameSession = gameSessionMapper.toEntity(game, command);
 		for (PlayerResultInput playerResult : command.playerResults()) {
 			validatePlayerResult(game.getResultType(), playerResult);
 
 			PlayerEntity player = playerRepository.findById(playerResult.playerId())
 				.orElseThrow(() -> ResourceNotFoundException.player(playerResult.playerId()));
 
-			SessionPlayerResultEntity sessionPlayerResult = new SessionPlayerResultEntity(
-				player,
-				playerResult.score(),
-				playerResult.rank(),
-				playerResult.isWinner()
-			);
+			SessionPlayerResultEntity sessionPlayerResult = gameSessionMapper.toEntity(player, playerResult);
 			gameSession.addPlayerResult(sessionPlayerResult);
 		}
 

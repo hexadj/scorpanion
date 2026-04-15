@@ -1,0 +1,16 @@
+package com.scorpanion.backend.dto;
+
+import com.scorpanion.backend.entity.ResultType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+public record CreateGameRequest(
+	@NotBlank
+	@Size(max = 120)
+	String name,
+
+	@NotNull
+	ResultType resultType
+) {
+}
