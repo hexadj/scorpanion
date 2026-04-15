@@ -1,11 +1,13 @@
-export type GameSessionPlayerScore = {
+export type SessionPlayerResult = {
   playerId: string;
-  score: number;
+  rank: number;
+  isWinner: boolean;
+  score?: number;
 };
 
 export type GameSession = {
   id: string;
   gameId: string;
   playedAt: string;
-  scores: GameSessionPlayerScore[];
+  results: SessionPlayerResult[];
 };
