@@ -1,12 +1,12 @@
 spring:
   config:
     activate:
-      on-profile: test
+      on-profile: migration-test
   datasource:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     show-sql: false
   flyway:
-    enabled: false
+    enabled: true
