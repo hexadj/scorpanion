@@ -3,12 +3,12 @@ package com.scorpanion.backend.service;
 import com.scorpanion.backend.entity.GameEntity;
 import com.scorpanion.backend.entity.GameSessionEntity;
 import com.scorpanion.backend.entity.PlayerEntity;
-import com.scorpanion.backend.entity.ResultType;
 import com.scorpanion.backend.entity.SessionPlayerResultEntity;
 import com.scorpanion.backend.exception.DuplicatePlayerInSessionException;
 import com.scorpanion.backend.exception.InvalidGameSessionException;
 import com.scorpanion.backend.exception.ResourceNotFoundException;
 import com.scorpanion.backend.mapper.GameSessionMapper;
+import com.scorpanion.backend.model.ResultType;
 import com.scorpanion.backend.repository.GameRepository;
 import com.scorpanion.backend.repository.GameSessionRepository;
 import com.scorpanion.backend.repository.PlayerRepository;
@@ -19,8 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class GameSessionServiceImpl implements GameSessionService {
@@ -62,13 +65,15 @@ public class GameSessionServiceImpl implements GameSessionService {
 			.orElseThrow(() -> ResourceNotFoundException.game(command.gameId()));
 
 		validateUniquePlayers(command.playerResults());
+		Map<UUID, PlayerEntity> playersById = resolvePlayersById(command.playerResults());
 
 		GameSessionEntity gameSession = gameSessionMapper.toEntity(game, command);
 		for (PlayerResultInput playerResult : command.playerResults()) {
 			validatePlayerResult(game.getResultType(), playerResult);
-
-			PlayerEntity player = playerRepository.findById(playerResult.playerId())
-				.orElseThrow(() -> ResourceNotFoundException.player(playerResult.playerId()));
+			PlayerEntity player = playersById.get(playerResult.playerId());
+			if (player == null) {
+				throw ResourceNotFoundException.player(playerResult.playerId());
+			}
 
 			SessionPlayerResultEntity sessionPlayerResult = gameSessionMapper.toEntity(player, playerResult);
 			gameSession.addPlayerResult(sessionPlayerResult);
@@ -99,5 +104,14 @@ public class GameSessionServiceImpl implements GameSessionService {
 		if (resultType == ResultType.NO_SCORE && playerResult.score() != null) {
 			throw new InvalidGameSessionException("score must not be provided for NO_SCORE games.");
 		}
+	}
+
+	private Map<UUID, PlayerEntity> resolvePlayersById(List<PlayerResultInput> playerResults) {
+		List<UUID> playerIds = playerResults.stream()
+			.map(PlayerResultInput::playerId)
+			.toList();
+
+		return playerRepository.findAllById(playerIds).stream()
+			.collect(Collectors.toMap(PlayerEntity::getId, Function.identity()));
 	}
 }

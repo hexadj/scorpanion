@@ -1,6 +1,6 @@
 package com.scorpanion.backend.dto;
 
-import com.scorpanion.backend.entity.ResultType;
+import com.scorpanion.backend.model.ResultType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

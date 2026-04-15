@@ -1,4 +1,4 @@
-package com.scorpanion.backend.entity;
+package com.scorpanion.backend.model;
 
 public enum ResultType {
 	NO_SCORE,

@@ -1,7 +1,7 @@
 package com.scorpanion.backend.service;
 
 import com.scorpanion.backend.entity.GameEntity;
-import com.scorpanion.backend.entity.ResultType;
+import com.scorpanion.backend.model.ResultType;
 
 import java.util.List;
 

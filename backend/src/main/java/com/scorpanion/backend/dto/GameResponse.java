@@ -1,6 +1,6 @@
 package com.scorpanion.backend.dto;
 
-import com.scorpanion.backend.entity.ResultType;
+import com.scorpanion.backend.model.ResultType;
 
 import java.util.UUID;
 

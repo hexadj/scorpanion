@@ -1,8 +1,8 @@
 package com.scorpanion.backend.service;
 
 import com.scorpanion.backend.entity.GameEntity;
-import com.scorpanion.backend.entity.ResultType;
 import com.scorpanion.backend.exception.DuplicateNameException;
+import com.scorpanion.backend.model.ResultType;
 import com.scorpanion.backend.repository.GameRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
