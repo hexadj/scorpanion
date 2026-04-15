@@ -98,11 +98,15 @@ public class GameSessionServiceImpl implements GameSessionService {
 	}
 
 	private void validatePlayerResult(ResultType resultType, PlayerResultInput playerResult) {
-		if (playerResult.isWinner() == null) {
-			throw new InvalidGameSessionException("isWinner is required for each player result.");
-		}
-		if (resultType == ResultType.NO_SCORE && playerResult.score() != null) {
-			throw new InvalidGameSessionException("score must not be provided for NO_SCORE games.");
+		switch (resultType) {
+			case NO_SCORE -> {
+				if (playerResult.score() != null) {
+					throw new InvalidGameSessionException("score must not be provided for NO_SCORE games.");
+				}
+			}
+			case HIGHEST_SCORE, LOWEST_SCORE -> {
+				// No additional validation for score-based game types
+			}
 		}
 	}
 

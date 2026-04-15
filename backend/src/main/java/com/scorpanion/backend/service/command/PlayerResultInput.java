@@ -6,6 +6,6 @@ public record PlayerResultInput(
 	UUID playerId,
 	Integer score,
 	Integer rank,
-	Boolean isWinner
+	boolean isWinner
 ) {
 }

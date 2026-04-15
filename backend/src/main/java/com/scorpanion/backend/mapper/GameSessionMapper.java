@@ -42,13 +42,12 @@ public class GameSessionMapper {
 	public SessionPlayerResultEntity toEntity(PlayerEntity player, PlayerResultInput input) {
 		Objects.requireNonNull(player, "PlayerEntity is required.");
 		Objects.requireNonNull(input, "PlayerResultInput is required.");
-		boolean winner = Objects.requireNonNull(input.isWinner(), "isWinner is required.");
 
 		return new SessionPlayerResultEntity(
 			player,
 			input.score(),
 			input.rank(),
-			winner
+			input.isWinner()
 		);
 	}
 
@@ -68,11 +67,12 @@ public class GameSessionMapper {
 
 	private PlayerResultInput toPlayerResultInput(SessionPlayerResultRequest request) {
 		Objects.requireNonNull(request, "SessionPlayerResultRequest is required.");
+		boolean isWinner = Objects.requireNonNull(request.isWinner(), "isWinner is required.");
 		return new PlayerResultInput(
 			request.playerId(),
 			request.score(),
 			request.rank(),
-			request.isWinner()
+			isWinner
 		);
 	}
 

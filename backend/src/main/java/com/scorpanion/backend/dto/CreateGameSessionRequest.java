@@ -15,6 +15,6 @@ public record CreateGameSessionRequest(
 	Instant playedAt,
 	@NotNull
 	@Size(min = 1)
-	List<@Valid SessionPlayerResultRequest> playerResults
+	List<@NotNull @Valid SessionPlayerResultRequest> playerResults
 ) {
 }
