@@ -42,16 +42,45 @@ Exemple :
 
 ### Format des erreurs
 
-Les erreurs suivent une structure simple et standard.
+Les erreurs suivent le format `ProblemDetail` de Spring (`application/problem+json`).
 
-Exemple :
+Champs retournes :
+- `title` : categorie d'erreur stable (ex: `INVALID_REQUEST`, `CONFLICT`)
+- `status` : code HTTP
+- `detail` : message client
+- `code` : duplication explicite de la categorie d'erreur pour le frontend
+- `subCode` : code metier stable optionnel (ex: `GAME_NOT_FOUND`, `PLAYER_NAME_ALREADY_EXISTS`)
+- `fieldErrors` : liste optionnelle pour les erreurs de validation de payload
+
+Regles :
+- l'API ne renvoie jamais les messages techniques bruts (`exception.getMessage()` framework/SQL)
+- `detail` reste neutre et stable pour le client
+- `fieldErrors` est present uniquement pour les erreurs de validation de payload
+
+Exemple `400 Bad Request` (payload invalide) :
 
 ```json
 {
-  "error": {
-    "code": "PLAYER_NAME_ALREADY_EXISTS",
-    "message": "A player with this name already exists."
-  }
+  "title": "INVALID_REQUEST",
+  "status": 400,
+  "detail": "Request payload validation failed.",
+  "code": "INVALID_REQUEST",
+  "subCode": "PAYLOAD_VALIDATION_FAILED",
+  "fieldErrors": [
+    "name: must not be blank"
+  ]
+}
+```
+
+Exemple `409 Conflict` (conflit technique de contrainte) :
+
+```json
+{
+  "title": "CONFLICT",
+  "status": 409,
+  "detail": "Conflict with existing resource.",
+  "code": "CONFLICT",
+  "subCode": "CONSTRAINT_VIOLATION"
 }
 ```
 

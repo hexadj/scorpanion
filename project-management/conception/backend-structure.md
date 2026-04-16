@@ -93,12 +93,13 @@ Les entites ne doivent pas etre exposees directement comme contrat API.
 
 ### mapper
 
-Contient les classes de transformation entre `dto` et `entity`.
+Contient les classes de transformation entre modeles de transport (`dto`), modeles de service (commandes internes) et modeles de persistance (`entity`).
 
 Responsabilites :
-- convertir les DTO de requete en entites de persistance
+- convertir les DTO de requete en objets de couche `service` (commandes internes)
+- convertir les objets de couche `service` en entites de persistance
 - convertir les entites de persistance en DTO de reponse
-- centraliser les transformations d'objets pour alleger la couche `service`
+- centraliser les transformations d'objets pour alleger les couches `controller` et `service`
 
 Le package `mapper` ne porte pas de logique metier ni d'acces a la base.
 
@@ -137,16 +138,16 @@ Responsabilites :
 
 La structure suit les dependances suivantes :
 
-- `controller` depend de `service` et de `dto`
+- `controller` depend de `service`, de `dto` et de `mapper`
 - `service` depend de `repository`, de `entity` et de `mapper`
-- `mapper` depend de `dto` et de `entity`
+- `mapper` depend de `dto`, de `service` (commandes) et de `entity`
 - `repository` depend de `entity`
 - `exception` peut etre utilise par `controller` et `service`
 - `config` peut etre utilise par l'ensemble du backend
 
 Regles importantes :
 - `controller` ne depend pas directement de `repository`
-- `controller` ne depend pas directement de `mapper`
+- `controller` peut dependre directement de `mapper` pour les transformations request/response
 - `repository` ne depend pas de `service`
 - `entity` ne depend pas de `controller` ni de `dto`
 - `dto` ne remplace pas les entites de persistance
