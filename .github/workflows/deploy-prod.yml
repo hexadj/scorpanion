@@ -5,6 +5,12 @@ on:
     branches:
       - prod
   workflow_dispatch:
+    inputs:
+      force_rebuild_frontend_backend:
+        description: Force no-cache rebuild for backend and frontend
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: deploy-prod
@@ -37,14 +43,21 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           BEFORE_SHA: ${{ github.event.before }}
           CURRENT_SHA: ${{ github.sha }}
+          FORCE_REBUILD_REQUESTED: ${{ github.event.inputs.force_rebuild_frontend_backend || 'false' }}
         run: |
           set -euo pipefail
 
           deploy_mode="none"
           deploy_needed="false"
+          force_rebuild="false"
           changed_files=()
 
-          if [ "${EVENT_NAME}" = "workflow_dispatch" ]; then
+          if [ "${FORCE_REBUILD_REQUESTED}" = "true" ]; then
+            deploy_mode="full"
+            deploy_needed="true"
+            force_rebuild="true"
+            echo "Force rebuild requested: full deployment with no-cache backend/frontend rebuild."
+          elif [ "${EVENT_NAME}" = "workflow_dispatch" ]; then
             deploy_mode="full"
             deploy_needed="true"
             echo "Manual dispatch detected: forcing full deployment."
@@ -105,7 +118,8 @@ jobs:
 
           echo "deploy_mode=${deploy_mode}" >> "${GITHUB_OUTPUT}"
           echo "deploy_needed=${deploy_needed}" >> "${GITHUB_OUTPUT}"
-          echo "selected deploy_mode=${deploy_mode}, deploy_needed=${deploy_needed}"
+          echo "force_rebuild=${force_rebuild}" >> "${GITHUB_OUTPUT}"
+          echo "selected deploy_mode=${deploy_mode}, deploy_needed=${deploy_needed}, force_rebuild=${force_rebuild}"
 
       - name: Validate deployment inputs
         if: steps.plan.outputs.deploy_needed == 'true'
@@ -139,6 +153,7 @@ jobs:
         shell: bash
         env:
           DEPLOY_MODE: ${{ steps.plan.outputs.deploy_mode }}
+          FORCE_REBUILD: ${{ steps.plan.outputs.force_rebuild }}
         run: |
           set -euo pipefail
           cleanup_secret_file() {
@@ -150,6 +165,18 @@ jobs:
             -f docker-compose.traefik.yml
             -f docker-compose.secrets.yml
           )
+
+          if [ "${FORCE_REBUILD}" = "true" ]; then
+            echo "Running forced no-cache rebuild for backend and frontend."
+            docker compose "${COMPOSE_ARGS[@]}" pull
+            docker compose "${COMPOSE_ARGS[@]}" build --no-cache --pull backend frontend
+            if docker compose up --help | grep -q -- "--wait"; then
+              docker compose "${COMPOSE_ARGS[@]}" up -d --remove-orphans --wait --wait-timeout 180
+            else
+              docker compose "${COMPOSE_ARGS[@]}" up -d --remove-orphans
+            fi
+            exit 0
+          fi
 
           case "${DEPLOY_MODE}" in
             full)
