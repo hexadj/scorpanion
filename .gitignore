@@ -12,6 +12,12 @@
 Thumbs.db
 *.log
 
+# Root env files for Docker/Compose
+.env
+.env.*
+!.env.example
+.secrets/
+
 # Java/Gradle local artifacts accidentally created at root
 .gradle/
 .gradle-user/

@@ -1,0 +1,31 @@
+services:
+  backend:
+    mem_reservation: 512m
+    mem_limit: 768m
+    cpus: "1.0"
+
+  frontend:
+    mem_reservation: 64m
+    mem_limit: 128m
+    cpus: "0.25"
+    ports: !reset []
+    networks:
+      - default
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      - traefik.http.routers.scorpanion.rule=Host(`${SCORPANION_DOMAIN:?SCORPANION_DOMAIN is required}`)
+      - traefik.http.routers.scorpanion.entrypoints=websecure
+      - traefik.http.routers.scorpanion.tls=true
+      - traefik.http.services.scorpanion.loadbalancer.server.port=8080
+
+  postgres:
+    mem_reservation: 256m
+    mem_limit: 512m
+    cpus: "1.0"
+
+networks:
+  traefik:
+    external: true
+    name: traefik

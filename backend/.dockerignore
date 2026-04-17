@@ -1,0 +1,24 @@
+# Local build output and caches
+.gradle
+.gradle-user
+build
+out
+bin
+
+# Tests are not required to produce the runtime jar
+src/test
+
+# IDE/editor artifacts
+.idea
+.vscode
+*.iml
+
+# Local environment files
+.env
+.env.*
+.secrets/
+
+# OS / logs
+*.log
+.DS_Store
+Thumbs.db

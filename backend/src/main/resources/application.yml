@@ -16,5 +16,7 @@ management:
         include: health,info
 
 server:
+  servlet:
+    context-path: /api
   error:
     include-message: never

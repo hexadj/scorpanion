@@ -2,10 +2,11 @@ spring:
   config:
     activate:
       on-profile: prod
+    import: optional:configtree:/run/secrets/
   datasource:
     url: ${SCORPANION_DB_URL}
     username: ${SCORPANION_DB_USERNAME}
-    password: ${SCORPANION_DB_PASSWORD}
+    password: ${scorpanion_db_password:${SCORPANION_DB_PASSWORD:}}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: ${SCORPANION_DB_POOL_MAX_SIZE:10}
