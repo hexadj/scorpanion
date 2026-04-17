@@ -25,7 +25,7 @@ Ce document reste un document de conception, mais il decrit l'etat actuel des fi
   - `postgres`
 - Le frontend et l'API seront exposes sous le meme domaine.
 - Le backend et la base ne seront pas exposes publiquement.
-- Le redeploiement automatique sera declenche sur `push` vers `main` via GitHub Actions.
+- Le redeploiement automatique sera declenche sur `push` vers `prod` via GitHub Actions.
 - Le deploiement sera execute sur la Raspberry Pi via un `self-hosted runner`.
 
 ## Vue d'ensemble
@@ -151,7 +151,7 @@ Commandes usuelles :
 La V1 retient un pipeline GitHub Actions avec execution du deploiement sur la Raspberry Pi.
 
 Principe :
-- `push` sur la branche `main`
+- `push` sur la branche `prod`
 - declenchement du workflow GitHub Actions
 - execution du job de deploiement sur un `self-hosted runner` installe sur la Raspberry Pi
 - relance de la stack applicative via `docker compose`
@@ -170,8 +170,8 @@ Actions de deploiement attendues sur la Pi :
 
 Points d'attention minimum :
 - runner `self-hosted` dedie au repo Scorpanion
-- deploiement autorise uniquement sur `push` de `main`
-- protection de branche `main` recommandee avant deploiement auto
+- deploiement autorise uniquement sur `push` de `prod`
+- protection de branche `prod` recommandee avant deploiement auto
 - secrets GitHub limites au strict necessaire
 - permissions minimales pour l'utilisateur systeme du runner
 

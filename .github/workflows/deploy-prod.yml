@@ -1,0 +1,128 @@
+name: deploy-prod
+
+on:
+  push:
+    branches:
+      - prod
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy to Raspberry Pi
+    runs-on:
+      - self-hosted
+      - linux
+      - arm64
+      - rpi-prod
+    permissions:
+      contents: read
+    env:
+      SCORPANION_DB_NAME: ${{ vars.SCORPANION_DB_NAME }}
+      SCORPANION_DB_USERNAME: ${{ vars.SCORPANION_DB_USERNAME }}
+      SCORPANION_DOMAIN: ${{ vars.SCORPANION_DOMAIN }}
+      SCORPANION_DB_PASSWORD_FILE_PATH: /dev/shm/scorpanion_db_password.txt
+      SCORPANION_DB_PASSWORD: ${{ secrets.SCORPANION_DB_PASSWORD }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate deployment inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${SCORPANION_DB_NAME}"
+          test -n "${SCORPANION_DB_USERNAME}"
+          test -n "${SCORPANION_DOMAIN}"
+          test -n "${SCORPANION_DB_PASSWORD}"
+
+      - name: Prepare DB password file
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$(dirname "${SCORPANION_DB_PASSWORD_FILE_PATH}")"
+          rm -f "${SCORPANION_DB_PASSWORD_FILE_PATH}"
+          printf '%s' "${SCORPANION_DB_PASSWORD}" > "${SCORPANION_DB_PASSWORD_FILE_PATH}"
+          chmod 600 "${SCORPANION_DB_PASSWORD_FILE_PATH}"
+
+      - name: Deploy compose stack
+        shell: bash
+        run: |
+          set -euo pipefail
+          cleanup_secret_file() {
+            rm -f "${SCORPANION_DB_PASSWORD_FILE_PATH}"
+          }
+          trap cleanup_secret_file INT TERM
+          COMPOSE_ARGS=(
+            -f docker-compose.yml
+            -f docker-compose.traefik.yml
+            -f docker-compose.secrets.yml
+          )
+
+          docker compose "${COMPOSE_ARGS[@]}" pull
+
+          # Prefer native wait support when available; fallback is handled by
+          # the dedicated health verification step below.
+          if docker compose up --help | grep -q -- "--wait"; then
+            docker compose "${COMPOSE_ARGS[@]}" up -d --build --remove-orphans --wait --wait-timeout 180
+          else
+            docker compose "${COMPOSE_ARGS[@]}" up -d --build --remove-orphans
+          fi
+
+      - name: Verify stack health
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMPOSE_ARGS=(
+            -f docker-compose.yml
+            -f docker-compose.traefik.yml
+            -f docker-compose.secrets.yml
+          )
+          SERVICES=(postgres backend frontend)
+          MAX_ATTEMPTS=24
+          SLEEP_SECONDS=5
+
+          for attempt in $(seq 1 "${MAX_ATTEMPTS}"); do
+            all_ok=true
+
+            for service in "${SERVICES[@]}"; do
+              cid="$(docker compose "${COMPOSE_ARGS[@]}" ps -q "${service}")"
+              if [ -z "${cid}" ]; then
+                echo "${service}: missing container id"
+                all_ok=false
+                continue
+              fi
+
+              status="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "${cid}")"
+              echo "${service}: ${status}"
+
+              case "${status}" in
+                healthy|running) ;;
+                *) all_ok=false ;;
+              esac
+            done
+
+            if [ "${all_ok}" = true ]; then
+              echo "Stack health verification passed."
+              docker compose "${COMPOSE_ARGS[@]}" ps
+              exit 0
+            fi
+
+            echo "Stack not ready yet (${attempt}/${MAX_ATTEMPTS}). Waiting ${SLEEP_SECONDS}s..."
+            sleep "${SLEEP_SECONDS}"
+          done
+
+          echo "Stack health verification failed."
+          docker compose "${COMPOSE_ARGS[@]}" ps
+          docker compose "${COMPOSE_ARGS[@]}" logs --tail=200 backend frontend postgres || true
+          exit 1
+
+      - name: Cleanup local secret file
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f "${SCORPANION_DB_PASSWORD_FILE_PATH}"

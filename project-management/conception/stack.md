@@ -80,7 +80,7 @@ Elle est egalement coherente avec la cible de deploiement decrite dans [deployme
 - `Traefik` deja present devant l'application
 - deploiement en `docker compose` avec `frontend`, `backend` et `postgres`
 - domaine public unique avec proxy `/api` du `frontend` vers le `backend`
-- redeploiement automatique sur `push` vers `main` via GitHub Actions et `self-hosted runner`
+- redeploiement automatique sur `push` vers `prod` via GitHub Actions et `self-hosted runner`
 
 ## Raisons des choix
 
