@@ -12,7 +12,7 @@ Il formalise :
 - les principes de persistance
 - les points d'attention lies a la Raspberry Pi
 
-Ce document reste un document de conception. Il ne fournit pas encore les fichiers `compose` definitifs.
+Ce document reste un document de conception, mais il decrit l'etat actuel des fichiers `compose` presents dans le repository.
 
 ## Contexte retenu
 
@@ -108,17 +108,43 @@ Consequences :
 
 ## Services du docker compose
 
-Le `docker compose` de la V1 devra au minimum definir :
+Le `docker compose` de la V1 definit au minimum :
 
 - `frontend`
 - `backend`
 - `postgres`
 
-Chaque service devra avoir :
+Chaque service a :
 - un nom stable
 - une image compatible `arm64`
 - des variables d'environnement explicites
 - un redemarrage automatique adapte au contexte serveur
+
+## Fichiers compose actuellement utilises
+
+Le deploiement s'appuie sur trois fichiers :
+
+- `docker-compose.yml`
+  - base commune de la stack
+  - mode local simple avec publication de port du `frontend`
+  - `backend` et `postgres` restent internes au reseau compose
+- `docker-compose.traefik.yml`
+  - override de deploiement via `Traefik`
+  - suppression de la publication de port `frontend` (`ports: !reset []`)
+  - ajout du reseau externe `traefik` et des labels de routage
+  - ajout des limites CPU/memoire pour `backend`, `frontend` et `postgres`
+- `docker-compose.secrets.yml`
+  - override de secrets runtime
+  - montage du secret `scorpanion_db_password`
+  - utilisation de `POSTGRES_PASSWORD_FILE` pour `postgres`
+  - suppression de l'injection explicite de mot de passe DB dans l'environnement runtime du `backend`
+
+Commandes usuelles :
+
+- local :
+  - `docker compose -f docker-compose.yml up -d`
+- deploiement avec Traefik + secrets :
+  - `docker compose -f docker-compose.yml -f docker-compose.traefik.yml -f docker-compose.secrets.yml up -d`
 
 ## CI/CD et redeploiement automatique
 
@@ -163,7 +189,7 @@ Principe recommande :
 Le backend devra recevoir au minimum :
 - l'URL de connexion a `postgres`
 - l'utilisateur de base de donnees
-- le mot de passe de base de donnees
+- le mot de passe de base de donnees (via secret runtime en deploiement Traefik + secrets)
 - les parametres utiles a `Spring Boot`
 
 ### postgres
@@ -171,7 +197,15 @@ Le backend devra recevoir au minimum :
 Le service `postgres` devra recevoir au minimum :
 - le nom de la base
 - l'utilisateur
-- le mot de passe
+- le mot de passe (via `POSTGRES_PASSWORD_FILE` en deploiement Traefik + secrets)
+
+### Secret DB actuel
+
+Le secret de mot de passe DB est fourni via fichier :
+
+- variable : `SCORPANION_DB_PASSWORD_FILE_PATH`
+- cible runtime : `/run/secrets/scorpanion_db_password`
+- fichier local attendu pour execution manuelle : `.secrets/scorpanion_db_password.txt`
 
 ## Persistance
 
@@ -206,6 +240,14 @@ Points d'attention :
 - la base de donnees doit rester raisonnable en consommation disque et memoire
 - le nombre de services doit rester limite pour conserver un deploiement simple
 
+Limites de ressources actuellement configurees dans l'override Traefik :
+
+- `backend` : `mem_reservation=512m`, `mem_limit=768m`, `cpus=1.0`
+- `postgres` : `mem_reservation=256m`, `mem_limit=512m`, `cpus=1.0`
+- `frontend` : `mem_reservation=64m`, `mem_limit=128m`, `cpus=0.25`
+
+Ces valeurs sont une base de depart et doivent etre ajustees selon la charge reelle observee.
+
 ## Choix retenus pour la V1
 
 - un seul domaine public
@@ -220,8 +262,6 @@ Points d'attention :
 ## Hors perimetre pour l'instant
 
 Ce document ne couvre pas encore :
-- le fichier `docker-compose.yml` exact
-- les labels `Traefik` definitifs
-- les secrets de production
 - la strategie de sauvegarde de la base
+- la rotation centralisee des secrets (Vault, manager cloud, etc.)
 - la supervision et l'observabilite
