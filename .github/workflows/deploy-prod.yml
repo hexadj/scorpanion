@@ -30,7 +30,85 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Plan deployment scope
+        id: plan
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          CURRENT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          deploy_mode="none"
+          deploy_needed="false"
+          changed_files=()
+
+          if [ "${EVENT_NAME}" = "workflow_dispatch" ]; then
+            deploy_mode="full"
+            deploy_needed="true"
+            echo "Manual dispatch detected: forcing full deployment."
+          else
+            if [ -n "${BEFORE_SHA}" ] && [ "${BEFORE_SHA}" != "0000000000000000000000000000000000000000" ]; then
+              git fetch --no-tags --depth=1 origin "${BEFORE_SHA}" || true
+              if git cat-file -e "${BEFORE_SHA}^{commit}" 2>/dev/null; then
+                mapfile -t changed_files < <(git diff --name-only "${BEFORE_SHA}" "${CURRENT_SHA}")
+              else
+                deploy_mode="full"
+                deploy_needed="true"
+                echo "Unable to resolve previous commit, fallback to full deployment."
+              fi
+            else
+              deploy_mode="full"
+              deploy_needed="true"
+              echo "Missing previous commit context, fallback to full deployment."
+            fi
+
+            if [ "${deploy_mode}" = "none" ]; then
+              backend_changed="false"
+              frontend_changed="false"
+              infra_changed="false"
+
+              for file in "${changed_files[@]}"; do
+                case "${file}" in
+                  backend/*)
+                    backend_changed="true"
+                    ;;
+                  frontend/*)
+                    frontend_changed="true"
+                    ;;
+                  docker-compose.yml|docker-compose.traefik.yml|docker-compose.secrets.yml|.github/workflows/deploy-prod.yml)
+                    infra_changed="true"
+                    ;;
+                esac
+              done
+
+              if [ "${infra_changed}" = "true" ]; then
+                deploy_mode="full"
+                deploy_needed="true"
+              elif [ "${backend_changed}" = "true" ] && [ "${frontend_changed}" = "true" ]; then
+                deploy_mode="full"
+                deploy_needed="true"
+              elif [ "${backend_changed}" = "true" ]; then
+                deploy_mode="backend"
+                deploy_needed="true"
+              elif [ "${frontend_changed}" = "true" ]; then
+                deploy_mode="frontend"
+                deploy_needed="true"
+              fi
+
+              echo "backend_changed=${backend_changed}"
+              echo "frontend_changed=${frontend_changed}"
+              echo "infra_changed=${infra_changed}"
+            fi
+          fi
+
+          echo "deploy_mode=${deploy_mode}" >> "${GITHUB_OUTPUT}"
+          echo "deploy_needed=${deploy_needed}" >> "${GITHUB_OUTPUT}"
+          echo "selected deploy_mode=${deploy_mode}, deploy_needed=${deploy_needed}"
+
       - name: Validate deployment inputs
+        if: steps.plan.outputs.deploy_needed == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -40,6 +118,7 @@ jobs:
           test -n "${SCORPANION_DB_PASSWORD}"
 
       - name: Prepare DB password file
+        if: steps.plan.outputs.deploy_needed == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -48,8 +127,18 @@ jobs:
           printf '%s' "${SCORPANION_DB_PASSWORD}" > "${SCORPANION_DB_PASSWORD_FILE_PATH}"
           chmod 600 "${SCORPANION_DB_PASSWORD_FILE_PATH}"
 
-      - name: Deploy compose stack
+      - name: Skip deployment when no app changes are detected
+        if: steps.plan.outputs.deploy_needed != 'true'
         shell: bash
+        run: |
+          set -euo pipefail
+          echo "No backend/frontend/infra deployment changes detected. Skipping deploy."
+
+      - name: Deploy compose stack
+        if: steps.plan.outputs.deploy_needed == 'true'
+        shell: bash
+        env:
+          DEPLOY_MODE: ${{ steps.plan.outputs.deploy_mode }}
         run: |
           set -euo pipefail
           cleanup_secret_file() {
@@ -62,17 +151,34 @@ jobs:
             -f docker-compose.secrets.yml
           )
 
-          docker compose "${COMPOSE_ARGS[@]}" pull
+          case "${DEPLOY_MODE}" in
+            full)
+              docker compose "${COMPOSE_ARGS[@]}" pull
 
-          # Prefer native wait support when available; fallback is handled by
-          # the dedicated health verification step below.
-          if docker compose up --help | grep -q -- "--wait"; then
-            docker compose "${COMPOSE_ARGS[@]}" up -d --build --remove-orphans --wait --wait-timeout 180
-          else
-            docker compose "${COMPOSE_ARGS[@]}" up -d --build --remove-orphans
-          fi
+              # Prefer native wait support when available; fallback is handled by
+              # the dedicated health verification step below.
+              if docker compose up --help | grep -q -- "--wait"; then
+                docker compose "${COMPOSE_ARGS[@]}" up -d --build --remove-orphans --wait --wait-timeout 180
+              else
+                docker compose "${COMPOSE_ARGS[@]}" up -d --build --remove-orphans
+              fi
+              ;;
+            backend|frontend)
+              target_service="${DEPLOY_MODE}"
+              if docker compose up --help | grep -q -- "--wait"; then
+                docker compose "${COMPOSE_ARGS[@]}" up -d --build --no-deps --wait --wait-timeout 180 "${target_service}"
+              else
+                docker compose "${COMPOSE_ARGS[@]}" up -d --build --no-deps "${target_service}"
+              fi
+              ;;
+            *)
+              echo "Unsupported DEPLOY_MODE: ${DEPLOY_MODE}"
+              exit 1
+              ;;
+          esac
 
       - name: Verify stack health
+        if: steps.plan.outputs.deploy_needed == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -121,7 +227,7 @@ jobs:
           exit 1
 
       - name: Cleanup local secret file
-        if: always()
+        if: always() && steps.plan.outputs.deploy_needed == 'true'
         shell: bash
         run: |
           set -euo pipefail

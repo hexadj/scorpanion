@@ -18,6 +18,7 @@ services:
       - traefik.http.routers.scorpanion.rule=Host(`${SCORPANION_DOMAIN:?SCORPANION_DOMAIN is required}`)
       - traefik.http.routers.scorpanion.entrypoints=websecure
       - traefik.http.routers.scorpanion.tls=true
+      - traefik.http.routers.scorpanion.tls.certresolver=letsencrypt
       - traefik.http.services.scorpanion.loadbalancer.server.port=8080
 
   postgres:
