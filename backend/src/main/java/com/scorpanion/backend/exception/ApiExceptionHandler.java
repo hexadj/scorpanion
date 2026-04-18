@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jakarta.validation.ConstraintViolationException;
 
 import java.util.List;
 
@@ -71,6 +72,30 @@ public class ApiExceptionHandler {
 			"INVALID_REQUEST",
 			"INVALID_PARAMETER_TYPE",
 			"Invalid parameter type."
+		);
+	}
+
+	@ExceptionHandler(InvalidHistoryQueryException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ProblemDetail handleInvalidHistoryQuery(InvalidHistoryQueryException exception) {
+		LOGGER.debug("Invalid history query parameter", exception);
+		return problem(
+			HttpStatus.BAD_REQUEST,
+			"INVALID_REQUEST",
+			exception.getSubCode(),
+			"Request parameter validation failed."
+		);
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ProblemDetail handleConstraintViolation(ConstraintViolationException exception) {
+		LOGGER.debug("Constraint violation on request parameter", exception);
+		return problem(
+			HttpStatus.BAD_REQUEST,
+			"INVALID_REQUEST",
+			"PARAMETER_VALIDATION_FAILED",
+			"Request parameter validation failed."
 		);
 	}
 
