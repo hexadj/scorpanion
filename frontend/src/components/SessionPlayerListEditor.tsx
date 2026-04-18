@@ -2,8 +2,10 @@ import {
   Alert,
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   ClickAwayListener,
+  FormControlLabel,
   List,
   ListItemButton,
   ListItemText,
@@ -13,7 +15,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import {
   type AxiosBaseQueryError,
   useCreatePlayerMutation,
@@ -22,14 +24,36 @@ import {
 import type { Player } from '../types';
 import { formatHttpError } from '../utils';
 
+export type SessionPlayerResultDraft = {
+  rank: string;
+  score: string;
+  isWinner: boolean;
+};
+
+type ResultEntryMode = 'none' | 'no_score' | 'score';
+
 type SessionPlayerListEditorProps = {
   selectedPlayers: Player[];
   onSelectedPlayersChange: (players: Player[]) => void;
+  resultEntryMode?: ResultEntryMode;
+  playerResults?: Record<string, SessionPlayerResultDraft>;
+  onPlayerResultChange?: (playerId: string, update: Partial<SessionPlayerResultDraft>) => void;
+  /** Affiché sous la liste des joueurs sélectionnés (ex. bouton Valider). */
+  belowSelectedPlayers?: ReactNode;
+};
+
+const numericInputProps = {
+  inputMode: 'numeric' as const,
+  pattern: '[0-9]*',
 };
 
 export const SessionPlayerListEditor = ({
   selectedPlayers,
   onSelectedPlayersChange,
+  resultEntryMode = 'none',
+  playerResults = {},
+  onPlayerResultChange = () => {},
+  belowSelectedPlayers,
 }: SessionPlayerListEditorProps) => {
   const {
     data: players = [],
@@ -108,16 +132,137 @@ export const SessionPlayerListEditor = ({
       {playersError ? <Alert severity="error">{playersListErrorMessage}</Alert> : null}
       {!playersLoading && !playersError ? (
         <Stack spacing={2}>
-          {selectedPlayers.map((p) => (
-            <TextField
-              key={p.id}
-              value={p.name}
-              fullWidth
-              label="Joueur"
-              slotProps={{ input: { readOnly: true } }}
-              size="small"
-            />
-          ))}
+          {resultEntryMode !== 'none' && selectedPlayers.length > 0 ? (
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                columnGap: 1,
+                rowGap: 0.5,
+                pl: 0.5,
+              }}
+            >
+              <Typography variant="caption" color="text.secondary" sx={{ minWidth: 120, flex: 1 }}>
+                Joueur
+              </Typography>
+              {resultEntryMode === 'score' ? (
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ width: 88, textAlign: 'center', flexShrink: 0 }}
+                >
+                  Score
+                </Typography>
+              ) : null}
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ width: 72, textAlign: 'center', flexShrink: 0 }}
+              >
+                Rang
+              </Typography>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ width: 100, textAlign: 'center', flexShrink: 0 }}
+              >
+                Gagnant
+              </Typography>
+            </Stack>
+          ) : null}
+          {selectedPlayers.map((p) => {
+            const draft = playerResults[p.id] ?? {
+              rank: '',
+              score: '',
+              isWinner: false,
+            };
+            return (
+              <Stack
+                key={p.id}
+                direction="row"
+                spacing={1}
+                sx={{
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  columnGap: 1,
+                  rowGap: 1,
+                }}
+              >
+                <TextField
+                  value={p.name}
+                  label="Joueur"
+                  slotProps={{ input: { readOnly: true } }}
+                  size="small"
+                  sx={{ flex: '1 1 140px', minWidth: 120 }}
+                />
+                {resultEntryMode === 'score' ? (
+                  <TextField
+                    label="Score"
+                    type="number"
+                    value={draft.score}
+                    onChange={(e) =>
+                      onPlayerResultChange(p.id, {
+                        score: e.target.value,
+                      })
+                    }
+                    size="small"
+                    sx={{ width: 88, flexShrink: 0 }}
+                    slotProps={{
+                      htmlInput: {
+                        ...numericInputProps,
+                        'aria-label': `Score de ${p.name}`,
+                      },
+                    }}
+                  />
+                ) : null}
+                {resultEntryMode !== 'none' ? (
+                  <>
+                    <TextField
+                      label="Rang"
+                      type="number"
+                      value={draft.rank}
+                      onChange={(e) =>
+                        onPlayerResultChange(p.id, {
+                          rank: e.target.value,
+                        })
+                      }
+                      size="small"
+                      sx={{ width: 72, flexShrink: 0 }}
+                      slotProps={{
+                        htmlInput: {
+                          ...numericInputProps,
+                          min: 1,
+                          step: 1,
+                          'aria-label': `Rang de ${p.name}`,
+                        },
+                      }}
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={draft.isWinner}
+                          onChange={(e) =>
+                            onPlayerResultChange(p.id, {
+                              isWinner: e.target.checked,
+                            })
+                          }
+                          slotProps={{
+                            input: { 'aria-label': `Gagnant : ${p.name}` },
+                          }}
+                        />
+                      }
+                      label="Gagnant"
+                      sx={{ flexShrink: 0, m: 0, width: 100, justifyContent: 'center' }}
+                    />
+                  </>
+                ) : null}
+              </Stack>
+            );
+          })}
+
+          {belowSelectedPlayers}
 
           <ClickAwayListener onClickAway={() => setSuggestionsOpen(false)}>
             <Box ref={setPlayerRowAnchorEl}>

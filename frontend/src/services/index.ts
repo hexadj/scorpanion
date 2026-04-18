@@ -9,7 +9,11 @@ export {
   useCreateGameMutation,
   useGetGamesQuery,
 } from './game.api';
-export { gameSessionApi, useGetGameSessionsQuery } from './gameSession.api';
+export {
+  gameSessionApi,
+  useCreateGameSessionMutation,
+  useGetGameSessionsQuery,
+} from './gameSession.api';
 export {
   playerApi,
   useCreatePlayerMutation,
