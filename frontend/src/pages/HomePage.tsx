@@ -20,6 +20,9 @@ export const HomePage = () => {
         <Button component={RouterLink} to="/stats" variant="outlined" size="large" fullWidth>
           Statistiques
         </Button>
+        <Button component={RouterLink} to="/history" variant="outlined" size="large" fullWidth>
+          Historique
+        </Button>
       </Stack>
     </Box>
   );

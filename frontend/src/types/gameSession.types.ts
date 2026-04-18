@@ -22,5 +22,18 @@ export type GameSession = {
   id: string;
   gameId: string;
   playedAt: string;
-  results: SessionPlayerResult[];
+  playerResults: SessionPlayerResult[];
+};
+
+export type GetGameSessionHistoryPayload = {
+  gameIds?: string[];
+  playerIds?: string[];
+  limit?: number;
+  cursor?: string | null;
+};
+
+export type GameSessionHistoryPage = {
+  gameSessions: GameSession[];
+  nextCursor: string | null;
+  hasMore: boolean;
 };
