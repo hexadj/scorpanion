@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class GameSessionApiIntegrationTest extends AbstractApiIntegrationTest {
+class GameSessionCreateApiIntegrationTest extends AbstractApiIntegrationTest {
 
 	@Test
 	void createGameSessionWithDuplicatePlayersKeepsTransactionAtomic() throws Exception {

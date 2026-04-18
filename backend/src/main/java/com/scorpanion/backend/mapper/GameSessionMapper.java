@@ -1,6 +1,7 @@
 package com.scorpanion.backend.mapper;
 
 import com.scorpanion.backend.dto.CreateGameSessionRequest;
+import com.scorpanion.backend.dto.GameSessionHistoryResponse;
 import com.scorpanion.backend.dto.GameSessionResponse;
 import com.scorpanion.backend.dto.SessionPlayerResultRequest;
 import com.scorpanion.backend.dto.SessionPlayerResultResponse;
@@ -10,6 +11,7 @@ import com.scorpanion.backend.entity.PlayerEntity;
 import com.scorpanion.backend.entity.SessionPlayerResultEntity;
 import com.scorpanion.backend.service.command.CreateGameSessionCommand;
 import com.scorpanion.backend.service.command.PlayerResultInput;
+import com.scorpanion.backend.service.result.GameSessionHistoryPage;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -62,6 +64,20 @@ public class GameSessionMapper {
 			gameSession.getGame().getId(),
 			gameSession.getPlayedAt(),
 			playerResults
+		);
+	}
+
+	public GameSessionHistoryResponse toResponse(GameSessionHistoryPage historyPage) {
+		Objects.requireNonNull(historyPage, "GameSessionHistoryPage is required.");
+
+		List<GameSessionResponse> gameSessions = historyPage.gameSessions().stream()
+			.map(this::toResponse)
+			.toList();
+
+		return new GameSessionHistoryResponse(
+			gameSessions,
+			historyPage.nextCursor(),
+			historyPage.hasMore()
 		);
 	}
 
