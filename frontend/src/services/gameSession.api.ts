@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import type { GameSession } from '../types';
+import type { CreateGameSessionPayload, GameSession } from '../types';
 import { axiosBaseQuery } from './axiosBaseQuery';
 
 export const gameSessionApi = createApi({
@@ -11,7 +11,15 @@ export const gameSessionApi = createApi({
       query: () => ({ url: '/game-sessions' }),
       providesTags: ['GameSession'],
     }),
+    createGameSession: builder.mutation<GameSession, CreateGameSessionPayload>({
+      query: (body) => ({
+        url: '/game-sessions',
+        method: 'post',
+        data: body,
+      }),
+      invalidatesTags: ['GameSession'],
+    }),
   }),
 });
 
-export const { useGetGameSessionsQuery } = gameSessionApi;
+export const { useCreateGameSessionMutation, useGetGameSessionsQuery } = gameSessionApi;

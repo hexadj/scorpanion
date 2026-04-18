@@ -1,3 +1,5 @@
-export { GameListPage } from './GameListPage';
+export { HomePage } from './HomePage';
 export { NewSessionPage } from './NewSessionPage';
-export { PlayerListPage } from './PlayerListPage';
+export { RootLayout } from './RootLayout';
+export { StatsPage } from './StatsPage';
+
