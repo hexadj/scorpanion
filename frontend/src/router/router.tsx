@@ -1,17 +1,26 @@
-import { createBrowserRouter } from 'react-router-dom';
-import { GameListPage, NewSessionPage, PlayerListPage } from '../pages';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { HomePage, NewSessionPage, RootLayout, StatsPage } from '../pages';
 
 export const router = createBrowserRouter([
   {
-    path: '/',
-    element: <GameListPage />,
-  },
-  {
-    path: '/players',
-    element: <PlayerListPage />,
-  },
-  {
-    path: '/sessions/new',
-    element: <NewSessionPage />,
+    element: <RootLayout />,
+    children: [
+      {
+        path: '/',
+        element: <HomePage />,
+      },
+      {
+        path: '/stats',
+        element: <StatsPage />,
+      },
+      {
+        path: '/sessions/new',
+        element: <NewSessionPage />,
+      },
+      {
+        path: '*',
+        element: <Navigate to="/" replace />,
+      },
+    ],
   },
 ]);

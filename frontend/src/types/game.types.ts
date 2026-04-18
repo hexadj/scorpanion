@@ -11,3 +11,8 @@ export type Game = {
   name: string;
   resultType: ResultType;
 };
+
+export type CreateGamePayload = {
+  name: string;
+  resultType: ResultType;
+};

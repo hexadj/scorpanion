@@ -1,1 +1,1 @@
-export {};
+export { formatHttpError } from './formatHttpError';

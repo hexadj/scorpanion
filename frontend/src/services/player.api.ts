@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import type { Player } from '../types';
+import type { CreatePlayerPayload, Player } from '../types';
 import { axiosBaseQuery } from './axiosBaseQuery';
 
 export const playerApi = createApi({
@@ -9,9 +9,23 @@ export const playerApi = createApi({
   endpoints: (builder) => ({
     getPlayers: builder.query<Player[], void>({
       query: () => ({ url: '/players' }),
-      providesTags: ['Player'],
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'Player' as const, id })),
+              { type: 'Player' as const, id: 'LIST' },
+            ]
+          : [{ type: 'Player' as const, id: 'LIST' }],
+    }),
+    createPlayer: builder.mutation<Player, CreatePlayerPayload>({
+      query: (body) => ({
+        url: '/players',
+        method: 'post',
+        data: body,
+      }),
+      invalidatesTags: [{ type: 'Player', id: 'LIST' }],
     }),
   }),
 });
 
-export const { useGetPlayersQuery } = playerApi;
+export const { useCreatePlayerMutation, useGetPlayersQuery } = playerApi;
