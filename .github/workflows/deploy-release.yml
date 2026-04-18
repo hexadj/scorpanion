@@ -1,9 +1,9 @@
-name: deploy-prod
+name: deploy-release
 
 on:
-  push:
-    branches:
-      - prod
+  release:
+    types:
+      - published
   workflow_dispatch:
     inputs:
       force_rebuild_frontend_backend:
@@ -13,7 +13,7 @@ on:
         type: boolean
 
 concurrency:
-  group: deploy-prod
+  group: deploy-release
   cancel-in-progress: true
 
 jobs:
@@ -90,7 +90,7 @@ jobs:
                   frontend/*)
                     frontend_changed="true"
                     ;;
-                  docker-compose.yml|docker-compose.traefik.yml|docker-compose.secrets.yml|.github/workflows/deploy-prod.yml)
+                  docker-compose.yml|docker-compose.traefik.yml|docker-compose.secrets.yml|.github/workflows/deploy-release.yml)
                     infra_changed="true"
                     ;;
                 esac
