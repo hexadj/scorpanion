@@ -1,6 +1,7 @@
 package com.scorpanion.backend.mapper;
 
 import com.scorpanion.backend.dto.CreateGameSessionRequest;
+import com.scorpanion.backend.dto.GameSessionHistoryItemResponse;
 import com.scorpanion.backend.dto.GameSessionHistoryResponse;
 import com.scorpanion.backend.dto.GameSessionResponse;
 import com.scorpanion.backend.dto.SessionPlayerResultRequest;
@@ -70,14 +71,24 @@ public class GameSessionMapper {
 	public GameSessionHistoryResponse toResponse(GameSessionHistoryPage historyPage) {
 		Objects.requireNonNull(historyPage, "GameSessionHistoryPage is required.");
 
-		List<GameSessionResponse> gameSessions = historyPage.gameSessions().stream()
-			.map(this::toResponse)
+		List<GameSessionHistoryItemResponse> gameSessionsHistoryItems = historyPage.gameSessions().stream()
+			.map(this::toHistoryItemResponse)
 			.toList();
 
 		return new GameSessionHistoryResponse(
-			gameSessions,
+			gameSessionsHistoryItems,
 			historyPage.nextCursor(),
 			historyPage.hasMore()
+		);
+	}
+
+	public GameSessionHistoryItemResponse toHistoryItemResponse(GameSessionEntity gameSession) {
+		Objects.requireNonNull(gameSession, "GameSessionEntity is required.");
+		return new GameSessionHistoryItemResponse(
+			gameSession.getId(),
+			gameSession.getPlayedAt(),
+			gameSession.getGame().getName(),
+			gameSession.getPlayerResults().size()
 		);
 	}
 
