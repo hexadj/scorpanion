@@ -3,12 +3,12 @@ package com.scorpanion.backend.dto;
 import java.util.List;
 
 public record GameSessionHistoryResponse(
-	List<GameSessionResponse> gameSessions,
+	List<GameSessionHistoryItemResponse> gameSessionsHistoryItems,
 	String nextCursor,
 	boolean hasMore
 ) {
 
 	public GameSessionHistoryResponse {
-		gameSessions = gameSessions == null ? List.of() : List.copyOf(gameSessions);
+		gameSessionsHistoryItems = gameSessionsHistoryItems == null ? List.of() : List.copyOf(gameSessionsHistoryItems);
 	}
 }

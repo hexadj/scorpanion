@@ -38,9 +38,9 @@ class GameSessionHistoryApiIntegrationTest extends AbstractApiIntegrationTest {
 		mockMvc.perform(get("/game-sessions?limit=2"))
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$.gameSessions.length()").value(2))
-			.andExpect(jsonPath("$.gameSessions[0].id").value(newest.getId().toString()))
-			.andExpect(jsonPath("$.gameSessions[1].id").value(middle.getId().toString()))
+			.andExpect(jsonPath("$.gameSessionsHistoryItems.length()").value(2))
+			.andExpect(jsonPath("$.gameSessionsHistoryItems[0].id").value(newest.getId().toString()))
+			.andExpect(jsonPath("$.gameSessionsHistoryItems[1].id").value(middle.getId().toString()))
 			.andExpect(jsonPath("$.hasMore").value(true))
 			.andExpect(jsonPath("$.nextCursor").isNotEmpty());
 	}
@@ -56,15 +56,15 @@ class GameSessionHistoryApiIntegrationTest extends AbstractApiIntegrationTest {
 
 		MvcResult firstPage = mockMvc.perform(get("/game-sessions?limit=2"))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.gameSessions.length()").value(2))
+			.andExpect(jsonPath("$.gameSessionsHistoryItems.length()").value(2))
 			.andExpect(jsonPath("$.hasMore").value(true))
 			.andReturn();
 
 		JsonNode firstPageBody = OBJECT_MAPPER.readTree(firstPage.getResponse().getContentAsString());
 		String nextCursor = firstPageBody.path("nextCursor").asText();
 		Set<String> firstPageIds = new HashSet<>();
-		firstPageIds.add(firstPageBody.path("gameSessions").get(0).path("id").asText());
-		firstPageIds.add(firstPageBody.path("gameSessions").get(1).path("id").asText());
+		firstPageIds.add(firstPageBody.path("gameSessionsHistoryItems").get(0).path("id").asText());
+		firstPageIds.add(firstPageBody.path("gameSessionsHistoryItems").get(1).path("id").asText());
 
 		MvcResult secondPage = mockMvc.perform(
 			get("/game-sessions")
@@ -72,13 +72,13 @@ class GameSessionHistoryApiIntegrationTest extends AbstractApiIntegrationTest {
 				.param("cursor", nextCursor)
 		)
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.gameSessions.length()").value(1))
+			.andExpect(jsonPath("$.gameSessionsHistoryItems.length()").value(1))
 			.andExpect(jsonPath("$.hasMore").value(false))
 			.andExpect(jsonPath("$.nextCursor").isEmpty())
 			.andReturn();
 
 		JsonNode secondPageBody = OBJECT_MAPPER.readTree(secondPage.getResponse().getContentAsString());
-		String secondPageId = secondPageBody.path("gameSessions").get(0).path("id").asText();
+		String secondPageId = secondPageBody.path("gameSessionsHistoryItems").get(0).path("id").asText();
 
 		assertThat(secondPageId).isEqualTo(oldest.getId().toString());
 		assertThat(firstPageIds).doesNotContain(secondPageId);
@@ -103,8 +103,8 @@ class GameSessionHistoryApiIntegrationTest extends AbstractApiIntegrationTest {
 		)
 			.andExpect(status().isOk())
 			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$.gameSessions.length()").value(1))
-			.andExpect(jsonPath("$.gameSessions[0].id").value(expected.getId().toString()))
+			.andExpect(jsonPath("$.gameSessionsHistoryItems.length()").value(1))
+			.andExpect(jsonPath("$.gameSessionsHistoryItems[0].id").value(expected.getId().toString()))
 			.andExpect(jsonPath("$.hasMore").value(false))
 			.andExpect(jsonPath("$.nextCursor").isEmpty());
 	}

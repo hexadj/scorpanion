@@ -6,6 +6,7 @@ export type {
   GameSession,
   SessionPlayerResult,
   GetGameSessionHistoryPayload,
+  GameSessionHistoryItem,
   GameSessionHistoryPage,
 } from './gameSession.types';
 export type { CreatePlayerPayload, Player } from './player.types';

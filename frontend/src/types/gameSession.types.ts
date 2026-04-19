@@ -32,8 +32,15 @@ export type GetGameSessionHistoryPayload = {
   cursor?: string | null;
 };
 
+export type GameSessionHistoryItem = {
+  id: string;
+  playedAt: string;
+  gameName: string;
+  playerCount: number;
+};
+
 export type GameSessionHistoryPage = {
-  gameSessions: GameSession[];
+  gameSessionsHistoryItems: GameSessionHistoryItem[];
   nextCursor: string | null;
   hasMore: boolean;
 };
