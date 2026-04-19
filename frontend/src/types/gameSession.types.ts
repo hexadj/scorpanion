@@ -1,14 +1,17 @@
+import type { ResultType } from "./game.types";
+
 export type SessionPlayerResult = {
   playerId: string;
-  rank: number;
+  playerName: string;
+  rank: number | null;
   isWinner: boolean;
-  score?: number;
+  score: number | null;
 };
 
 export type CreateSessionPlayerResultPayload = {
   playerId: string;
   rank: number | null;
-  score?: number | null;
+  score: number | null;
   isWinner: boolean;
 };
 
@@ -21,6 +24,8 @@ export type CreateGameSessionPayload = {
 export type GameSession = {
   id: string;
   gameId: string;
+  gameName: string;
+  resultType: ResultType;
   playedAt: string;
   playerResults: SessionPlayerResult[];
 };

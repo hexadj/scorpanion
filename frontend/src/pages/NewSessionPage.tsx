@@ -155,7 +155,7 @@ export const NewSessionPage = () => {
     const rows: {
       playerId: string;
       rank: number | null;
-      score?: number | null;
+      score: number | null;
       isWinner: boolean;
     }[] = [];
 

@@ -1,1 +1,1 @@
-export {};
+export { useGameSessionHistory } from './useGameSessionHistory';

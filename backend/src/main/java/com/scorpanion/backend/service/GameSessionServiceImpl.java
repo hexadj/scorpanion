@@ -1,25 +1,5 @@
 package com.scorpanion.backend.service;
 
-import com.scorpanion.backend.entity.GameEntity;
-import com.scorpanion.backend.entity.GameSessionEntity;
-import com.scorpanion.backend.entity.PlayerEntity;
-import com.scorpanion.backend.entity.SessionPlayerResultEntity;
-import com.scorpanion.backend.exception.DuplicatePlayerInSessionException;
-import com.scorpanion.backend.exception.InvalidHistoryQueryException;
-import com.scorpanion.backend.exception.InvalidGameSessionException;
-import com.scorpanion.backend.exception.ResourceNotFoundException;
-import com.scorpanion.backend.mapper.GameSessionMapper;
-import com.scorpanion.backend.model.ResultType;
-import com.scorpanion.backend.repository.GameRepository;
-import com.scorpanion.backend.repository.GameSessionRepository;
-import com.scorpanion.backend.repository.PlayerRepository;
-import com.scorpanion.backend.service.command.CreateGameSessionCommand;
-import com.scorpanion.backend.service.command.ListGameSessionsCommand;
-import com.scorpanion.backend.service.command.PlayerResultInput;
-import com.scorpanion.backend.service.result.GameSessionHistoryPage;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -31,6 +11,27 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.scorpanion.backend.entity.GameEntity;
+import com.scorpanion.backend.entity.GameSessionEntity;
+import com.scorpanion.backend.entity.PlayerEntity;
+import com.scorpanion.backend.entity.SessionPlayerResultEntity;
+import com.scorpanion.backend.exception.DuplicatePlayerInSessionException;
+import com.scorpanion.backend.exception.InvalidGameSessionException;
+import com.scorpanion.backend.exception.InvalidHistoryQueryException;
+import com.scorpanion.backend.exception.ResourceNotFoundException;
+import com.scorpanion.backend.mapper.GameSessionMapper;
+import com.scorpanion.backend.model.ResultType;
+import com.scorpanion.backend.repository.GameRepository;
+import com.scorpanion.backend.repository.GameSessionRepository;
+import com.scorpanion.backend.repository.PlayerRepository;
+import com.scorpanion.backend.service.command.CreateGameSessionCommand;
+import com.scorpanion.backend.service.command.ListGameSessionsCommand;
+import com.scorpanion.backend.service.command.PlayerResultInput;
+import com.scorpanion.backend.service.result.GameSessionHistoryPage;
 
 @Service
 public class GameSessionServiceImpl implements GameSessionService {
@@ -50,6 +51,18 @@ public class GameSessionServiceImpl implements GameSessionService {
 		this.playerRepository = playerRepository;
 		this.gameSessionRepository = gameSessionRepository;
 		this.gameSessionMapper = gameSessionMapper;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public GameSessionEntity get(UUID id) {
+		if (id == null) {
+			throw new IllegalArgumentException("id is required.");
+		}
+
+		return gameSessionRepository.findByIdIn(List.of(id)).stream()
+			.findFirst()
+			.orElseThrow(() -> ResourceNotFoundException.gameSession(id));
 	}
 
 	@Override
@@ -119,7 +132,7 @@ public class GameSessionServiceImpl implements GameSessionService {
 		}
 
 		List<GameSessionEntity> page = sortByRequestedOrder(
-			gameSessionRepository.findByIdIn(pageIds),
+			gameSessionRepository.findHistoryByIdIn(pageIds),
 			pageIds
 		);
 
