@@ -17,7 +17,13 @@ export const gameSessionApi = createApi({
           cursor: cursor ?? undefined,
         }
       }),
-      providesTags: ['GameSession'],
+      providesTags: [{ type: 'GameSession', id: 'LIST' }],
+    }),
+    getGameSession: builder.query<GameSession, string>({
+      query: (id) => ({
+        url: `/game-sessions/${id}`,
+      }),
+      providesTags: (_result, _error, id) => [{ type: 'GameSession', id }],
     }),
     createGameSession: builder.mutation<GameSession, CreateGameSessionPayload>({
       query: (body) => ({
@@ -25,9 +31,9 @@ export const gameSessionApi = createApi({
         method: 'post',
         data: body,
       }),
-      invalidatesTags: ['GameSession'],
+      invalidatesTags: [{ type: 'GameSession', id: 'LIST' }],
     }),
   }),
 });
 
-export const { useCreateGameSessionMutation, useGetGameSessionsQuery, useLazyGetGameSessionsQuery } = gameSessionApi;
+export const { useCreateGameSessionMutation, useGetGameSessionsQuery, useLazyGetGameSessionsQuery, useGetGameSessionQuery } = gameSessionApi;

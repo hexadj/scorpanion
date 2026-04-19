@@ -22,4 +22,8 @@ public class ResourceNotFoundException extends RuntimeException {
 	public static ResourceNotFoundException player(UUID playerId) {
 		return new ResourceNotFoundException("Player", playerId, "PLAYER_NOT_FOUND");
 	}
+
+	public static ResourceNotFoundException gameSession(UUID gameSessionId) {
+		return new ResourceNotFoundException("GameSession", gameSessionId, "GAME_SESSION_NOT_FOUND");
+	}
 }

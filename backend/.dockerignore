@@ -1,7 +1,11 @@
 # Local build output and caches
 .gradle
+**/.gradle
+.gradle-home
+**/.gradle-home
 .gradle-user
 build
+**/build
 out
 bin
 

@@ -14,6 +14,7 @@ export {
   useCreateGameSessionMutation,
   useGetGameSessionsQuery,
   useLazyGetGameSessionsQuery,
+  useGetGameSessionQuery,
 } from './gameSession.api';
 export {
   playerApi,

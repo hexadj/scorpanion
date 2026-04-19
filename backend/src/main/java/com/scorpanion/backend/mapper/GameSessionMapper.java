@@ -1,5 +1,10 @@
 package com.scorpanion.backend.mapper;
 
+import java.util.List;
+import java.util.Objects;
+
+import org.springframework.stereotype.Component;
+
 import com.scorpanion.backend.dto.CreateGameSessionRequest;
 import com.scorpanion.backend.dto.GameSessionHistoryItemResponse;
 import com.scorpanion.backend.dto.GameSessionHistoryResponse;
@@ -13,10 +18,6 @@ import com.scorpanion.backend.entity.SessionPlayerResultEntity;
 import com.scorpanion.backend.service.command.CreateGameSessionCommand;
 import com.scorpanion.backend.service.command.PlayerResultInput;
 import com.scorpanion.backend.service.result.GameSessionHistoryPage;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Objects;
 
 @Component
 public class GameSessionMapper {
@@ -63,6 +64,8 @@ public class GameSessionMapper {
 		return new GameSessionResponse(
 			gameSession.getId(),
 			gameSession.getGame().getId(),
+			gameSession.getGame().getName(),
+			gameSession.getGame().getResultType(),
 			gameSession.getPlayedAt(),
 			playerResults
 		);
@@ -108,6 +111,7 @@ public class GameSessionMapper {
 		return new SessionPlayerResultResponse(
 			playerResult.getId(),
 			playerResult.getPlayer().getId(),
+			playerResult.getPlayer().getName(),
 			playerResult.getScore(),
 			playerResult.getRank(),
 			playerResult.isWinner()
