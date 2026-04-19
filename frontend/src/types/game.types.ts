@@ -16,3 +16,5 @@ export type CreateGamePayload = {
   name: string;
   resultType: ResultType;
 };
+
+export type ResultEntryMode = 'none' | 'no_score' | 'score';
