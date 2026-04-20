@@ -1,11 +1,5 @@
-import { Box, Typography } from '@mui/material';
+import { PageContainer } from '../components';
 
-export const StatsPage = () => {
-  return (
-    <Box component="main" sx={{ p: 3 }}>
-      <Typography variant="h5" component="h1">
-        En cours de construction
-      </Typography>
-    </Box>
-  );
-};
+export const StatsPage = () => (
+  <PageContainer title="En cours de construction">{null}</PageContainer>
+);
