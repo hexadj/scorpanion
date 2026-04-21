@@ -1,6 +1,6 @@
 ﻿import { Alert, Autocomplete, Box, Button, CircularProgress, Stack, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import { GameSessionDetailsModal } from '../components';
+import { GameSessionDetailsModal, PageContainer } from '../components';
 import { useGameSessionHistory } from '../hooks';
 import { useGetGamesQuery, useGetPlayersQuery } from '../services';
 
@@ -20,7 +20,7 @@ export const HistoryPage = () => {
     });
 
     return (
-        <Box component="main" sx={{ px: 2, pb: 2, pt: 0, display: 'flex', flexDirection: 'column' }}>
+        <PageContainer centered>
             <Box
                 sx={{
                     position: 'sticky',
@@ -30,6 +30,7 @@ export const HistoryPage = () => {
                     zIndex: 1,
                     borderBottom: '1px solid',
                     borderColor: 'divider',
+                    width: '100%',
                 }}
             >
                 <Typography variant="h5" component="h1">
@@ -59,7 +60,7 @@ export const HistoryPage = () => {
                 </Box>
             </Box>
 
-            <Stack spacing={1} sx={{ mt: 2 }}>
+            <Stack spacing={1} sx={{ mt: 2, width: '100%' }}>
                 {items.map((historyItem) => (
                     <Box
                         key={historyItem.id}
@@ -118,6 +119,6 @@ export const HistoryPage = () => {
             ) : null}
 
             <Box ref={sentinelRef} sx={{ height: 1 }} />
-        </Box>
+        </PageContainer>
     );
 };

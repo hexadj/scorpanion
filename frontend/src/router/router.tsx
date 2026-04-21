@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { HomePage, NewSessionPage, RootLayout, StatsPage, HistoryPage } from '../pages';
+import { HomePage, NewSessionPage, StatsPage, HistoryPage } from '../pages';
+import { RootLayout } from '../layouts';
 
 export const router = createBrowserRouter([
   {
