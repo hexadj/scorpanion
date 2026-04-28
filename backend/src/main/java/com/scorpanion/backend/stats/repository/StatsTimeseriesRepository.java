@@ -1,6 +1,5 @@
 package com.scorpanion.backend.stats.repository;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,9 +71,9 @@ public class StatsTimeseriesRepository {
 		List<Object[]> rows = query.getResultList();
 		List<TimeseriesPoint> result = new ArrayList<>(rows.size());
 		for (Object[] row : rows) {
-			Instant bucketStart = toInstant(row[0]);
-			Long value = toLongOrNull(row[1]);
-			Long sampleSize = toLong(row[2]);
+			Instant bucketStart = RepositoryUtils.toInstant(row[0]);
+			Long value = RepositoryUtils.toLongOrNull(row[1]);
+			Long sampleSize = RepositoryUtils.toLong(row[2]);
 			result.add(new TimeseriesPoint(bucketStart, value, sampleSize));
 		}
 		return result;
@@ -313,36 +312,4 @@ public class StatsTimeseriesRepository {
 		return playerId != null ? "AND spr.player_id = :playerId" : "";
 	}
 
-	private static Instant toInstant(Object value) {
-		if (value instanceof java.sql.Timestamp ts) {
-			return ts.toInstant();
-		}
-		return ((java.time.LocalDateTime) value).toInstant(java.time.ZoneOffset.UTC);
-	}
-
-	private static Long toLong(Object value) {
-		if (value == null) {
-			return 0L;
-		}
-		if (value instanceof Long l) {
-			return l;
-		}
-		if (value instanceof BigDecimal bd) {
-			return bd.longValue();
-		}
-		return ((Number) value).longValue();
-	}
-
-	private static Long toLongOrNull(Object value) {
-		if (value == null) {
-			return null;
-		}
-		if (value instanceof Long l) {
-			return l;
-		}
-		if (value instanceof BigDecimal bd) {
-			return bd.longValue();
-		}
-		return ((Number) value).longValue();
-	}
 }

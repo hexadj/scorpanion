@@ -1,6 +1,5 @@
 package com.scorpanion.backend.stats.repository;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,11 +75,11 @@ public class StatsRankingsRepository {
 		List<Object[]> rows = query.getResultList();
 		List<RankingRowRaw> result = new ArrayList<>(rows.size());
 		for (Object[] row : rows) {
-			UUID playerId = toUuid(row[0]);
+			UUID playerId = RepositoryUtils.toUuid(row[0]);
 			String playerName = (String) row[1];
-			Long winCount = toLong(row[2]);
-			Long participationCount = toLong(row[3]);
-			Long metricValue = toLongOrNull(row[4]);
+			Long winCount = RepositoryUtils.toLong(row[2]);
+			Long participationCount = RepositoryUtils.toLong(row[3]);
+			Long metricValue = RepositoryUtils.toLongOrNull(row[4]);
 			result.add(new RankingRowRaw(playerId, playerName, metricValue, winCount, participationCount));
 		}
 		return result;
@@ -106,7 +105,7 @@ public class StatsRankingsRepository {
 			query.setParameter("gameId", gameId);
 		}
 
-		return toLong(query.getSingleResult());
+		return RepositoryUtils.toLong(query.getSingleResult());
 	}
 
 	private static String buildMetricExpression(Metric metric) {
@@ -161,36 +160,4 @@ public class StatsRankingsRepository {
 		};
 	}
 
-	private static UUID toUuid(Object value) {
-		if (value instanceof UUID uuid) {
-			return uuid;
-		}
-		return UUID.fromString(value.toString());
-	}
-
-	private static Long toLong(Object value) {
-		if (value == null) {
-			return 0L;
-		}
-		if (value instanceof Long l) {
-			return l;
-		}
-		if (value instanceof BigDecimal bd) {
-			return bd.longValue();
-		}
-		return ((Number) value).longValue();
-	}
-
-	private static Long toLongOrNull(Object value) {
-		if (value == null) {
-			return null;
-		}
-		if (value instanceof Long l) {
-			return l;
-		}
-		if (value instanceof BigDecimal bd) {
-			return bd.longValue();
-		}
-		return ((Number) value).longValue();
-	}
 }

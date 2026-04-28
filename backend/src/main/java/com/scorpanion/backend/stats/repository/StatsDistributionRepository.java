@@ -1,6 +1,5 @@
 package com.scorpanion.backend.stats.repository;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -90,11 +89,11 @@ public class StatsDistributionRepository {
 		List<Object[]> rows = query.getResultList();
 		List<GameDistributionRowRaw> result = new ArrayList<>(rows.size());
 		for (Object[] row : rows) {
-			UUID gameId = toUuid(row[0]);
+			UUID gameId = RepositoryUtils.toUuid(row[0]);
 			String gameName = (String) row[1];
 			String resultType = (String) row[2];
-			long sessionCount = toLong(row[3]);
-			long totalSessionCount = toLong(row[4]);
+			long sessionCount = RepositoryUtils.toLong(row[3]);
+			long totalSessionCount = RepositoryUtils.toLong(row[4]);
 			result.add(new GameDistributionRowRaw(gameId, gameName, resultType, sessionCount, totalSessionCount));
 		}
 		return result;
@@ -133,9 +132,9 @@ public class StatsDistributionRepository {
 		if (row[0] == null) {
 			return null;
 		}
-		int min = toInt(row[0]);
-		int max = toInt(row[1]);
-		long sampleSize = toLong(row[2]);
+		int min = RepositoryUtils.toInt(row[0]);
+		int max = RepositoryUtils.toInt(row[1]);
+		long sampleSize = RepositoryUtils.toLong(row[2]);
 		return new ScoreRangeRaw(min, max, sampleSize);
 	}
 
@@ -148,6 +147,8 @@ public class StatsDistributionRepository {
 		List<ScoreBucketing.ScoreBucket> buckets
 	) {
 		String playerFilter = scope == Scope.PLAYER ? "AND spr.player_id = :playerId" : "";
+		// bucketCaseExpr is derived exclusively from integer bounds computed internally — no user input interpolated here.
+		// Do NOT pass request parameters directly into this template.
 		String bucketCaseExpr = buildScoreBucketCaseExpr(buckets);
 
 		String sql = """
@@ -177,8 +178,8 @@ public class StatsDistributionRepository {
 		List<Object[]> rows = query.getResultList();
 		List<ScoreDistributionRowRaw> result = new ArrayList<>(rows.size());
 		for (Object[] row : rows) {
-			int lowerBound = toInt(row[0]);
-			long count = toLong(row[1]);
+			int lowerBound = RepositoryUtils.toInt(row[0]);
+			long count = RepositoryUtils.toLong(row[1]);
 			result.add(new ScoreDistributionRowRaw(lowerBound, count));
 		}
 		return result;
@@ -247,7 +248,7 @@ public class StatsDistributionRepository {
 		List<Object[]> rows = query.getResultList();
 		Map<String, Long> result = new LinkedHashMap<>();
 		for (Object[] row : rows) {
-			result.put((String) row[0], toLong(row[1]));
+			result.put((String) row[0], RepositoryUtils.toLong(row[1]));
 		}
 		return result;
 	}
@@ -271,7 +272,7 @@ public class StatsDistributionRepository {
 			query.setParameter("gameId", gameId);
 		}
 
-		return toLong(query.getSingleResult());
+		return RepositoryUtils.toLong(query.getSingleResult());
 	}
 
 	// -------------------------------------------------------------------------
@@ -325,7 +326,7 @@ public class StatsDistributionRepository {
 		List<Object[]> rows = query.getResultList();
 		Map<String, Long> result = new LinkedHashMap<>();
 		for (Object[] row : rows) {
-			result.put((String) row[0], toLong(row[1]));
+			result.put((String) row[0], RepositoryUtils.toLong(row[1]));
 		}
 		return result;
 	}
@@ -338,36 +339,4 @@ public class StatsDistributionRepository {
 	// Type helpers
 	// -------------------------------------------------------------------------
 
-	private static UUID toUuid(Object value) {
-		if (value instanceof UUID uuid) {
-			return uuid;
-		}
-		return UUID.fromString(value.toString());
-	}
-
-	private static long toLong(Object value) {
-		if (value == null) {
-			return 0L;
-		}
-		if (value instanceof Long l) {
-			return l;
-		}
-		if (value instanceof BigDecimal bd) {
-			return bd.longValue();
-		}
-		return ((Number) value).longValue();
-	}
-
-	private static int toInt(Object value) {
-		if (value instanceof Integer i) {
-			return i;
-		}
-		if (value instanceof Long l) {
-			return l.intValue();
-		}
-		if (value instanceof BigDecimal bd) {
-			return bd.intValue();
-		}
-		return ((Number) value).intValue();
-	}
 }
