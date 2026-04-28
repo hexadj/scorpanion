@@ -1,21 +1,23 @@
 package com.scorpanion.backend.exception;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.util.List;
+import jakarta.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -74,6 +76,30 @@ public class ApiExceptionHandler {
 		);
 	}
 
+	@ExceptionHandler(InvalidHistoryQueryException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ProblemDetail handleInvalidHistoryQuery(InvalidHistoryQueryException exception) {
+		LOGGER.debug("Invalid history query parameter", exception);
+		return problem(
+			HttpStatus.BAD_REQUEST,
+			"INVALID_REQUEST",
+			exception.getSubCode(),
+			"Request parameter validation failed."
+		);
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ProblemDetail handleConstraintViolation(ConstraintViolationException exception) {
+		LOGGER.debug("Constraint violation on request parameter", exception);
+		return problem(
+			HttpStatus.BAD_REQUEST,
+			"INVALID_REQUEST",
+			"PARAMETER_VALIDATION_FAILED",
+			"Request parameter validation failed."
+		);
+	}
+
 	@ExceptionHandler({
 		InvalidGameSessionException.class,
 		IllegalArgumentException.class
@@ -93,7 +119,7 @@ public class ApiExceptionHandler {
 			HttpStatus.BAD_REQUEST,
 			"INVALID_REQUEST",
 			"INVALID_ARGUMENT",
-			"Request payload is invalid."
+			"Request is invalid."
 		);
 	}
 

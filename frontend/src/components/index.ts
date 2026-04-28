@@ -6,3 +6,4 @@ export { PlayerSearchInput } from './PlayerSearchInput';
 export { SessionGameSelect } from './SessionGameSelect';
 export { SessionPlayerListEditor } from './SessionPlayerListEditor';
 export { SessionValidationActions } from './SessionValidationActions';
+export { GameSessionDetailsModal } from './GameSessionDetailsModal';

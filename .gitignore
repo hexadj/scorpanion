@@ -20,6 +20,10 @@ Thumbs.db
 
 # Java/Gradle local artifacts accidentally created at root
 .gradle/
+**/.gradle/
+.gradle-home/
+**/.gradle-home/
 .gradle-user/
 build/
+**/build/
 out/

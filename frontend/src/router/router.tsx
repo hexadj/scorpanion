@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { HomePage, NewSessionPage, StatsPage } from '../pages';
+import { HomePage, NewSessionPage, StatsPage, HistoryPage } from '../pages';
 import { RootLayout } from '../layouts';
 
 export const router = createBrowserRouter([
@@ -13,6 +13,10 @@ export const router = createBrowserRouter([
       {
         path: '/stats',
         element: <StatsPage />,
+      },
+      {
+        path: '/history',
+        element: <HistoryPage />,
       },
       {
         path: '/sessions/new',

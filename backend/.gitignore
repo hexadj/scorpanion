@@ -1,7 +1,11 @@
 # Gradle build outputs
 .gradle/
+**/.gradle/
+.gradle-home/
+**/.gradle-home/
 .gradle-user/
 build/
+**/build/
 out/
 bin/
 

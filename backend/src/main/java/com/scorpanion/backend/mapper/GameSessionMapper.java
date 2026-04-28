@@ -1,6 +1,13 @@
 package com.scorpanion.backend.mapper;
 
+import java.util.List;
+import java.util.Objects;
+
+import org.springframework.stereotype.Component;
+
 import com.scorpanion.backend.dto.CreateGameSessionRequest;
+import com.scorpanion.backend.dto.GameSessionHistoryItemResponse;
+import com.scorpanion.backend.dto.GameSessionHistoryResponse;
 import com.scorpanion.backend.dto.GameSessionResponse;
 import com.scorpanion.backend.dto.SessionPlayerResultRequest;
 import com.scorpanion.backend.dto.SessionPlayerResultResponse;
@@ -10,10 +17,7 @@ import com.scorpanion.backend.entity.PlayerEntity;
 import com.scorpanion.backend.entity.SessionPlayerResultEntity;
 import com.scorpanion.backend.service.command.CreateGameSessionCommand;
 import com.scorpanion.backend.service.command.PlayerResultInput;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Objects;
+import com.scorpanion.backend.service.result.GameSessionHistoryPage;
 
 @Component
 public class GameSessionMapper {
@@ -60,8 +64,34 @@ public class GameSessionMapper {
 		return new GameSessionResponse(
 			gameSession.getId(),
 			gameSession.getGame().getId(),
+			gameSession.getGame().getName(),
+			gameSession.getGame().getResultType(),
 			gameSession.getPlayedAt(),
 			playerResults
+		);
+	}
+
+	public GameSessionHistoryResponse toResponse(GameSessionHistoryPage historyPage) {
+		Objects.requireNonNull(historyPage, "GameSessionHistoryPage is required.");
+
+		List<GameSessionHistoryItemResponse> gameSessionsHistoryItems = historyPage.gameSessions().stream()
+			.map(this::toHistoryItemResponse)
+			.toList();
+
+		return new GameSessionHistoryResponse(
+			gameSessionsHistoryItems,
+			historyPage.nextCursor(),
+			historyPage.hasMore()
+		);
+	}
+
+	public GameSessionHistoryItemResponse toHistoryItemResponse(GameSessionEntity gameSession) {
+		Objects.requireNonNull(gameSession, "GameSessionEntity is required.");
+		return new GameSessionHistoryItemResponse(
+			gameSession.getId(),
+			gameSession.getPlayedAt(),
+			gameSession.getGame().getName(),
+			gameSession.getPlayerResults().size()
 		);
 	}
 
@@ -81,6 +111,7 @@ public class GameSessionMapper {
 		return new SessionPlayerResultResponse(
 			playerResult.getId(),
 			playerResult.getPlayer().getId(),
+			playerResult.getPlayer().getName(),
 			playerResult.getScore(),
 			playerResult.getRank(),
 			playerResult.isWinner()

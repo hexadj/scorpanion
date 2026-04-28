@@ -13,6 +13,8 @@ export {
   gameSessionApi,
   useCreateGameSessionMutation,
   useGetGameSessionsQuery,
+  useLazyGetGameSessionsQuery,
+  useGetGameSessionQuery,
 } from './gameSession.api';
 export {
   playerApi,
