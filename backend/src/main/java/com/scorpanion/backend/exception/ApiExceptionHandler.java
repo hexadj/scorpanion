@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import com.scorpanion.backend.stats.exception.StatsValidationException;
 import jakarta.validation.ConstraintViolationException;
 
 @RestControllerAdvice
@@ -120,6 +121,18 @@ public class ApiExceptionHandler {
 			"INVALID_REQUEST",
 			"INVALID_ARGUMENT",
 			"Request is invalid."
+		);
+	}
+
+	@ExceptionHandler(StatsValidationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ProblemDetail handleStatsValidation(StatsValidationException exception) {
+		LOGGER.debug("Stats validation failed", exception);
+		return problem(
+			HttpStatus.BAD_REQUEST,
+			"INVALID_REQUEST",
+			exception.getErrorCode(),
+			exception.getMessage()
 		);
 	}
 
