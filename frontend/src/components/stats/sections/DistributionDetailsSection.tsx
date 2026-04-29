@@ -1,12 +1,11 @@
-import { MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { MenuItem, Stack, TextField, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import {
   useGetDistributionParticipationsQuery,
   useGetDistributionScoresQuery,
   useGetDistributionWinsQuery,
-  useGetGamesQuery,
 } from '../../../services';
-import type { StatsGlobalFilters } from '../../../types';
+import type { DistributionWinsParams, Game, StatsGlobalFilters } from '../../../types';
 import { RESULT_TYPES } from '../../../types';
 import { DistributionBarChart } from '../DistributionBarChart';
 import { StatsSectionCard } from '../StatsSectionCard';
@@ -15,16 +14,16 @@ import { StatsErrorState } from '../StatsErrorState';
 
 type DistributionDetailsSectionProps = {
   globalFilters: StatsGlobalFilters;
+  selectedGame: Game | undefined;
 };
 
-type WinsParticipationsScope = 'global' | 'game';
+type WinsParticipationsScope = DistributionWinsParams['scope'];
 
-export const DistributionDetailsSection = ({ globalFilters }: DistributionDetailsSectionProps) => {
+export const DistributionDetailsSection = ({ globalFilters, selectedGame }: DistributionDetailsSectionProps) => {
+  const theme = useTheme();
   const [winsScope, setWinsScope] = useState<WinsParticipationsScope>('global');
   const [participationsScope, setParticipationsScope] = useState<WinsParticipationsScope>('global');
 
-  const { data: games = [] } = useGetGamesQuery();
-  const selectedGame = games.find((g) => g.id === globalFilters.gameId);
   const gameSupportsScores = selectedGame && selectedGame.resultType !== RESULT_TYPES.NO_SCORE;
 
   const skipScores = !globalFilters.gameId || !gameSupportsScores;
@@ -137,7 +136,7 @@ export const DistributionDetailsSection = ({ globalFilters }: DistributionDetail
       count: Number(row.count),
       share: row.share,
     }));
-    return <DistributionBarChart rows={rows} color="#d97706" />;
+    return <DistributionBarChart rows={rows} color={theme.palette.warning.main} />;
   };
 
   return (
@@ -153,11 +152,11 @@ export const DistributionDetailsSection = ({ globalFilters }: DistributionDetail
         title="Distribution des victoires"
         controls={
           <Stack direction="row" spacing={1} alignItems="center">
-            {globalFilters.gameId ? null : (
+            {winsData ? (
               <Typography variant="caption" color="text.secondary">
-                {winsData ? `${winsData.totalPlayerCount} joueurs` : ''}
+                {winsData.totalPlayerCount} joueurs
               </Typography>
-            )}
+            ) : null}
             {scopeSelect(winsScope, setWinsScope)}
           </Stack>
         }

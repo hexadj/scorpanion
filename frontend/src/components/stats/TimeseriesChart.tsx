@@ -8,7 +8,10 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import type { Payload } from 'recharts/types/component/DefaultTooltipContent';
 import type { TimeseriesPoint } from '../../types';
+
+type TimeseriesDataPoint = { bucketStart: string; value: number | null; sampleSize: number; label: string };
 
 type TimeseriesChartProps = {
   series: TimeseriesPoint[];
@@ -50,10 +53,10 @@ export const TimeseriesChart = ({ series, interval }: TimeseriesChartProps) => {
           allowDecimals={false}
         />
         <Tooltip
-          formatter={(value: number | null, _name: string, props: { payload?: { sampleSize: number } }) => {
-            const sampleSize = props.payload?.sampleSize ?? 0;
+          formatter={(value, _name, item: Payload<number, string> & { payload?: TimeseriesDataPoint }) => {
+            const sampleSize = item.payload?.sampleSize ?? 0;
             return [
-              value === null ? '—' : value.toLocaleString('fr-FR'),
+              value == null ? '—' : Number(value).toLocaleString('fr-FR'),
               `Valeur (${sampleSize} entrées)`,
             ];
           }}

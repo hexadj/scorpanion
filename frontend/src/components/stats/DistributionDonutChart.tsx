@@ -1,5 +1,6 @@
 import { Box, Typography, useTheme } from '@mui/material';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
+import type { Payload } from 'recharts/types/component/DefaultTooltipContent';
 
 type DonutRow = {
   label: string;
@@ -13,21 +14,19 @@ type DistributionDonutChartProps = {
   totalCount: number;
 };
 
-const PALETTE = [
-  '#1d4ed8',
-  '#059669',
-  '#d97706',
-  '#dc2626',
-  '#7c3aed',
-  '#0891b2',
-  '#65a30d',
-  '#db2777',
-];
-
-const OTHERS_COLOR = '#9ca3af';
-
 export const DistributionDonutChart = ({ rows, totalCount }: DistributionDonutChartProps) => {
   const theme = useTheme();
+
+  const palette = [
+    theme.palette.primary.main,
+    theme.palette.success.main,
+    theme.palette.warning.main,
+    theme.palette.error.main,
+    theme.palette.secondary.main,
+    theme.palette.info.main,
+    theme.palette.success.light,
+    theme.palette.error.light,
+  ];
 
   const data = rows.map((row) => ({
     name: row.label,
@@ -52,14 +51,14 @@ export const DistributionDonutChart = ({ rows, totalCount }: DistributionDonutCh
             {data.map((entry, index) => (
               <Cell
                 key={entry.name}
-                fill={entry.isOthers ? OTHERS_COLOR : PALETTE[index % PALETTE.length]}
+                fill={entry.isOthers ? theme.palette.action.disabled : palette[index % palette.length]}
               />
             ))}
           </Pie>
           <Tooltip
-            formatter={(value: number, _name: string, props: { payload?: { share: number } }) => {
-              const share = props.payload?.share ?? 0;
-              return [`${value.toLocaleString('fr-FR')} (${share} %)`, 'Parties'];
+            formatter={(value, _name, item: Payload<number, string> & { payload?: { share: number } }) => {
+              const share = item.payload?.share ?? 0;
+              return [`${Number(value).toLocaleString('fr-FR')} (${share} %)`, 'Parties'];
             }}
             contentStyle={{
               backgroundColor: theme.palette.background.paper,

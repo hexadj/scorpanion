@@ -13,6 +13,8 @@ export const StatsPage = () => {
   const { data: players = [] } = useGetPlayersQuery();
   const { filters, setGameId, setPlayerId, setFrom, setTo } = useStatsFilters();
 
+  const selectedGame = games.find((g) => g.id === filters.gameId);
+
   return (
     <PageContainer maxWidth={1100}>
       <Typography variant="h5" component="h1" gutterBottom>
@@ -30,7 +32,7 @@ export const StatsPage = () => {
       <TimeseriesSection globalFilters={filters} />
       <RankingsSection globalFilters={filters} />
       <DistributionGamesSection globalFilters={filters} />
-      <DistributionDetailsSection globalFilters={filters} />
+      <DistributionDetailsSection globalFilters={filters} selectedGame={selectedGame} />
     </PageContainer>
   );
 };

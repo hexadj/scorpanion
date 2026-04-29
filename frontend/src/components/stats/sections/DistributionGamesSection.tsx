@@ -1,7 +1,7 @@
 import { MenuItem, Stack, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useGetDistributionGamesQuery } from '../../../services';
-import type { StatsGlobalFilters } from '../../../types';
+import type { DistributionGamesParams, StatsGlobalFilters } from '../../../types';
 import { DistributionDonutChart } from '../DistributionDonutChart';
 import { StatsSectionCard } from '../StatsSectionCard';
 import { StatsEmptyState } from '../StatsEmptyState';
@@ -11,7 +11,7 @@ type DistributionGamesSectionProps = {
   globalFilters: StatsGlobalFilters;
 };
 
-type GamesDistributionScope = 'global' | 'player';
+type GamesDistributionScope = DistributionGamesParams['scope'];
 
 export const DistributionGamesSection = ({ globalFilters }: DistributionGamesSectionProps) => {
   const [scope, setScope] = useState<GamesDistributionScope>('global');

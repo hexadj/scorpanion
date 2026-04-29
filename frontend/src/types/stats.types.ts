@@ -168,7 +168,7 @@ export type DistributionGamesResponse = {
 };
 
 export type DistributionGamesParams = {
-  scope: 'global' | 'player';
+  scope: Extract<StatsScope, 'global' | 'player'>;
   playerId?: string;
   from?: string;
   to?: string;
@@ -216,7 +216,7 @@ export type DistributionWinsResponse = {
 };
 
 export type DistributionWinsParams = {
-  scope: 'global' | 'game';
+  scope: Extract<StatsScope, 'global' | 'game'>;
   gameId?: string;
   from?: string;
   to?: string;
@@ -235,7 +235,7 @@ export type DistributionParticipationsResponse = {
 };
 
 export type DistributionParticipationsParams = {
-  scope: 'global' | 'game';
+  scope: Extract<StatsScope, 'global' | 'game'>;
   gameId?: string;
   from?: string;
   to?: string;
