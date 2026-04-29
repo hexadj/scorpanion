@@ -25,6 +25,10 @@ export const StatsFilterBar = ({
   const selectedGame = games.find((g) => g.id === filters.gameId) ?? null;
   const selectedPlayer = players.find((p) => p.id === filters.playerId) ?? null;
 
+  const fromValue = filters.from ? filters.from.split('T')[0] : '';
+  const toValue = filters.to ? filters.to.split('T')[0] : '';
+  const dateRangeError = fromValue && toValue && fromValue > toValue;
+
   return (
     <Box
       sx={{
@@ -42,8 +46,9 @@ export const StatsFilterBar = ({
           size="small"
           label="Du"
           InputLabelProps={{ shrink: true }}
-          value={filters.from ? filters.from.split('T')[0] : ''}
+          value={fromValue}
           onChange={(e) => onFromChange(e.target.value ? toIso(e.target.value) : undefined)}
+          error={!!dateRangeError}
           sx={{ minWidth: 150 }}
         />
         <TextField
@@ -51,8 +56,10 @@ export const StatsFilterBar = ({
           size="small"
           label="Au"
           InputLabelProps={{ shrink: true }}
-          value={filters.to ? filters.to.split('T')[0] : ''}
+          value={toValue}
           onChange={(e) => onToChange(e.target.value ? toIso(e.target.value) : undefined)}
+          error={!!dateRangeError}
+          helperText={dateRangeError ? 'La date de fin doit être après la date de début.' : undefined}
           sx={{ minWidth: 150 }}
         />
         <Autocomplete<Game>

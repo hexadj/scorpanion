@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { StatsGlobalFilters } from '../types';
 
 export type UseStatsFiltersResult = {
@@ -17,11 +17,10 @@ export const useStatsFilters = (): UseStatsFiltersResult => {
     playerId: undefined,
   });
 
-  return {
-    filters,
-    setFrom: (from) => setFilters((prev) => ({ ...prev, from })),
-    setTo: (to) => setFilters((prev) => ({ ...prev, to })),
-    setGameId: (gameId) => setFilters((prev) => ({ ...prev, gameId })),
-    setPlayerId: (playerId) => setFilters((prev) => ({ ...prev, playerId })),
-  };
+  const setFrom = useCallback((from: string | undefined) => setFilters((prev) => ({ ...prev, from })), []);
+  const setTo = useCallback((to: string | undefined) => setFilters((prev) => ({ ...prev, to })), []);
+  const setGameId = useCallback((gameId: string | undefined) => setFilters((prev) => ({ ...prev, gameId })), []);
+  const setPlayerId = useCallback((playerId: string | undefined) => setFilters((prev) => ({ ...prev, playerId })), []);
+
+  return { filters, setFrom, setTo, setGameId, setPlayerId };
 };
