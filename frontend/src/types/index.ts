@@ -11,3 +11,42 @@ export type {
 } from './gameSession.types';
 export type { CreatePlayerPayload, Player } from './player.types';
 export type { SessionFormValues } from './sessionForm.types';
+export {
+  STATS_METRICS,
+  STATS_SCOPES,
+  STATS_INTERVALS,
+  TIMESERIES_METRICS_BY_SCOPE,
+  RANKING_METRICS,
+  STATS_METRIC_LABELS,
+  STATS_SCOPE_LABELS,
+  STATS_INTERVAL_LABELS,
+} from './stats.types';
+export type {
+  StatsMetric,
+  StatsScope,
+  StatsInterval,
+  CatalogResponse,
+  CatalogMetricInfo,
+  TimeseriesPoint,
+  TimeseriesResponse,
+  TimeseriesParams,
+  RankingRow,
+  RankingsPlayersResponse,
+  RankingsPlayersParams,
+  GameDistributionRow,
+  DistributionGamesResponse,
+  DistributionGamesParams,
+  ScoreBucketInfo,
+  ScoreDistributionRow,
+  DistributionScoresResponse,
+  DistributionScoresParams,
+  WinsBucketInfo,
+  WinsDistributionRow,
+  DistributionWinsResponse,
+  DistributionWinsParams,
+  ParticipationsBucketInfo,
+  ParticipationsDistributionRow,
+  DistributionParticipationsResponse,
+  DistributionParticipationsParams,
+  StatsGlobalFilters,
+} from './stats.types';
