@@ -21,3 +21,13 @@ export {
   useCreatePlayerMutation,
   useGetPlayersQuery,
 } from './player.api';
+export {
+  statsApi,
+  useGetCatalogQuery,
+  useGetTimeseriesQuery,
+  useGetRankingsPlayersQuery,
+  useGetDistributionGamesQuery,
+  useGetDistributionScoresQuery,
+  useGetDistributionWinsQuery,
+  useGetDistributionParticipationsQuery,
+} from './stats.api';
