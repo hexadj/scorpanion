@@ -8,20 +8,23 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import type { Payload } from 'recharts/types/component/DefaultTooltipContent';
 import type { TimeseriesPoint } from '../../types';
 
 type TimeseriesDataPoint = { bucketStart: string; value: number | null; sampleSize: number; label: string };
 
 type TimeseriesChartProps = {
   series: TimeseriesPoint[];
-  interval: 'week' | 'month';
+  interval: 'hour' | 'day' | 'week' | 'month';
 };
 
-const formatBucketStart = (bucketStart: string, interval: 'week' | 'month'): string => {
+const formatBucketStart = (bucketStart: string, interval: 'hour' | 'day' | 'week' | 'month'): string => {
   const date = new Date(bucketStart);
+  if (isNaN(date.getTime())) return bucketStart;
   if (interval === 'month') {
     return date.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' });
+  }
+  if (interval === 'hour') {
+    return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
   }
   return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
 };
@@ -53,8 +56,9 @@ export const TimeseriesChart = ({ series, interval }: TimeseriesChartProps) => {
           allowDecimals={false}
         />
         <Tooltip
-          formatter={(value, _name, item: Payload<number, string> & { payload?: TimeseriesDataPoint }) => {
-            const sampleSize = item.payload?.sampleSize ?? 0;
+          formatter={(value, _name, item) => {
+            const payload = (item as { payload?: TimeseriesDataPoint }).payload;
+            const sampleSize = payload?.sampleSize ?? 0;
             return [
               value == null ? '—' : Number(value).toLocaleString('fr-FR'),
               `Valeur (${sampleSize} entrées)`,

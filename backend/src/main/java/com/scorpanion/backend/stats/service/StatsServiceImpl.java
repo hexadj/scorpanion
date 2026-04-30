@@ -2,6 +2,9 @@ package com.scorpanion.backend.stats.service;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import com.scorpanion.backend.stats.model.Interval;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -56,7 +59,7 @@ public class StatsServiceImpl implements StatsService {
 	@Override
 	public CatalogResponse getCatalog() {
 		return new CatalogResponse(
-			List.of("week", "month"),
+			Arrays.stream(Interval.values()).map(Interval::getValue).toList(),
 			List.of("global", "player", "game"),
 			List.of(
 				new CatalogResponse.MetricInfo("sessionCount", "Parties jouées",
@@ -257,7 +260,7 @@ public class StatsServiceImpl implements StatsService {
 				query.scope(), query.playerId(), query.gameId(), query.from(), query.to(), buckets
 			);
 
-		Map<Integer, Long> countByLower = new java.util.HashMap<>();
+		Map<Integer, Long> countByLower = new HashMap<>();
 		for (var row : rawRows) {
 			countByLower.put(row.lowerBound(), row.count());
 		}

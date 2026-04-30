@@ -20,6 +20,10 @@ export {
   STATS_METRIC_LABELS,
   STATS_SCOPE_LABELS,
   STATS_INTERVAL_LABELS,
+  STATS_PERIODS,
+  STATS_PERIOD_LABELS,
+  periodToDates,
+  periodToInterval,
 } from './stats.types';
 export type {
   StatsMetric,
@@ -49,4 +53,5 @@ export type {
   DistributionParticipationsResponse,
   DistributionParticipationsParams,
   StatsGlobalFilters,
+  StatsPeriod,
 } from './stats.types';

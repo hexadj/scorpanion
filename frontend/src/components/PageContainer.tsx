@@ -19,18 +19,19 @@ export const PageContainer = ({
     sx={
       centered
         ? {
-            minHeight: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            px: 2,
-          }
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          px: 2,
+        }
         : {
-            p: 3,
-            maxWidth: maxWidth ?? 520,
-            mx: 'auto',
-          }
+          p: 3,
+          maxWidth: maxWidth ?? 520,
+          width: '100%',
+          mx: 'auto',
+        }
     }
   >
     {title ? (

@@ -16,7 +16,7 @@ public final class ScoreBucketing {
 			return List.of(new ScoreBucket(min, min + 1, String.valueOf(min)));
 		}
 
-		int range = max - min;
+		long range = (long) max - min;
 		double rawStep = (double) range / TARGET_BUCKET_COUNT;
 		int step = niceStep(rawStep);
 

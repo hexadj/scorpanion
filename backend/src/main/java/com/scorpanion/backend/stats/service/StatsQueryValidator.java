@@ -1,6 +1,7 @@
 package com.scorpanion.backend.stats.service;
 
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
@@ -24,6 +25,8 @@ import com.scorpanion.backend.stats.service.query.TimeseriesQuery;
 @Component
 public class StatsQueryValidator {
 
+	private static final int MAX_HOUR_BUCKETS = 168;
+	private static final int MAX_DAY_BUCKETS = 366;
 	private static final int MAX_WEEK_BUCKETS = 260;
 	private static final int MAX_MONTH_BUCKETS = 120;
 
@@ -293,7 +296,7 @@ public class StatsQueryValidator {
 	// Shared parsing and validation primitives
 	// -------------------------------------------------------------------------
 
-	Metric parseMetric(String value) {
+	private Metric parseMetric(String value) {
 		if (value == null) {
 			throw new StatsValidationException("MISSING_REQUIRED_FILTER", "metric is required.");
 		}
@@ -304,7 +307,7 @@ public class StatsQueryValidator {
 		return metric;
 	}
 
-	Scope parseScope(String value) {
+	private Scope parseScope(String value) {
 		if (value == null) {
 			throw new StatsValidationException("MISSING_REQUIRED_FILTER", "scope is required.");
 		}
@@ -315,7 +318,7 @@ public class StatsQueryValidator {
 		return scope;
 	}
 
-	Interval parseInterval(String value) {
+	private Interval parseInterval(String value) {
 		if (value == null) {
 			throw new StatsValidationException("MISSING_REQUIRED_FILTER", "interval is required.");
 		}
@@ -334,14 +337,28 @@ public class StatsQueryValidator {
 	}
 
 	private void validateBucketCount(Instant from, Instant to, Interval interval) {
+		long hours = ChronoUnit.HOURS.between(from, to);
 		long days = ChronoUnit.DAYS.between(from, to);
+		if (interval == Interval.HOUR && hours > MAX_HOUR_BUCKETS) {
+			throw new StatsValidationException("TIME_RANGE_TOO_LARGE",
+				"Time range exceeds maximum of " + MAX_HOUR_BUCKETS + " hourly buckets.");
+		}
+		if (interval == Interval.DAY && days > MAX_DAY_BUCKETS) {
+			throw new StatsValidationException("TIME_RANGE_TOO_LARGE",
+				"Time range exceeds maximum of " + MAX_DAY_BUCKETS + " daily buckets.");
+		}
 		if (interval == Interval.WEEK && days / 7 > MAX_WEEK_BUCKETS) {
 			throw new StatsValidationException("TIME_RANGE_TOO_LARGE",
 				"Time range exceeds maximum of " + MAX_WEEK_BUCKETS + " weekly buckets.");
 		}
-		if (interval == Interval.MONTH && days / 30 > MAX_MONTH_BUCKETS) {
-			throw new StatsValidationException("TIME_RANGE_TOO_LARGE",
-				"Time range exceeds maximum of " + MAX_MONTH_BUCKETS + " monthly buckets.");
+		if (interval == Interval.MONTH) {
+			long months = ChronoUnit.MONTHS.between(
+				from.atZone(ZoneOffset.UTC).toLocalDate(),
+				to.atZone(ZoneOffset.UTC).toLocalDate());
+			if (months > MAX_MONTH_BUCKETS) {
+				throw new StatsValidationException("TIME_RANGE_TOO_LARGE",
+					"Time range exceeds maximum of " + MAX_MONTH_BUCKETS + " monthly buckets.");
+			}
 		}
 	}
 

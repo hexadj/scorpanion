@@ -91,8 +91,8 @@ public class StatsRankingsRepository {
 		String sql = """
 			SELECT CAST(COUNT(DISTINCT p.id) AS BIGINT)
 			FROM player p
-			LEFT JOIN session_player_result spr ON spr.player_id = p.id
-			LEFT JOIN game_session gs ON gs.id = spr.game_session_id
+			JOIN session_player_result spr ON spr.player_id = p.id
+			JOIN game_session gs ON gs.id = spr.game_session_id
 			    AND gs.played_at >= :from
 			    AND gs.played_at < :to
 			    %s

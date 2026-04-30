@@ -2,6 +2,8 @@ package com.scorpanion.backend.stats.model;
 
 public enum Interval {
 
+	HOUR("hour"),
+	DAY("day"),
 	WEEK("week"),
 	MONTH("month");
 

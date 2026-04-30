@@ -18,11 +18,19 @@ export const StatsSectionCard = ({ title, controls, isLoading = false, children 
       mb: 3,
     }}
   >
-    <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1}>
+    <Stack
+      direction={{ xs: 'column', sm: 'row' }}
+      sx={{ alignItems: { xs: 'stretch', sm: 'center' }, justifyContent: { sm: 'space-between' } }}
+      mb={1}
+    >
       <Typography variant="h6" component="h2">
         {title}
       </Typography>
-      {controls ? <Stack direction="row" spacing={1} alignItems="center">{controls}</Stack> : null}
+      {controls ? (
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap', width: { xs: '100%', sm: 'auto' } }}>
+          {controls}
+        </Stack>
+      ) : null}
     </Stack>
     <Divider sx={{ mb: 2 }} />
     {isLoading ? (

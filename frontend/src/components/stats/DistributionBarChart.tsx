@@ -1,6 +1,5 @@
 import { useTheme } from '@mui/material';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import type { Payload } from 'recharts/types/component/DefaultTooltipContent';
 
 type BarChartRow = {
   label: string;
@@ -33,8 +32,9 @@ export const DistributionBarChart = ({ rows, color }: DistributionBarChartProps)
           allowDecimals={false}
         />
         <Tooltip
-          formatter={(value, _name, item: Payload<number, string> & { payload?: BarChartRow }) => {
-            const share = item.payload?.share ?? 0;
+          formatter={(value, _name, item) => {
+            const payload = (item as { payload?: BarChartRow }).payload;
+            const share = payload?.share ?? 0;
             return [`${Number(value).toLocaleString('fr-FR')} (${share} %)`, 'Effectif'];
           }}
           labelStyle={{ color: theme.palette.text.primary }}

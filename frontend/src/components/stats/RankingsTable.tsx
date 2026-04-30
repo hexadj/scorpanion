@@ -1,4 +1,5 @@
 import {
+  Box,
   Table,
   TableBody,
   TableCell,
@@ -41,6 +42,7 @@ export const RankingsTable = ({
 
   return (
     <>
+      <Box sx={{ overflowX: 'auto' }}>
       <TableContainer>
         <Table size="small">
           <TableHead>
@@ -77,7 +79,7 @@ export const RankingsTable = ({
                 {showParticipationCount ? (
                   <TableCell align="right">
                     <Typography variant="body2" color="text.secondary">
-                      {row.participationCount.toLocaleString('fr-FR')}
+                      {row.participationCount != null ? row.participationCount.toLocaleString('fr-FR') : '—'}
                     </Typography>
                   </TableCell>
                 ) : null}
@@ -86,10 +88,11 @@ export const RankingsTable = ({
           </TableBody>
         </Table>
       </TableContainer>
+      </Box>
       <TablePagination
         component="div"
         count={total}
-        page={Math.floor(offset / limit)}
+        page={limit > 0 ? Math.floor(offset / limit) : 0}
         rowsPerPage={limit}
         rowsPerPageOptions={[10, 20, 50]}
         onPageChange={(_, page) => onPageChange(page * limit)}

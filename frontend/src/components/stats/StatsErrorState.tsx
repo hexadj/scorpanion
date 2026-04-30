@@ -1,10 +1,9 @@
 import { Alert } from '@mui/material';
-import type { AxiosBaseQueryError } from '../../services';
 
 type ApiErrorData = { subCode?: string; message?: string };
 
 const isApiErrorData = (data: unknown): data is ApiErrorData =>
-  typeof data === 'object' && data !== null;
+  typeof data === 'object' && data !== null && ('subCode' in data || 'message' in data);
 
 const MESSAGES: Record<string, string> = {
   MISSING_REQUIRED_FILTER: 'Un filtre requis est manquant pour cette combinaison.',
@@ -15,14 +14,16 @@ const MESSAGES: Record<string, string> = {
   RESOURCE_NOT_FOUND: 'La ressource demandée est introuvable.',
 };
 
-const resolveMessage = (error: AxiosBaseQueryError): string => {
-  if (!isApiErrorData(error.data)) return 'Une erreur est survenue.';
-  const { subCode, message } = error.data;
+const resolveMessage = (error: unknown): string => {
+  if (typeof error !== 'object' || error === null || !('data' in error)) return 'Une erreur est survenue.';
+  const { data } = error as { data: unknown };
+  if (!isApiErrorData(data)) return 'Une erreur est survenue.';
+  const { subCode, message } = data;
   return (subCode && MESSAGES[subCode]) ?? message ?? 'Une erreur est survenue.';
 };
 
 type StatsErrorStateProps = {
-  error: AxiosBaseQueryError;
+  error: unknown;
 };
 
 export const StatsErrorState = ({ error }: StatsErrorStateProps) => (

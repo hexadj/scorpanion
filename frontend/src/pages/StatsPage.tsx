@@ -1,38 +1,43 @@
-import { Typography } from '@mui/material';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import PieChartIcon from '@mui/icons-material/PieChart';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import { Box, Tab, Tabs, Tooltip, Typography } from '@mui/material';
+import { useState } from 'react';
 import { PageContainer } from '../components';
-import { DistributionDetailsSection } from '../components/stats/sections/DistributionDetailsSection';
-import { DistributionGamesSection } from '../components/stats/sections/DistributionGamesSection';
+import { DistributionSection } from '../components/stats/sections/DistributionSection';
 import { RankingsSection } from '../components/stats/sections/RankingsSection';
 import { TimeseriesSection } from '../components/stats/sections/TimeseriesSection';
 import { StatsFilterBar } from '../components/stats/StatsFilterBar';
 import { useStatsFilters } from '../hooks';
-import { useGetGamesQuery, useGetPlayersQuery } from '../services';
+
+const TABS = [
+  { icon: <ShowChartIcon />, label: 'Évolution temporelle' },
+  { icon: <EmojiEventsIcon />, label: 'Classement' },
+  { icon: <PieChartIcon />, label: 'Distribution' },
+] as const;
 
 export const StatsPage = () => {
-  const { data: games = [] } = useGetGamesQuery();
-  const { data: players = [] } = useGetPlayersQuery();
-  const { filters, setGameId, setPlayerId, setFrom, setTo } = useStatsFilters();
-
-  const selectedGame = games.find((g) => g.id === filters.gameId);
+  const [tab, setTab] = useState(0);
+  const { filters, period, setPeriod } = useStatsFilters();
 
   return (
-    <PageContainer maxWidth={1100}>
-      <Typography variant="h5" component="h1" gutterBottom>
-        Statistiques
-      </Typography>
-      <StatsFilterBar
-        games={games}
-        players={players}
-        filters={filters}
-        onGameChange={setGameId}
-        onPlayerChange={setPlayerId}
-        onFromChange={setFrom}
-        onToChange={setTo}
-      />
-      <TimeseriesSection globalFilters={filters} />
-      <RankingsSection globalFilters={filters} />
-      <DistributionGamesSection globalFilters={filters} />
-      <DistributionDetailsSection globalFilters={filters} selectedGame={selectedGame} />
+    <PageContainer title="Statistiques">
+      <StatsFilterBar period={period} onPeriodChange={setPeriod} />
+      <Tabs
+        value={tab}
+        onChange={(_, v) => setTab(v)}
+        variant="fullWidth"
+        sx={{ mb: 2, borderBottom: 1, borderColor: 'divider' }}
+      >
+        {TABS.map((t) => (
+          <Tooltip key={t.label} title={t.label} placement="bottom">
+            <Tab icon={t.icon} aria-label={t.label} />
+          </Tooltip>
+        ))}
+      </Tabs>
+      {tab === 0 && <TimeseriesSection globalFilters={filters} period={period} />}
+      {tab === 1 && <RankingsSection globalFilters={filters} />}
+      {tab === 2 && <DistributionSection globalFilters={filters} />}
     </PageContainer>
   );
 };

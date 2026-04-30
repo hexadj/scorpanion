@@ -10,6 +10,9 @@ final class RepositoryUtils {
 	}
 
 	static UUID toUuid(Object value) {
+		if (value == null) {
+			throw new IllegalStateException("Unexpected NULL for UUID column");
+		}
 		if (value instanceof UUID uuid) {
 			return uuid;
 		}
@@ -43,6 +46,9 @@ final class RepositoryUtils {
 	}
 
 	static int toInt(Object value) {
+		if (value == null) {
+			throw new IllegalStateException("Unexpected NULL for int column");
+		}
 		if (value instanceof Integer i) {
 			return i;
 		}
@@ -56,9 +62,21 @@ final class RepositoryUtils {
 	}
 
 	static Instant toInstant(Object value) {
+		if (value instanceof Instant i) {
+			return i;
+		}
 		if (value instanceof java.sql.Timestamp ts) {
 			return ts.toInstant();
 		}
-		return ((java.time.LocalDateTime) value).toInstant(java.time.ZoneOffset.UTC);
+		if (value instanceof java.time.OffsetDateTime odt) {
+			return odt.toInstant();
+		}
+		if (value instanceof java.time.ZonedDateTime zdt) {
+			return zdt.toInstant();
+		}
+		if (value instanceof java.time.LocalDateTime ldt) {
+			return ldt.toInstant(java.time.ZoneOffset.UTC);
+		}
+		throw new IllegalStateException("Unsupported temporal type for Instant conversion: " + value.getClass());
 	}
 }

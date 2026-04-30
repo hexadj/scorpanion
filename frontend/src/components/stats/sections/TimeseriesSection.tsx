@@ -1,15 +1,8 @@
-import { MenuItem, Stack, TextField } from '@mui/material';
+import { Autocomplete, MenuItem, Stack, TextField } from '@mui/material';
 import { useState } from 'react';
-import { useGetTimeseriesQuery } from '../../../services';
-import type { StatsGlobalFilters, StatsInterval, StatsMetric, StatsScope } from '../../../types';
-import {
-  STATS_INTERVAL_LABELS,
-  STATS_INTERVALS,
-  STATS_METRIC_LABELS,
-  STATS_SCOPE_LABELS,
-  STATS_SCOPES,
-  TIMESERIES_METRICS_BY_SCOPE,
-} from '../../../types';
+import { useGetGamesQuery, useGetPlayersQuery, useGetTimeseriesQuery } from '../../../services';
+import type { StatsPeriod, StatsGlobalFilters, StatsMetric, StatsScope } from '../../../types';
+import { STATS_SCOPES, STATS_SCOPE_LABELS, STATS_METRIC_LABELS, TIMESERIES_METRICS_BY_SCOPE, periodToInterval } from '../../../types';
 import { StatsSectionCard } from '../StatsSectionCard';
 import { StatsEmptyState } from '../StatsEmptyState';
 import { StatsErrorState } from '../StatsErrorState';
@@ -17,12 +10,18 @@ import { TimeseriesChart } from '../TimeseriesChart';
 
 type TimeseriesSectionProps = {
   globalFilters: StatsGlobalFilters;
+  period: StatsPeriod;
 };
 
-export const TimeseriesSection = ({ globalFilters }: TimeseriesSectionProps) => {
+export const TimeseriesSection = ({ globalFilters, period }: TimeseriesSectionProps) => {
+  const interval = periodToInterval(period);
   const [scope, setScope] = useState<StatsScope>(STATS_SCOPES.GLOBAL);
-  const [interval, setInterval] = useState<StatsInterval>(STATS_INTERVALS.WEEK);
   const [metric, setMetric] = useState<StatsMetric>('sessionCount');
+  const [gameId, setGameId] = useState<string | undefined>(undefined);
+  const [playerId, setPlayerId] = useState<string | undefined>(undefined);
+
+  const { data: games = [] } = useGetGamesQuery();
+  const { data: players = [] } = useGetPlayersQuery();
 
   const availableMetrics = TIMESERIES_METRICS_BY_SCOPE[scope];
 
@@ -32,8 +31,8 @@ export const TimeseriesSection = ({ globalFilters }: TimeseriesSectionProps) => 
     (['averageScore', 'minScore', 'maxScore'] as StatsMetric[]).includes(metric);
 
   const skip =
-    (needsPlayerId && !globalFilters.playerId) ||
-    (needsGameId && !globalFilters.gameId);
+    (needsPlayerId && !playerId) ||
+    (needsGameId && !gameId);
 
   const { data, isFetching, error } = useGetTimeseriesQuery(
     {
@@ -42,8 +41,8 @@ export const TimeseriesSection = ({ globalFilters }: TimeseriesSectionProps) => 
       interval,
       from: globalFilters.from,
       to: globalFilters.to,
-      playerId: globalFilters.playerId,
-      gameId: globalFilters.gameId,
+      playerId,
+      gameId,
     },
     { skip },
   );
@@ -61,24 +60,10 @@ export const TimeseriesSection = ({ globalFilters }: TimeseriesSectionProps) => 
       <TextField
         select
         size="small"
-        label="Scope"
-        value={scope}
-        onChange={(e) => handleScopeChange(e.target.value as StatsScope)}
-        sx={{ minWidth: 100 }}
-      >
-        {Object.values(STATS_SCOPES).map((s) => (
-          <MenuItem key={s} value={s}>
-            {STATS_SCOPE_LABELS[s]}
-          </MenuItem>
-        ))}
-      </TextField>
-      <TextField
-        select
-        size="small"
         label="Métrique"
         value={metric}
         onChange={(e) => setMetric(e.target.value as StatsMetric)}
-        sx={{ minWidth: 160 }}
+        sx={{ width: { xs: '100%', sm: 180 } }}
       >
         {availableMetrics.map((m) => (
           <MenuItem key={m} value={m}>
@@ -89,17 +74,41 @@ export const TimeseriesSection = ({ globalFilters }: TimeseriesSectionProps) => 
       <TextField
         select
         size="small"
-        label="Intervalle"
-        value={interval}
-        onChange={(e) => setInterval(e.target.value as StatsInterval)}
-        sx={{ minWidth: 100 }}
+        label="Scope"
+        value={scope}
+        onChange={(e) => handleScopeChange(e.target.value as StatsScope)}
+        sx={{ width: { xs: '100%', sm: 120 } }}
       >
-        {Object.values(STATS_INTERVALS).map((i) => (
-          <MenuItem key={i} value={i}>
-            {STATS_INTERVAL_LABELS[i]}
+        {Object.values(STATS_SCOPES).map((s) => (
+          <MenuItem key={s} value={s}>
+            {STATS_SCOPE_LABELS[s]}
           </MenuItem>
         ))}
       </TextField>
+      {needsGameId && (
+        <Autocomplete
+          options={games}
+          value={games.find((g) => g.id === gameId) ?? null}
+          onChange={(_, value) => setGameId(value?.id)}
+          getOptionLabel={(option) => option.name}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          noOptionsText="Aucun jeu trouvé"
+          renderInput={(params) => <TextField {...params} size="small" label="Jeu" />}
+          sx={{ width: { xs: '100%', sm: 180 } }}
+        />
+      )}
+      {needsPlayerId && (
+        <Autocomplete
+          options={players}
+          value={players.find((p) => p.id === playerId) ?? null}
+          onChange={(_, value) => setPlayerId(value?.id)}
+          getOptionLabel={(option) => option.name}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          noOptionsText="Aucun joueur trouvé"
+          renderInput={(params) => <TextField {...params} size="small" label="Joueur" />}
+          sx={{ width: { xs: '100%', sm: 180 } }}
+        />
+      )}
     </>
   );
 
@@ -116,7 +125,7 @@ export const TimeseriesSection = ({ globalFilters }: TimeseriesSectionProps) => 
   return (
     <StatsSectionCard
       title="Évolution temporelle"
-      controls={<Stack direction="row" spacing={1}>{controls}</Stack>}
+      controls={<Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ width: '100%', alignItems: { xs: 'center', sm: 'flex-start' } }}>{controls}</Stack>}
       isLoading={isFetching}
     >
       {renderContent()}

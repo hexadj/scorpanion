@@ -22,6 +22,8 @@ export const STATS_SCOPES = {
 export type StatsScope = (typeof STATS_SCOPES)[keyof typeof STATS_SCOPES];
 
 export const STATS_INTERVALS = {
+  HOUR: 'hour',
+  DAY: 'day',
   WEEK: 'week',
   MONTH: 'month',
 } as const;
@@ -72,8 +74,21 @@ export const STATS_SCOPE_LABELS: Record<StatsScope, string> = {
 };
 
 export const STATS_INTERVAL_LABELS: Record<StatsInterval, string> = {
+  hour: 'Heure',
+  day: 'Jour',
   week: 'Semaine',
   month: 'Mois',
+};
+
+export const periodToInterval = (period: StatsPeriod): StatsInterval => {
+  switch (period) {
+    case 'today': return STATS_INTERVALS.HOUR;
+    case 'this_week':
+    case 'this_month':
+    case 'last_30_days': return STATS_INTERVALS.DAY;
+    case 'this_year': return STATS_INTERVALS.WEEK;
+    case 'all': return STATS_INTERVALS.MONTH;
+  }
 };
 
 // Catalog
@@ -245,6 +260,63 @@ export type DistributionParticipationsParams = {
 export type StatsGlobalFilters = {
   from: string | undefined;
   to: string | undefined;
-  gameId: string | undefined;
-  playerId: string | undefined;
+};
+
+export const STATS_PERIODS = {
+  TODAY: 'today',
+  THIS_WEEK: 'this_week',
+  THIS_MONTH: 'this_month',
+  LAST_30_DAYS: 'last_30_days',
+  THIS_YEAR: 'this_year',
+  ALL: 'all',
+} as const;
+
+export type StatsPeriod = (typeof STATS_PERIODS)[keyof typeof STATS_PERIODS];
+
+export const STATS_PERIOD_LABELS: Record<StatsPeriod, string> = {
+  today: "Aujourd'hui",
+  this_week: 'Cette semaine',
+  this_month: 'Ce mois',
+  last_30_days: '30 derniers jours',
+  this_year: 'Cette année',
+  all: 'Toujours',
+};
+
+const pad = (n: number) => String(n).padStart(2, '0');
+const toIsoMidnight = (d: Date) =>
+  `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}T00:00:00Z`;
+
+export const periodToDates = (period: StatsPeriod): { from: string | undefined; to: string | undefined } => {
+  const now = new Date();
+  const today = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+
+  switch (period) {
+    case 'today': {
+      const tomorrow = new Date(today);
+      tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+      return { from: toIsoMidnight(today), to: toIsoMidnight(tomorrow) };
+    }
+    case 'this_week': {
+      const day = today.getUTCDay();
+      const diff = day === 0 ? -6 : 1 - day;
+      const monday = new Date(today);
+      monday.setUTCDate(monday.getUTCDate() + diff);
+      return { from: toIsoMidnight(monday), to: undefined };
+    }
+    case 'this_month': {
+      const firstOfMonth = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1));
+      return { from: toIsoMidnight(firstOfMonth), to: undefined };
+    }
+    case 'last_30_days': {
+      const ago = new Date(today);
+      ago.setUTCDate(ago.getUTCDate() - 30);
+      return { from: toIsoMidnight(ago), to: undefined };
+    }
+    case 'this_year': {
+      const firstOfYear = new Date(Date.UTC(today.getUTCFullYear(), 0, 1));
+      return { from: toIsoMidnight(firstOfYear), to: undefined };
+    }
+    case 'all':
+      return { from: undefined, to: undefined };
+  }
 };
