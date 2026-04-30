@@ -2,7 +2,7 @@ package com.scorpanion.backend.stats;
 
 import java.util.List;
 
-import com.scorpanion.backend.stats.service.internal.HamiltonAlgorithm;
+import com.scorpanion.backend.stats.algorithm.HamiltonAlgorithm;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,3 +40,5 @@ class HamiltonAlgorithmTest {
 		assertThat(result.stream().mapToInt(Integer::intValue).sum()).isEqualTo(100);
 	}
 }
+
+

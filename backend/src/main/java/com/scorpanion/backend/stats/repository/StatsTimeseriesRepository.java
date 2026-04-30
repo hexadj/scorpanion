@@ -313,3 +313,5 @@ public class StatsTimeseriesRepository {
 	}
 
 }
+
+

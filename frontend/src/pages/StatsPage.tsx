@@ -1,13 +1,13 @@
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
-import { Box, Tab, Tabs, Tooltip, Typography } from '@mui/material';
+import { Tab, Tabs, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import { PageContainer } from '../components';
-import { DistributionSection } from '../components/stats/sections/DistributionSection';
-import { RankingsSection } from '../components/stats/sections/RankingsSection';
-import { TimeseriesSection } from '../components/stats/sections/TimeseriesSection';
-import { StatsFilterBar } from '../components/stats/StatsFilterBar';
+import { DistributionSection } from '../features/stats/components/sections/DistributionSection';
+import { RankingsSection } from '../features/stats/components/sections/RankingsSection';
+import { TimeseriesSection } from '../features/stats/components/sections/TimeseriesSection';
+import { StatsFilterBar } from '../features/stats/components/StatsFilterBar';
 import { useStatsFilters } from '../hooks';
 
 const TABS = [

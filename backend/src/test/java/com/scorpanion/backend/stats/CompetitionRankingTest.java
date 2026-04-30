@@ -2,7 +2,7 @@ package com.scorpanion.backend.stats;
 
 import java.util.List;
 
-import com.scorpanion.backend.stats.service.internal.CompetitionRanking;
+import com.scorpanion.backend.stats.algorithm.CompetitionRanking;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,3 +38,5 @@ class CompetitionRankingTest {
 		assertThat(CompetitionRanking.rank(List.of(), v -> (Long) v)).isEmpty();
 	}
 }
+
+

@@ -1,5 +1,10 @@
-export { RESULT_TYPES } from './game.types';
-export type { CreateGamePayload, Game, ResultEntryMode, ResultType } from './game.types';
+export { RESULT_TYPES } from '../features/game/types/game.types';
+export type {
+  CreateGamePayload,
+  Game,
+  ResultEntryMode,
+  ResultType,
+} from '../features/game/types/game.types';
 export type {
   CreateGameSessionPayload,
   CreateSessionPlayerResultPayload,
@@ -8,9 +13,9 @@ export type {
   GetGameSessionHistoryPayload,
   GameSessionHistoryItem,
   GameSessionHistoryPage,
-} from './gameSession.types';
-export type { CreatePlayerPayload, Player } from './player.types';
-export type { SessionFormValues } from './sessionForm.types';
+} from '../features/session/types/gameSession.types';
+export type { CreatePlayerPayload, Player } from '../features/player/types/player.types';
+export type { SessionFormValues } from '../features/session/types/sessionForm.types';
 export {
   STATS_METRICS,
   STATS_SCOPES,
@@ -24,7 +29,7 @@ export {
   STATS_PERIOD_LABELS,
   periodToDates,
   periodToInterval,
-} from './stats.types';
+} from '../features/stats/types/stats.types';
 export type {
   StatsMetric,
   StatsScope,
@@ -54,4 +59,4 @@ export type {
   DistributionParticipationsParams,
   StatsGlobalFilters,
   StatsPeriod,
-} from './stats.types';
+} from '../features/stats/types/stats.types';

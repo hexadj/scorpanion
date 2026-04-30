@@ -5,3 +5,5 @@ public enum ResultType {
 	HIGHEST_SCORE,
 	LOWEST_SCORE
 }
+
+

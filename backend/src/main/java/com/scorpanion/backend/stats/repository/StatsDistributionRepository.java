@@ -10,7 +10,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
 import com.scorpanion.backend.stats.model.Scope;
-import com.scorpanion.backend.stats.service.internal.ScoreBucketing;
+import com.scorpanion.backend.stats.algorithm.ScoreBucketing;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -341,3 +341,5 @@ public class StatsDistributionRepository {
 	// -------------------------------------------------------------------------
 
 }
+
+
