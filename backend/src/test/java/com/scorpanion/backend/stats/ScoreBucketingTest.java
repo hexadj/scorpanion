@@ -2,8 +2,8 @@ package com.scorpanion.backend.stats;
 
 import java.util.List;
 
-import com.scorpanion.backend.stats.service.internal.ScoreBucketing;
-import com.scorpanion.backend.stats.service.internal.ScoreBucketing.ScoreBucket;
+import com.scorpanion.backend.stats.algorithm.ScoreBucketing;
+import com.scorpanion.backend.stats.algorithm.ScoreBucketing.ScoreBucket;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,3 +33,5 @@ class ScoreBucketingTest {
 		assertThat(buckets.get(buckets.size() - 1).upperExclusive()).isGreaterThan(50);
 	}
 }
+
+

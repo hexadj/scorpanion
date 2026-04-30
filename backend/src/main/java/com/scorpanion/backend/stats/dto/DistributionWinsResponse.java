@@ -20,3 +20,5 @@ public record DistributionWinsResponse(
 	public record BucketInfo(String id, String label) {
 	}
 }
+
+

@@ -10,7 +10,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
 import com.scorpanion.backend.stats.model.Scope;
-import com.scorpanion.backend.stats.service.internal.ScoreBucketing;
+import com.scorpanion.backend.stats.algorithm.ScoreBucketing;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -178,6 +178,7 @@ public class StatsDistributionRepository {
 		List<Object[]> rows = query.getResultList();
 		List<ScoreDistributionRowRaw> result = new ArrayList<>(rows.size());
 		for (Object[] row : rows) {
+			if (row[0] == null) continue;
 			int lowerBound = RepositoryUtils.toInt(row[0]);
 			long count = RepositoryUtils.toLong(row[1]);
 			result.add(new ScoreDistributionRowRaw(lowerBound, count));
@@ -193,7 +194,7 @@ public class StatsDistributionRepository {
 				bucket.lowerInclusive(), bucket.upperExclusive(), bucket.lowerInclusive()
 			));
 		}
-		sb.append(" END");
+		sb.append(" ELSE NULL END");
 		return sb.toString();
 	}
 
@@ -340,3 +341,5 @@ public class StatsDistributionRepository {
 	// -------------------------------------------------------------------------
 
 }
+
+

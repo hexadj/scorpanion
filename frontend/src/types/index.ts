@@ -1,5 +1,10 @@
-export { RESULT_TYPES } from './game.types';
-export type { CreateGamePayload, Game, ResultEntryMode, ResultType } from './game.types';
+export { RESULT_TYPES } from '../features/game/types/game.types';
+export type {
+  CreateGamePayload,
+  Game,
+  ResultEntryMode,
+  ResultType,
+} from '../features/game/types/game.types';
 export type {
   CreateGameSessionPayload,
   CreateSessionPlayerResultPayload,
@@ -8,6 +13,50 @@ export type {
   GetGameSessionHistoryPayload,
   GameSessionHistoryItem,
   GameSessionHistoryPage,
-} from './gameSession.types';
-export type { CreatePlayerPayload, Player } from './player.types';
-export type { SessionFormValues } from './sessionForm.types';
+} from '../features/session/types/gameSession.types';
+export type { CreatePlayerPayload, Player } from '../features/player/types/player.types';
+export type { SessionFormValues } from '../features/session/types/sessionForm.types';
+export {
+  STATS_METRICS,
+  STATS_SCOPES,
+  STATS_INTERVALS,
+  TIMESERIES_METRICS_BY_SCOPE,
+  RANKING_METRICS,
+  STATS_METRIC_LABELS,
+  STATS_SCOPE_LABELS,
+  STATS_INTERVAL_LABELS,
+  STATS_PERIODS,
+  STATS_PERIOD_LABELS,
+  periodToDates,
+  periodToInterval,
+} from '../features/stats/types/stats.types';
+export type {
+  StatsMetric,
+  StatsScope,
+  StatsInterval,
+  CatalogResponse,
+  CatalogMetricInfo,
+  TimeseriesPoint,
+  TimeseriesResponse,
+  TimeseriesParams,
+  RankingRow,
+  RankingsPlayersResponse,
+  RankingsPlayersParams,
+  GameDistributionRow,
+  DistributionGamesResponse,
+  DistributionGamesParams,
+  ScoreBucketInfo,
+  ScoreDistributionRow,
+  DistributionScoresResponse,
+  DistributionScoresParams,
+  WinsBucketInfo,
+  WinsDistributionRow,
+  DistributionWinsResponse,
+  DistributionWinsParams,
+  ParticipationsBucketInfo,
+  ParticipationsDistributionRow,
+  DistributionParticipationsResponse,
+  DistributionParticipationsParams,
+  StatsGlobalFilters,
+  StatsPeriod,
+} from '../features/stats/types/stats.types';

@@ -8,16 +8,26 @@ export {
   gameApi,
   useCreateGameMutation,
   useGetGamesQuery,
-} from './game.api';
+} from '../features/game/services/game.api';
 export {
   gameSessionApi,
   useCreateGameSessionMutation,
   useGetGameSessionsQuery,
   useLazyGetGameSessionsQuery,
   useGetGameSessionQuery,
-} from './gameSession.api';
+} from '../features/session/services/gameSession.api';
 export {
   playerApi,
   useCreatePlayerMutation,
   useGetPlayersQuery,
-} from './player.api';
+} from '../features/player/services/player.api';
+export {
+  statsApi,
+  useGetCatalogQuery,
+  useGetTimeseriesQuery,
+  useGetRankingsPlayersQuery,
+  useGetDistributionGamesQuery,
+  useGetDistributionScoresQuery,
+  useGetDistributionWinsQuery,
+  useGetDistributionParticipationsQuery,
+} from '../features/stats/services/stats.api';

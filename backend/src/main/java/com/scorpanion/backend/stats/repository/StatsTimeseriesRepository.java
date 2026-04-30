@@ -39,8 +39,8 @@ public class StatsTimeseriesRepository {
 		String sql = """
 			WITH series AS (
 			    SELECT generate_series(
-			        date_trunc(:intervalUnit, :from::timestamptz),
-			        date_trunc(:intervalUnit, (:to::timestamptz - INTERVAL '1 second')),
+			        date_trunc(:intervalUnit, CAST(:from AS timestamptz)),
+			        date_trunc(:intervalUnit, CAST(:to AS timestamptz) - INTERVAL '1 second'),
 			        ('1 ' || :intervalUnit)::interval
 			    ) AS bucket_start
 			),
@@ -313,3 +313,5 @@ public class StatsTimeseriesRepository {
 	}
 
 }
+
+

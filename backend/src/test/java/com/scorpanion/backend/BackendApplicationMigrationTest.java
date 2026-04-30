@@ -1,6 +1,6 @@
 package com.scorpanion.backend;
 
-import com.scorpanion.backend.support.AbstractPostgresMigrationTestContainer;
+import com.scorpanion.backend.shared.support.AbstractPostgresMigrationTestContainer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -107,3 +107,5 @@ class BackendApplicationMigrationTest extends AbstractPostgresMigrationTestConta
 			.containsIgnoringCase(expectedFragment);
 	}
 }
+
+
