@@ -80,5 +80,3 @@ final class RepositoryUtils {
 		throw new IllegalStateException("Unsupported temporal type for Instant conversion: " + value.getClass());
 	}
 }
-
-

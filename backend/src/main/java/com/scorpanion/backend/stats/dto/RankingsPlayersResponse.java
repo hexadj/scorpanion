@@ -30,5 +30,3 @@ public record RankingsPlayersResponse(
 	public record PlayerInfo(UUID id, String name) {
 	}
 }
-
-

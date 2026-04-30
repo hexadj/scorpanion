@@ -20,5 +20,3 @@ public record DistributionGamesResponse(
 	public record GameInfo(UUID id, String name, String resultType) {
 	}
 }
-
-

@@ -159,7 +159,4 @@ public class StatsRankingsRepository {
 			default -> throw new IllegalArgumentException("Unsupported ranking metric: " + metric);
 		};
 	}
-
 }
-
-

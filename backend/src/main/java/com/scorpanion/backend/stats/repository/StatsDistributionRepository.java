@@ -335,11 +335,4 @@ public class StatsDistributionRepository {
 	public long countActivePlayersForParticipations(Scope scope, UUID gameId, Instant from, Instant to) {
 		return countActivePlayersForWins(scope, gameId, from, to);
 	}
-
-	// -------------------------------------------------------------------------
-	// Type helpers
-	// -------------------------------------------------------------------------
-
 }
-
-

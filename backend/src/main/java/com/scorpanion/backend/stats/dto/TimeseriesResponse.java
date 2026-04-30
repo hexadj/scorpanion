@@ -19,5 +19,3 @@ public record TimeseriesResponse(
 	public record Point(Instant bucketStart, Long value, Long sampleSize) {
 	}
 }
-
-

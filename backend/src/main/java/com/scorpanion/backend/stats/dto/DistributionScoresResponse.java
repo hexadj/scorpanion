@@ -20,5 +20,3 @@ public record DistributionScoresResponse(
 	public record BucketInfo(int lowerInclusive, int upperExclusive, String label) {
 	}
 }
-
-
